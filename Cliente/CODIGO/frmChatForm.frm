@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "RICHTX32.OCX"
+Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "RICHTX32.ocx"
 Begin VB.Form frmChatForm 
    BorderStyle     =   0  'None
    Caption         =   "pepemago"
@@ -7,57 +7,42 @@ Begin VB.Form frmChatForm
    ClientLeft      =   0
    ClientTop       =   0
    ClientWidth     =   4515
-   Icon            =   "frmChatForm.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   268
-   ScaleMode       =   3  'Pixel
-   ScaleWidth      =   301
+   ScaleHeight     =   4020
+   ScaleWidth      =   4515
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.TextBox txtChatSend 
       BackColor       =   &H00000040&
       BorderStyle     =   0  'None
-      BeginProperty Font 
-         Name            =   "Palatino Linotype"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   400
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
       ForeColor       =   &H80000005&
-      Height          =   555
-      Left            =   195
+      Height          =   600
+      Left            =   180
       TabIndex        =   2
       Text            =   "Escribi tu texto aca."
-      Top             =   3225
-      Width           =   4140
+      Top             =   3200
+      Width           =   4170
    End
    Begin VB.Timer Timer1 
       Interval        =   10
-      Left            =   3240
-      Top             =   0
+      Left            =   120
+      Top             =   480
    End
    Begin RichTextLib.RichTextBox rtbChat 
-      Height          =   2550
-      Left            =   195
+      Height          =   2580
+      Left            =   180
       TabIndex        =   1
-      Top             =   495
-      Width           =   4125
-      _ExtentX        =   7276
-      _ExtentY        =   4498
+      Top             =   480
+      Width           =   4155
+      _ExtentX        =   7329
+      _ExtentY        =   4551
       _Version        =   393217
-      BackColor       =   -2147483647
-      BorderStyle     =   0
       Enabled         =   0   'False
-      Appearance      =   0
-      TextRTF         =   $"frmChatForm.frx":000C
+      TextRTF         =   $"frmChatForm.frx":0000
    End
    Begin VB.Label lblName 
-      Alignment       =   2  'Center
       BackStyle       =   0  'Transparent
       BeginProperty Font 
          Name            =   "Tahoma"
@@ -70,7 +55,7 @@ Begin VB.Form frmChatForm
       EndProperty
       ForeColor       =   &H00C0FFFF&
       Height          =   255
-      Left            =   600
+      Left            =   240
       TabIndex        =   0
       Top             =   150
       Width           =   2175
@@ -78,16 +63,16 @@ Begin VB.Form frmChatForm
    Begin VB.Image imgCmd 
       Height          =   300
       Index           =   0
-      Left            =   3960
-      Top             =   0
+      Left            =   3840
+      Top             =   120
       Width           =   255
    End
    Begin VB.Image imgCmd 
       Height          =   300
       Index           =   1
-      Left            =   4250
-      Top             =   0
-      Width           =   255
+      Left            =   4080
+      Top             =   120
+      Width           =   375
    End
 End
 Attribute VB_Name = "frmChatForm"
@@ -99,10 +84,6 @@ Private Sub Form_Load()
 
 Set form_Moviment = New clsFormMovementManager
 form_Moviment.Initialize Me
-
-rtbChat.BackColor = RGB(19, 21, 22)
-txtChatSend.BackColor = RGB(19, 21, 22)
-txtChatSend.ForeColor = RGB(145, 123, 85)
 
 Me.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Chat_Main.jpg")
 Call SetWindowLong(rtbChat.hWnd, GWL_EXSTYLE, WS_EX_TRANSPARENT)
@@ -134,10 +115,10 @@ Dim i As Long
     End If
 End Sub
 Private Sub Timer1_Timer()
-    rtbChat.Refresh
+rtbChat.Refresh
 End Sub
 Private Sub txtChatSend_Click()
-    txtChatSend.text = ""
+txtChatSend.text = ""
 End Sub
 Private Sub txtChatSend_KeyPress(KeyAscii As Integer)
 

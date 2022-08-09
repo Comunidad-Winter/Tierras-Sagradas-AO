@@ -62,7 +62,6 @@ Next i
 
 If Npclist(NpcIndex).Numero = ELEMENTALAGUA Then UserList(userindex).flags.EleDeAgua = 0
 If Npclist(NpcIndex).Numero = ELEMENTALFUEGO Then UserList(userindex).flags.EleDeFuego = 0
-If Npclist(NpcIndex).Numero = ELEMENTALTIERRA Then UserList(userindex).flags.EleDeTierra = 0
 
 End Sub
 
@@ -76,27 +75,17 @@ Sub MuereNpc(ByVal NpcIndex As Integer, ByVal userindex As Integer)
    Dim MiNPC As npc
    MiNPC = Npclist(NpcIndex)
       
-    If userindex <> 0 And Npclist(NpcIndex).NPCtype = eNPCType.ReyCastillo Then
+   If userindex <> 0 And Npclist(NpcIndex).NPCtype = eNPCType.ReyCastillo Then
         Call MuereRey(userindex, NpcIndex)
         Exit Sub
     End If
     
-    If Npclist(NpcIndex).Numero = 963 Or Npclist(NpcIndex).Numero = 964 Then
+    If NpcIndex = 963 Or NpcIndex = 964 Then
         Call Aram_KillTower(userindex)
-        Exit Sub
-    End If
-    
-    If Npclist(NpcIndex).Numero = 966 Or Npclist(NpcIndex).Numero = 967 Then
-            If UserList(userindex).StatusMith.EsStatus = 1 Or EsAlianza(userindex) Then
-                modEventoFaccionario.eventoFacc_Win ("Alianzas")
-            Else
-                modEventoFaccionario.eventoFacc_Win ("Hordas")
-            End If
-        Exit Sub
     End If
     
     If NpcIndex = ArieteUno Then
-        Call SendData(SendTarget.toMap, 0, 167, "||46")
+        Call SendData(SendTarget.ToMap, 0, 81, "||46")
         Call QuitarNPC(ArieteUno)
         ArieteUno = 0
         RejaSurAtacada = False
@@ -104,7 +93,7 @@ Sub MuereNpc(ByVal NpcIndex As Integer, ByVal userindex As Integer)
     End If
     
     If NpcIndex = ArieteDos Then
-        Call SendData(SendTarget.toMap, 0, 167, "||47")
+        Call SendData(SendTarget.ToMap, 0, 81, "||47")
         Call QuitarNPC(ArieteDos)
         ArieteDos = 0
         RejaCentralAtacada = False
@@ -112,15 +101,38 @@ Sub MuereNpc(ByVal NpcIndex As Integer, ByVal userindex As Integer)
     End If
     
     If NpcIndex = ArieteTres Then
-        Call SendData(SendTarget.toMap, 0, 167, "||48")
+        Call SendData(SendTarget.ToMap, 0, 81, "||48")
         Call QuitarNPC(ArieteTres)
         ArieteTres = 0
         RejaNorteAtacada = False
     Exit Sub
     End If
     
-    If UserList(userindex).Pos.Map = 141 And (MiNPC.Numero = 968 Or MiNPC.Numero = 969 Or MiNPC.Numero = 970) Then
-        modNobleza.nobleza_restarNPC (MiNPC.Numero)
+If MiNPC.Numero = 951 And UserList(userindex).Pos.Map = 141 Then
+ If TieneObjetos(1073, 1, userindex) = True And TieneObjetos(1074, 1, userindex) = True And TieneObjetos(1075, 1, userindex) = True And TieneObjetos(1076, 1, userindex) = True Then
+    Dim Fer As Obj
+    Fer.ObjIndex = 1077
+    Fer.Amount = 1
+    Call MeterItemEnInventario(userindex, Fer)
+    Call SendData(SendTarget.toindex, userindex, 0, "||49")
+ End If
+ 
+    Dim i As Long
+   
+    For i = 1 To LastUser
+        If UserList(i).Pos.Map = 141 Then
+            Call WarpUserChar(i, 26, RandomNumber(56, 66), RandomNumber(36, 39))
+        End If
+    Next i
+    
+     Call QuitarNPC(NpcIndex)
+    Exit Sub
+End If
+    
+    'rey orco - apocalipsis
+    If MiNPC.MVP = 1 Then
+        SendData SendTarget.ToAll, 0, 0, "||697@" & UserList(userindex).Name & "@" & MiNPC.Name
+        UserList(userindex).flags.MVPMatados = UserList(userindex).flags.MVPMatados + 1
     End If
 
     'Mascota
@@ -166,9 +178,9 @@ If NpcIndex = ReyGuerraIndex And HayGuerraAnvil = True Then
 Dim loopC As Integer
 For loopC = 1 To LastUser
     If Criminal(loopC) And UserList(loopC).Pos.Map = 29 Then
-        UserList(loopC).Stats.GLD = UserList(loopC).Stats.GLD + 1000000
+        UserList(loopC).Stats.GLD = UserList(loopC).Stats.GLD + 300000
         UserList(loopC).flags.GuerrasGanadas = UserList(loopC).flags.GuerrasGanadas + 1
-        Call SendData(SendTarget.toindex, loopC, 0, "||63@1.000.000")
+        Call SendData(SendTarget.toindex, loopC, 0, "||63@300.000")
     End If
     
     If EsAlianza(loopC) And UserList(loopC).Pos.Map = 29 Then
@@ -192,9 +204,9 @@ ElseIf NpcIndex = ReyGuerraIndex And HayGuerraKhalim = True Then
     
 For loopC = 1 To LastUser
     If EsAlianza(loopC) And UserList(loopC).Pos.Map = 27 Then
-        UserList(loopC).Stats.GLD = UserList(loopC).Stats.GLD + 1000000
+        UserList(loopC).Stats.GLD = UserList(loopC).Stats.GLD + 300000
         UserList(loopC).flags.GuerrasGanadas = UserList(loopC).flags.GuerrasGanadas + 1
-        Call SendData(SendTarget.toindex, loopC, 0, "||63@1.000.000")
+        Call SendData(SendTarget.toindex, loopC, 0, "||63@300.000")
     End If
     
     If Criminal(loopC) And UserList(loopC).Pos.Map = 27 Then
@@ -213,47 +225,6 @@ Minus = 0
 MapInfo(27).Pk = False
 
 End If
-
-'###DIOSES###
-    Dim DiosPos As WorldPos
-        If NpcIndex = AvatarInvocado Then
-                DiosPos.Map = Npclist(AvatarInvocado).Pos.Map
-                DiosPos.X = Npclist(AvatarInvocado).Pos.X
-                DiosPos.Y = Npclist(AvatarInvocado).Pos.Y
-        
-            If Npclist(AvatarInvocado).Pos.Map = 181 Then
-                DiosInvocado = SpawnNpc(623, DiosPos, True, False)
-            ElseIf Npclist(AvatarInvocado).Pos.Map = 180 Then
-                DiosInvocado = SpawnNpc(624, DiosPos, True, False)
-            ElseIf Npclist(AvatarInvocado).Pos.Map = 170 Then
-                DiosInvocado = SpawnNpc(625, DiosPos, True, False)
-            ElseIf Npclist(AvatarInvocado).Pos.Map = 160 Then
-                DiosInvocado = SpawnNpc(626, DiosPos, True, False)
-            End If
-            
-          AvatarInvocado = 0
-        End If
-        
-    
-     If NpcIndex = GuardiaInvocado(1) Or NpcIndex = GuardiaInvocado(2) Then
-     
-        If NpcIndex = GuardiaInvocado(1) Then GuardiaInvocado(1) = 0
-        If NpcIndex = GuardiaInvocado(2) Then GuardiaInvocado(2) = 0
-     
-        If GuardiaInvocado(1) = 0 And GuardiaInvocado(2) = 0 Then
-            Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "||698")
-            
-            Npclist(DiosInvocado).Char.AuraA = 0
-            Call MakeNPCChar(SendTarget.toMap, 0, 0, DiosInvocado, Npclist(DiosInvocado).Pos.Map, Npclist(DiosInvocado).Pos.X, Npclist(DiosInvocado).Pos.Y)
-            GuardiasActivos = False
-        End If
-    End If
-    
-    If NpcIndex = DiosInvocado Then
-        DiosInvocado = 0
-    End If
-        
-'###DIOSES###
     
    'Quitamos el npc
    Call QuitarNPC(NpcIndex)
@@ -266,11 +237,7 @@ End If
         Call NPC_TIRAR_ITEMS(MiNPC, userindex)
    End If
    
-   If MiNPC.Numero = numMVP Then
-        Call SendData(SendTarget.toindex, userindex, 0, "N|" & UserList(userindex).Name & " asesinó a la criatura gigante.~160~190~156~1")
-   End If
-   
-If UserList(userindex).Pos.Map = 123 Then
+If UserList(userindex).Pos.Map = 95 Then
 
     If MiNPC.Numero = 938 Then
             If GuardiasRey < 4 Then
@@ -280,7 +247,7 @@ If UserList(userindex).Pos.Map = 123 Then
             If GuardiasRey = 4 Then
                 Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "||699")
                 Npclist(IndexReyAncalagon).Char.AuraA = 0
-                Call MakeNPCChar(SendTarget.toMap, 0, 0, IndexReyAncalagon, Npclist(IndexReyAncalagon).Pos.Map, Npclist(IndexReyAncalagon).Pos.X, Npclist(IndexReyAncalagon).Pos.Y)
+                Call MakeNPCChar(SendTarget.ToMap, 0, 0, IndexReyAncalagon, Npclist(IndexReyAncalagon).Pos.Map, Npclist(IndexReyAncalagon).Pos.X, Npclist(IndexReyAncalagon).Pos.Y)
             End If
         Exit Sub
     End If
@@ -333,7 +300,7 @@ End If
 '5TA JERARQUIA
 '------------------------------
 If UserList(userindex).Faccion.RecompensasReal = 4 Or UserList(userindex).Faccion.RecompensasCaos = 4 Then
-  Dim Objetito As obj
+  Dim Objetito As Obj
   Objetito.Amount = 1
   
   If MiNPC.Numero = 566 Then
@@ -408,6 +375,10 @@ End If
         Exit Sub
     End If
     
+    If MisionesDiarias(UserList(userindex).Misiones.NumeroMision).Tipo = 1 And MiNPC.Numero = MisionesDiarias(UserList(userindex).Misiones.NumeroMision).NumNPC Then
+        If UserList(userindex).Misiones.ConteoUser < MisionesDiarias(UserList(userindex).Misiones.NumeroMision).Cantidad Then UserList(userindex).Misiones.ConteoUser = UserList(userindex).Misiones.ConteoUser + 1
+    End If
+    
     If UserList(userindex).flags.UserNumQuest > 0 Then Call modQuests.RestarNPC(userindex, MiNPC.Numero)
 
    'ReSpawn o no
@@ -427,7 +398,6 @@ Sub ResetNpcFlags(ByVal NpcIndex As Integer)
     With Npclist(NpcIndex).flags
         .AfectaParalisis = 0
         .AfectaRelampago = 0
-        .esVoladora = 0
         .AguaValida = 0
         .AttackedBy = ""
         .Attacking = 0
@@ -514,8 +484,6 @@ Sub ResetNpcMainInfo(ByVal NpcIndex As Integer)
     Npclist(NpcIndex).GivePTS = 0
     Npclist(NpcIndex).GiveGLDMin = 0
     Npclist(NpcIndex).GiveGLDMax = 0
-    'Npclist(NpcIndex).GiveEXPMin = 0
-    'Npclist(NpcIndex).GiveEXPMax = 0
     Npclist(NpcIndex).Hostile = 0
     Npclist(NpcIndex).Inflacion = 0
     Npclist(NpcIndex).InvReSpawn = 0
@@ -567,7 +535,7 @@ If NpcIndex = 0 Then Exit Sub
     Npclist(NpcIndex).flags.NPCActive = False
     
     If InMapBounds(Npclist(NpcIndex).Pos.Map, Npclist(NpcIndex).Pos.X, Npclist(NpcIndex).Pos.Y) Then
-        Call EraseNPCChar(SendTarget.toMap, 0, Npclist(NpcIndex).Pos.Map, NpcIndex)
+        Call EraseNPCChar(SendTarget.ToMap, 0, Npclist(NpcIndex).Pos.Map, NpcIndex)
     End If
     
     'Nos aseguramos de que el inventario sea removido...
@@ -675,7 +643,7 @@ Dim Y As Integer
                     Npclist(nIndex).Pos.Map = Map
                     Npclist(nIndex).Pos.X = X
                     Npclist(nIndex).Pos.Y = Y
-                    Call MakeNPCChar(SendTarget.toMap, 0, Map, nIndex, Map, X, Y)
+                    Call MakeNPCChar(SendTarget.ToMap, 0, Map, nIndex, Map, X, Y)
                     Exit Sub
                 Else
                     altpos.X = 50
@@ -685,7 +653,7 @@ Dim Y As Integer
                         Npclist(nIndex).Pos.Map = newpos.Map
                         Npclist(nIndex).Pos.X = newpos.X
                         Npclist(nIndex).Pos.Y = newpos.Y
-                        Call MakeNPCChar(SendTarget.toMap, 0, newpos.Map, nIndex, newpos.Map, newpos.X, newpos.Y)
+                        Call MakeNPCChar(SendTarget.ToMap, 0, newpos.Map, nIndex, newpos.Map, newpos.X, newpos.Y)
                         Exit Sub
                     Else
                         Call QuitarNPC(nIndex)
@@ -707,9 +675,10 @@ Dim Y As Integer
     End If
     
     'Crea el NPC
-    Call MakeNPCChar(SendTarget.toMap, 0, Map, nIndex, Map, X, Y)
+    Call MakeNPCChar(SendTarget.ToMap, 0, Map, nIndex, Map, X, Y)
 
 End Sub
+
 Sub MakeNPCChar(sndRoute As Byte, sndIndex As Integer, sndMap As Integer, NpcIndex As Integer, ByVal Map As Integer, ByVal X As Integer, ByVal Y As Integer)
 Dim CharIndex As Integer
 
@@ -721,15 +690,11 @@ Dim CharIndex As Integer
     
     MapData(Map, X, Y).NpcIndex = NpcIndex
     
-    If sndRoute = SendTarget.toMap Then
+    If sndRoute = SendTarget.ToMap Then
         Call ArgegarNpc(NpcIndex)
         Call CheckUpdateNeededNpc(NpcIndex, USER_NUEVO)
     Else
-        Call SendData(sndRoute, sndIndex, sndMap, "CC" & Npclist(NpcIndex).Char.Body & "," & Npclist(NpcIndex).Char.Head & "," & Npclist(NpcIndex).Char.Heading & "," & Npclist(NpcIndex).Char.CharIndex & "," & X & "," & Y & "," & Npclist(NpcIndex).Char.WeaponAnim & "," & Npclist(NpcIndex).Char.ShieldAnim & "," & Npclist(NpcIndex).Char.CascoAnim & ",,,," & Npclist(NpcIndex).Char.AuraA & "," & Npclist(NpcIndex).Numero)
-        
-        If Npclist(NpcIndex).flags.esVoladora Then
-            SendData SendTarget.toMap, 0, Npclist(NpcIndex).Pos.Map, "MVOL" & Npclist(NpcIndex).Char.CharIndex & ",1)"
-        End If
+        Call SendData(sndRoute, sndIndex, sndMap, "CC" & Npclist(NpcIndex).Char.Body & "," & Npclist(NpcIndex).Char.Head & "," & Npclist(NpcIndex).Char.Heading & "," & Npclist(NpcIndex).Char.CharIndex & "," & X & "," & Y & "," & Npclist(NpcIndex).Char.WeaponAnim & "," & Npclist(NpcIndex).Char.ShieldAnim & ",,," & Npclist(NpcIndex).Char.CascoAnim & ",,,," & Npclist(NpcIndex).Char.AuraA & "," & Npclist(NpcIndex).Numero)
     End If
 
 End Sub
@@ -740,7 +705,7 @@ If NpcIndex > 0 Then
     Npclist(NpcIndex).Char.Body = Body
     Npclist(NpcIndex).Char.Head = Head
     Npclist(NpcIndex).Char.Heading = Heading
-    If sndRoute = SendTarget.toMap Then
+    If sndRoute = SendTarget.ToMap Then
         Call SendToNpcArea(NpcIndex, "CP" & Npclist(NpcIndex).Char.CharIndex & "," & Body & "," & Head & "," & Heading)
     Else
         Call SendData(sndRoute, sndIndex, sndMap, "CP" & Npclist(NpcIndex).Char.CharIndex & "," & Body & "," & Head & "," & Heading)
@@ -764,12 +729,10 @@ End If
 MapData(Npclist(NpcIndex).Pos.Map, Npclist(NpcIndex).Pos.X, Npclist(NpcIndex).Pos.Y).NpcIndex = 0
 
 'Actualizamos los cliente
-If sndRoute = SendTarget.toMap Then
-    'Call SendToNpcArea(NpcIndex, "DP" & Npclist(NpcIndex).Char.CharIndex & "," & Npclist(NpcIndex).Char.Body & "," & Npclist(NpcIndex).Char.Head & "," & Npclist(NpcIndex).Char.Heading & "," & Npclist(NpcIndex).Pos.X & "," & Npclist(NpcIndex).Pos.Y)
-    Call SendToNpcArea(NpcIndex, "BP" & Npclist(NpcIndex).Char.CharIndex)
+If sndRoute = SendTarget.ToMap Then
+    Call SendToNpcArea(NpcIndex, "DP" & Npclist(NpcIndex).Char.CharIndex & "," & Npclist(NpcIndex).Char.Body & "," & Npclist(NpcIndex).Char.Head & "," & Npclist(NpcIndex).Char.Heading & "," & Npclist(NpcIndex).Pos.X & "," & Npclist(NpcIndex).Pos.Y)
 Else
-    'Call SendData(sndRoute, sndIndex, sndMap, "DP" & Npclist(NpcIndex).Char.CharIndex & "," & Npclist(NpcIndex).Char.Body & "," & Npclist(NpcIndex).Char.Head & "," & Npclist(NpcIndex).Char.Heading & "," & Npclist(NpcIndex).Pos.X & "," & Npclist(NpcIndex).Pos.Y)
-    Call SendData(sndRoute, sndIndex, sndMap, "BP" & Npclist(NpcIndex).Char.CharIndex)
+    Call SendData(sndRoute, sndIndex, sndMap, "DP" & Npclist(NpcIndex).Char.CharIndex & "," & Npclist(NpcIndex).Char.Body & "," & Npclist(NpcIndex).Char.Head & "," & Npclist(NpcIndex).Char.Heading & "," & Npclist(NpcIndex).Pos.X & "," & Npclist(NpcIndex).Pos.Y)
 End If
 
 'Update la lista npc
@@ -942,7 +905,7 @@ End If
 Npclist(nIndex).Char.AuraA = 0
 
 'Crea el NPC
-Call MakeNPCChar(SendTarget.toMap, 0, Map, nIndex, Map, X, Y)
+Call MakeNPCChar(SendTarget.ToMap, 0, Map, nIndex, Map, X, Y)
 
 If FX Then
     Call SendData(SendTarget.ToNPCArea, nIndex, Map, "TW" & SND_WARP)
@@ -956,7 +919,7 @@ End Function
 Sub ReSpawnNpc(MiNPC As npc)
 
 If MiNPC.flags.Respawn = 0 Then Exit Sub
-If MiNPC.Pos.Map = 104 Or MiNPC.Pos.Map = 141 Or MiNPC.Pos.Map = 189 Or MiNPC.Pos.Map = 180 Or MiNPC.Pos.Map = 181 Or MiNPC.Pos.Map = 160 Or MiNPC.Pos.Map = 170 Or MiNPC.Pos.Map = 100 Or MiNPC.Pos.Map = 106 Or MiNPC.Pos.Map = 109 Or MiNPC.Pos.Map = 110 Or MiNPC.Pos.Map = 108 Or MiNPC.Pos.Map = 118 Or MiNPC.Pos.Map = 107 Or MiNPC.Pos.Map = 120 Or MiNPC.Pos.Map = 152 Then Exit Sub
+If MiNPC.Pos.Map = 18 Or MiNPC.Pos.Map = 180 Or MiNPC.Pos.Map = 181 Or MiNPC.Pos.Map = 160 Or MiNPC.Pos.Map = 170 Or MiNPC.Pos.Map = 100 Or MiNPC.Pos.Map = 54 Or MiNPC.Pos.Map = 72 Or MiNPC.Pos.Map = 110 Or MiNPC.Pos.Map = 8 Or MiNPC.Pos.Map = 118 Or MiNPC.Pos.Map = 99 Or MiNPC.Pos.Map = 120 Or MiNPC.Pos.Map = 93 Then Exit Sub
 
 If (MiNPC.flags.Respawn = 1) Then Call CrearNPC(MiNPC.Numero, MiNPC.Pos.Map, MiNPC.Orig)
 
@@ -996,6 +959,10 @@ If MiNPC.GiveGLDMin > 0 And MiNPC.GiveGLDMax > 0 Then
     
     LuzyRiqueza = cantidaddeoro / 4
     
+If UserList(userindex).flags.GemaActivada = "Naranja" Then
+    cantidaddeoro = cantidaddeoro * 1.5
+End If
+    
 If UserList(userindex).flags.estado = 1 Then
     cantidaddeoro = cantidaddeoro * 1.5
 End If
@@ -1003,15 +970,10 @@ End If
 If UserList(userindex).Invent.ArmourEqpObjIndex = 1049 Or UserList(userindex).Invent.ArmourEqpObjIndex = 1050 Or UserList(userindex).Invent.ArmourEqpObjIndex = 1456 Or UserList(userindex).Invent.ArmourEqpObjIndex = 1497 Then
     cantidaddeoro = cantidaddeoro + LuzyRiqueza
 End If
-
-If (UserList(userindex).flags.activoScroll(2)) Then
-    cantidaddeoro = cantidaddeoro * UserList(userindex).Scrolls(2).multScroll
-End If
-
     
     UserList(userindex).Stats.GLD = UserList(userindex).Stats.GLD + cantidaddeoro
-    SendUserGLD (userindex)
     Call SendData(SendTarget.toindex, userindex, 0, "||56@" & PonerPuntos(cantidaddeoro))
+    SendUserGLD (userindex)
 End If
 
 End Sub
@@ -1100,9 +1062,6 @@ Npclist(NpcIndex).GivePTS = val(Leer.GetValue("NPC" & NpcNumber, "GivePTS"))
 Npclist(NpcIndex).GiveGLDMin = val(Leer.GetValue("NPC" & NpcNumber, "GiveGLDMin"))
 Npclist(NpcIndex).GiveGLDMax = val(Leer.GetValue("NPC" & NpcNumber, "GiveGLDMax"))
 
-'Npclist(NpcIndex).GiveEXPMin = Leer.GetValue("NPC" & NpcNumber, "GiveGLDMin")
-'Npclist(NpcIndex).GiveEXPMax = Leer.GetValue("NPC" & NpcNumber, "GiveGLDMax")
-
 'Cristales
 Npclist(NpcIndex).Cristales = val(Leer.GetValue("NPC" & NpcNumber, "Cristales"))
 Npclist(NpcIndex).CristalesPequesMin = val(Leer.GetValue("NPC" & NpcNumber, "CristalesPequesMin"))
@@ -1174,7 +1133,6 @@ Npclist(NpcIndex).flags.BackUp = val(Leer.GetValue("NPC" & NpcNumber, "BackUp"))
 Npclist(NpcIndex).flags.RespawnOrigPos = val(Leer.GetValue("NPC" & NpcNumber, "OrigPos"))
 Npclist(NpcIndex).flags.AfectaParalisis = val(Leer.GetValue("NPC" & NpcNumber, "AfectaParalisis"))
 Npclist(NpcIndex).flags.AfectaRelampago = val(Leer.GetValue("NPC" & NpcNumber, "AfectaRelampago"))
-Npclist(NpcIndex).flags.esVoladora = val(Leer.GetValue("NPC" & NpcNumber, "esVoladora"))
 Npclist(NpcIndex).flags.GolpeExacto = val(Leer.GetValue("NPC" & NpcNumber, "GolpeExacto"))
 
 
@@ -1250,7 +1208,7 @@ Sub FollowAmo(ByVal NpcIndex As Integer)
 
 End Sub
 Public Sub MuereRey(ByVal userindex As Integer, NpcIndex As Integer)
-Dim tI As Long
+Dim lachotadelalana As Long
 Dim reNpcPos As WorldPos
 Dim reNpcIndex As Integer
 Dim Castillo As Integer
@@ -1260,7 +1218,7 @@ If UserList(userindex).Pos.Map = MapCastilloN Then Castillo = 1
 If UserList(userindex).Pos.Map = MapCastilloS Then Castillo = 2
 If UserList(userindex).Pos.Map = MapCastilloE Then Castillo = 3
 If UserList(userindex).Pos.Map = MapCastilloO Then Castillo = 4
-If UserList(userindex).Pos.Map = 167 Then Castillo = 5
+If UserList(userindex).Pos.Map = 81 Then Castillo = 5
 If Castillo = 0 Then Exit Sub
  
 
@@ -1311,51 +1269,51 @@ ElseIf Castillo = 5 Then
    Call SendData(ToAll, 0, 0, "||59@" & (Guilds(UserList(userindex).GuildIndex).GuildName))
    
    '#Reparamos rejas
-         MapData(167, 49, 84).OBJInfo.ObjIndex = 1471
-         Call ModAreas.SendToAreaByPos(167, 49, 84, "HO" & ObjData(1471).GrhIndex & "," & 49 & "," & 84)
+         MapData(81, 49, 84).OBJInfo.ObjIndex = 1471
+         Call ModAreas.SendToAreaByPos(81, 49, 84, "HO" & ObjData(1471).GrhIndex & "," & 49 & "," & 84)
                         'Bloquea
-                        MapData(167, 49, 84).Blocked = 1
-                        MapData(167, 49 - 1, 84).Blocked = 1
-                        MapData(167, 49 - 2, 84).Blocked = 1
-                        MapData(167, 49 + 1, 84).Blocked = 1
-                        MapData(167, 49 + 2, 84).Blocked = 1
-                        Call Bloquear(SendTarget.toMap, 0, 167, 167, 49, 84, 1)
-                        Call Bloquear(SendTarget.toMap, 0, 167, 167, 49 - 1, 84, 1)
-                        Call Bloquear(SendTarget.toMap, 0, 167, 167, 49 - 2, 84, 1)
-                        Call Bloquear(SendTarget.toMap, 0, 167, 167, 49 + 1, 84, 1)
-                        Call Bloquear(SendTarget.toMap, 0, 167, 167, 49 + 2, 84, 1)
+                        MapData(81, 49, 84).Blocked = 1
+                        MapData(81, 49 - 1, 84).Blocked = 1
+                        MapData(81, 49 - 2, 84).Blocked = 1
+                        MapData(81, 49 + 1, 84).Blocked = 1
+                        MapData(81, 49 + 2, 84).Blocked = 1
+                        Call Bloquear(SendTarget.ToMap, 0, 81, 81, 49, 84, 1)
+                        Call Bloquear(SendTarget.ToMap, 0, 81, 81, 49 - 1, 84, 1)
+                        Call Bloquear(SendTarget.ToMap, 0, 81, 81, 49 - 2, 84, 1)
+                        Call Bloquear(SendTarget.ToMap, 0, 81, 81, 49 + 1, 84, 1)
+                        Call Bloquear(SendTarget.ToMap, 0, 81, 81, 49 + 2, 84, 1)
                         
                         
-         MapData(167, 49, 48).OBJInfo.ObjIndex = 1471
-         Call ModAreas.SendToAreaByPos(167, 49, 48, "HO" & ObjData(1471).GrhIndex & "," & 49 & "," & 48)
+         MapData(81, 49, 48).OBJInfo.ObjIndex = 1471
+         Call ModAreas.SendToAreaByPos(81, 49, 48, "HO" & ObjData(1471).GrhIndex & "," & 49 & "," & 48)
          
                         'Desbloquea
-                        MapData(167, 49, 48).Blocked = 1
-                        MapData(167, 49 - 1, 48).Blocked = 1
-                        MapData(167, 49 - 2, 48).Blocked = 1
-                        MapData(167, 49 + 1, 48).Blocked = 1
-                        MapData(167, 49 + 2, 48).Blocked = 1
-                        Call Bloquear(SendTarget.toMap, 0, 167, 167, 49, 48, 1)
-                        Call Bloquear(SendTarget.toMap, 0, 167, 167, 49 - 1, 48, 1)
-                        Call Bloquear(SendTarget.toMap, 0, 167, 167, 49 - 2, 48, 1)
-                        Call Bloquear(SendTarget.toMap, 0, 167, 167, 49 + 1, 48, 1)
-                        Call Bloquear(SendTarget.toMap, 0, 167, 167, 49 + 2, 48, 1)
+                        MapData(81, 49, 48).Blocked = 1
+                        MapData(81, 49 - 1, 48).Blocked = 1
+                        MapData(81, 49 - 2, 48).Blocked = 1
+                        MapData(81, 49 + 1, 48).Blocked = 1
+                        MapData(81, 49 + 2, 48).Blocked = 1
+                        Call Bloquear(SendTarget.ToMap, 0, 81, 81, 49, 48, 1)
+                        Call Bloquear(SendTarget.ToMap, 0, 81, 81, 49 - 1, 48, 1)
+                        Call Bloquear(SendTarget.ToMap, 0, 81, 81, 49 - 2, 48, 1)
+                        Call Bloquear(SendTarget.ToMap, 0, 81, 81, 49 + 1, 48, 1)
+                        Call Bloquear(SendTarget.ToMap, 0, 81, 81, 49 + 2, 48, 1)
                         
                         
-         MapData(167, 49, 68).OBJInfo.ObjIndex = 1471
-         Call ModAreas.SendToAreaByPos(167, 49, 68, "HO" & ObjData(1471).GrhIndex & "," & 49 & "," & 68)
+         MapData(81, 49, 68).OBJInfo.ObjIndex = 1471
+         Call ModAreas.SendToAreaByPos(81, 49, 68, "HO" & ObjData(1471).GrhIndex & "," & 49 & "," & 68)
          
                         'Desbloquea
-                        MapData(167, 49, 68).Blocked = 1
-                        MapData(167, 49 - 1, 68).Blocked = 1
-                        MapData(167, 49 - 2, 68).Blocked = 1
-                        MapData(167, 49 + 1, 68).Blocked = 1
-                        MapData(167, 49 + 2, 68).Blocked = 1
-                        Call Bloquear(SendTarget.toMap, 0, 167, 167, 49, 68, 1)
-                        Call Bloquear(SendTarget.toMap, 0, 167, 167, 49 - 1, 68, 1)
-                        Call Bloquear(SendTarget.toMap, 0, 167, 167, 49 - 2, 68, 1)
-                        Call Bloquear(SendTarget.toMap, 0, 167, 167, 49 + 1, 68, 1)
-                        Call Bloquear(SendTarget.toMap, 0, 167, 167, 49 + 2, 68, 1)
+                        MapData(81, 49, 68).Blocked = 1
+                        MapData(81, 49 - 1, 68).Blocked = 1
+                        MapData(81, 49 - 2, 68).Blocked = 1
+                        MapData(81, 49 + 1, 68).Blocked = 1
+                        MapData(81, 49 + 2, 68).Blocked = 1
+                        Call Bloquear(SendTarget.ToMap, 0, 81, 81, 49, 68, 1)
+                        Call Bloquear(SendTarget.ToMap, 0, 81, 81, 49 - 1, 68, 1)
+                        Call Bloquear(SendTarget.ToMap, 0, 81, 81, 49 - 2, 68, 1)
+                        Call Bloquear(SendTarget.ToMap, 0, 81, 81, 49 + 1, 68, 1)
+                        Call Bloquear(SendTarget.ToMap, 0, 81, 81, 49 + 2, 68, 1)
    '#Reparamos rejas
    
    RejaSur = 10000
@@ -1371,11 +1329,11 @@ ElseIf Castillo = 5 Then
    Call SendData(ToAll, 0, 0, "TW" & SND_CREACIONCLAN)
 End If
 
-For tI = 1 To LastUser
-   If UserList(tI).Pos.Map = MapCastilloE Or UserList(tI).Pos.Map = MapCastilloN Or UserList(tI).Pos.Map = MapCastilloS Or UserList(tI).Pos.Map = MapCastilloO Or UserList(tI).Pos.Map = 167 Then
-    Call WarpUserChar(tI, UserList(tI).Pos.Map, UserList(tI).Pos.X, UserList(tI).Pos.Y, False)
+For lachotadelalana = 1 To LastUser
+   If UserList(lachotadelalana).Pos.Map = MapCastilloE Or UserList(lachotadelalana).Pos.Map = MapCastilloN Or UserList(lachotadelalana).Pos.Map = MapCastilloS Or UserList(lachotadelalana).Pos.Map = MapCastilloO Or UserList(lachotadelalana).Pos.Map = 81 Then
+    Call WarpUserChar(lachotadelalana, UserList(lachotadelalana).Pos.Map, UserList(lachotadelalana).Pos.X, UserList(lachotadelalana).Pos.Y, False)
    End If
-Next tI
+Next lachotadelalana
 
 Call QuitarNPC(NpcIndex)
 
@@ -1387,8 +1345,9 @@ End If
 
    pija = Guilds(UserList(userindex).GuildIndex).GetReputacion + 75
    Call WriteVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "REPU", pija)
-   Call CheckRankingClan(userindex, Guilds(UserList(userindex).GuildIndex).CASTIS, TOPCastillos)
-   Call CheckRankingClan(userindex, Guilds(UserList(userindex).GuildIndex).GetReputacion, TOPRepuClanes)
+   
+   Call GRANK_User_Check(Castles, Guilds(UserList(userindex).GuildIndex).GuildName, Guilds(UserList(userindex).GuildIndex).CASTIS)
+   Call GRANK_User_Check(GuildReputation, Guilds(UserList(userindex).GuildIndex).GuildName, Guilds(UserList(userindex).GuildIndex).GetReputacion)
 
 End Sub
 

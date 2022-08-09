@@ -1,359 +1,409 @@
 Attribute VB_Name = "Mod_Ranking"
+
 Option Explicit
- 
- 
-Public Const MAX_TOP As Byte = 10
-Public Const MAX_RANKINGS As Byte = 9
- 
-Public Type tRanking
-    Value(1 To MAX_TOP) As Long
-    Nombre(1 To MAX_TOP) As String
-End Type
- 
-Public Ranking(1 To MAX_RANKINGS) As tRanking
- 
-Public Enum eRanking
-    TOPFrags = 1
-    TOPTorneos = 2
-    TOPDuelos = 3
-    TOPParejas = 4
-    TOPReputacion = 5
-    TOPRondas = 6
-    TOPCVCS = 7
-    TOPCastillos = 8
-    TOPRepuClanes = 9
-End Enum
-Public Function RenameRanking(ByVal Ranking As eRanking) As String
- 
-    '@ Devolvemos el nombre del TAG [] del archivo .DAT
-    Select Case Ranking
-        Case eRanking.TOPFrags
-            RenameRanking = "FRAGS"
-        Case eRanking.TOPTorneos
-            RenameRanking = "TORNEOS"
-        Case eRanking.TOPDuelos
-            RenameRanking = "DUELOS"
-        Case eRanking.TOPParejas
-            RenameRanking = "PAREJAS"
-        Case eRanking.TOPReputacion
-            RenameRanking = "REPUTACION"
-        Case eRanking.TOPRondas
-            RenameRanking = "RONDAS"
-        Case eRanking.TOPCVCS
-            RenameRanking = "CVCS"
-        Case eRanking.TOPCastillos
-            RenameRanking = "CASTILLOS"
-        Case eRanking.TOPRepuClanes
-            RenameRanking = "REPUCLAN"
-        Case Else
-            RenameRanking = vbNullString
-    End Select
-End Function
-Public Function RenameValue(ByVal userindex As Integer, ByVal Ranking As eRanking) As Long
-    ' @ Devolvemos a que hace referencia el ranking
-    With UserList(userindex)
-        Select Case Ranking
-            Case eRanking.TOPFrags
-                RenameValue = .Stats.UsuariosMatados
-            Case eRanking.TOPTorneos
-                RenameValue = .Stats.TrofOro + .Stats.MedOro
-            Case eRanking.TOPDuelos
-                RenameValue = .Stats.DuelosGanados
-            Case eRanking.TOPParejas
-                RenameValue = .Stats.ParejasGanadas
-            Case eRanking.TOPReputacion
-                RenameValue = .Stats.Reputacione
-            Case eRanking.TOPRondas
-                RenameValue = val(.flags.rondas)
-            Case eRanking.TOPCVCS
-                RenameValue = Guilds(.GuildIndex).CVCG
-            Case eRanking.TOPCastillos
-                RenameValue = Guilds(.GuildIndex).CASTIS
-            Case eRanking.TOPRepuClanes
-                RenameValue = Guilds(.GuildIndex).GetReputacion
-        End Select
-    End With
-End Function
- 
-Public Sub LoadRanking()
-    ' @ Cargamos los rankings
-   
-    Dim LoopI As Integer
-    Dim loopX As Integer
-    Dim ln As String
-   
-    For loopX = 1 To MAX_RANKINGS
-        For LoopI = 1 To MAX_TOP
-            ln = GetVar(App.Path & "\Dat\" & "Ranking.dat", RenameRanking(loopX), "Top" & LoopI)
-            Ranking(loopX).Nombre(LoopI) = ReadField(1, ln, 45)
-            Ranking(loopX).Value(LoopI) = val(ReadField(2, ln, 45))
-            
-            If LoopI = 1 Or LoopI = 2 Or LoopI = 3 Then
-                If loopX = TOPDuelos Then Estrella.TOPDuelos(LoopI) = Ranking(loopX).Nombre(LoopI)
-                If loopX = TOPFrags Then Estrella.TOPFrags(LoopI) = Ranking(loopX).Nombre(LoopI)
-                If loopX = TOPTorneos Then Estrella.TOPTorneos(LoopI) = Ranking(loopX).Nombre(LoopI)
-                If loopX = TOPParejas Then Estrella.TOPParejas(LoopI) = Ranking(loopX).Nombre(LoopI)
-                If loopX = TOPRondas Then Estrella.TOPRondas(LoopI) = Ranking(loopX).Nombre(LoopI)
-                If loopX = TOPReputacion Then Estrella.TOPReputacion(LoopI) = Ranking(loopX).Nombre(LoopI)
-            End If
-        Next LoopI
-    Next loopX
-   
-End Sub
-   
-Public Sub SaveRanking(ByVal Rank As eRanking)
-' @ Guardamos el ranking
-    Dim LoopI As Integer
-   
-        For LoopI = 1 To MAX_TOP
-            Call WriteVar(DatPath & "Ranking.Dat", RenameRanking(Rank), _
-                "Top" & LoopI, Ranking(Rank).Nombre(LoopI) & "-" & Ranking(Rank).Value(LoopI))
-        Next LoopI
-End Sub
-Public Sub CheckRankingUser(ByVal userindex As Integer, ByVal Valor As Long, ByVal Rank As eRanking)
-    ' @ Desde aca nos hacemos la siguientes preguntas
-    ' @ El personaje está en el ranking?
-    ' @ El personaje puede ingresar al ranking?
-   
-    Dim loopX As Integer
-    Dim LoopY As Integer
-    Dim LoopZ As Integer
-    Dim i As Integer
-    Dim Value As Long
-    Dim Actualizacion As Byte
-    Dim Auxiliar As String
-    Dim AuxiliarName As String
-    Dim PosRanking As Byte
-    Dim NameUser As String
-   
-    With UserList(userindex)
-       
-        ' @ Not gms
-        NameUser = UCase$(.Name)
-        If UserList(userindex).flags.Privilegios > PlayerType.User Then Exit Sub
-       
-        Value = Valor
-       
-        ' @ Buscamos al personaje en el ranking
-        For i = 1 To MAX_TOP
-            If Ranking(Rank).Nombre(i) = NameUser Then
-                PosRanking = i
-                
-                    If i = 1 Or i = 2 Or i = 3 Then
-                       If Rank = TOPDuelos Then Estrella.TOPDuelos(i) = NameUser
-                       If Rank = TOPFrags Then Estrella.TOPFrags(i) = NameUser
-                       If Rank = TOPTorneos Then Estrella.TOPTorneos(i) = NameUser
-                       If Rank = TOPParejas Then Estrella.TOPParejas(i) = NameUser
-                       If Rank = TOPRondas Then Estrella.TOPRondas(i) = NameUser
-                       If Rank = TOPReputacion Then Estrella.TOPReputacion(i) = NameUser
-                    End If
-                
-                Exit For
-            End If
-        Next i
-       
-        ' @ Si el personaje esta en el ranking actualizamos los valores.
-        If PosRanking <> 0 Then
-            ' ¿Si está actualizado pa que?
-            If Value >= Ranking(Rank).Value(PosRanking) Then
-                Call ActualizarPosRanking(PosRanking, Rank, NameUser, Value)
-                   
-                ' @ Chequeamos los datos para actualizar el ranking
-                For LoopY = 1 To MAX_TOP
-                    For LoopZ = 1 To MAX_TOP - LoopY
-                           
-                        If Ranking(Rank).Value(LoopZ) < Ranking(Rank).Value(LoopZ + 1) Then
-                            Auxiliar = Ranking(Rank).Value(LoopZ)
-                            AuxiliarName = Ranking(Rank).Nombre(LoopZ)
-                            
-                            Ranking(Rank).Nombre(LoopZ) = Ranking(Rank).Nombre(LoopZ + 1)
-                            Ranking(Rank).Value(LoopZ) = Ranking(Rank).Value(LoopZ + 1)
-                            
-                            Ranking(Rank).Nombre(LoopZ + 1) = AuxiliarName
-                            Ranking(Rank).Value(LoopZ + 1) = Auxiliar
-                            Actualizacion = 1
-                        End If
-                    Next LoopZ
-                Next LoopY
-                   
-                If Actualizacion <> 0 Then
-                    Call SaveRanking(Rank)
-                End If
-            End If
-           
-            Exit Sub
-        End If
-       
-        ' @ Nos fijamos si podemos ingresar al ranking
-        For loopX = 1 To MAX_TOP
-            If Value > Ranking(Rank).Value(loopX) Then
-                Call ActualizarRanking(loopX, Rank, NameUser, Value)
-                Exit For
-            End If
-        Next loopX
-       
-    End With
-End Sub
- Public Sub CheckRankingClan(ByVal userindex As Integer, ByVal Valor As Long, ByVal Rank As eRanking)
-    ' @ Desde aca nos hacemos la siguientes preguntas
-    ' @ El personaje está en el ranking?
-    ' @ El personaje puede ingresar al ranking?
-   
-    Dim loopX As Integer
-    Dim LoopY As Integer
-    Dim LoopZ As Integer
-    Dim i As Integer
-    Dim Value As Long
-    Dim Actualizacion As Byte
-    Dim Auxiliar As String
-    Dim AuxiliarName As String
-    Dim PosRanking As Byte
-    Dim NameUser As String
-   
-    With UserList(userindex)
-       
-        ' @ Not gms
-        NameUser = UCase$(Guilds(.GuildIndex).GuildName)
-        If UserList(userindex).flags.Privilegios > PlayerType.User Then Exit Sub
-       
-        Value = Valor
-       
-        ' @ Buscamos al personaje en el ranking
-        For i = 1 To MAX_TOP
-            If UCase$(Ranking(Rank).Nombre(i)) = NameUser Then
-                PosRanking = i
-                Exit For
-            End If
-        Next i
-       
-        ' @ Si el personaje esta en el ranking actualizamos los valores.
-        If PosRanking <> 0 Then
-            ' ¿Si está actualizado pa que?
-            If Value <> Ranking(Rank).Value(PosRanking) Then
-                Call ActualizarPosRanking(PosRanking, Rank, NameUser, Value)
-                   
-                ' @ Chequeamos los datos para actualizar el ranking
-                For LoopY = 1 To MAX_TOP
-                    For LoopZ = 1 To MAX_TOP - LoopY
-                           
-                        If Ranking(Rank).Value(LoopZ) < Ranking(Rank).Value(LoopZ + 1) Then
-                            Auxiliar = Ranking(Rank).Value(LoopZ)
-                            AuxiliarName = Ranking(Rank).Nombre(LoopZ)
-                            
-                            Ranking(Rank).Nombre(LoopZ) = Ranking(Rank).Nombre(LoopZ + 1)
-                            Ranking(Rank).Value(LoopZ) = Ranking(Rank).Value(LoopZ + 1)
-                            
-                            Ranking(Rank).Nombre(LoopZ + 1) = AuxiliarName
-                            Ranking(Rank).Value(LoopZ + 1) = Auxiliar
-                            Actualizacion = 1
-                        End If
-                    Next LoopZ
-                Next LoopY
-                   
-                If Actualizacion <> 0 Then
-                    Call SaveRanking(Rank)
-                End If
-            End If
-           
-            Exit Sub
-        End If
-       
-        ' @ Nos fijamos si podemos ingresar al ranking
-        For loopX = 1 To MAX_TOP
-            If Value > Ranking(Rank).Value(loopX) Then
-                Call ActualizarRanking(loopX, Rank, NameUser, Value)
-                Exit For
-            End If
-        Next loopX
-       
-    End With
-End Sub
-Public Sub ActualizarPosRanking(ByVal Top As Byte, ByVal Rank As eRanking, ByVal UserName As String, ByVal Value As Long)
-    ' @ Actualizamos la pos indicada en caso de que el personaje esté en el ranking
-    Dim loopX As Integer
- 
-    With Ranking(Rank)
+
+'@ Ranking general (contiene estadísticas que no se reinician,
+'  por lo tanto duran lo que dure la versión)
+
+'Límite del ranking
+Private Const kGRANK_LIMIT As Integer = 10
+
+'Tipos de ranking
+Public Enum ENU_GRANK_Mode
+    LowerBound
     
-    If Value > .Value(Top) Then
-        .Value(Top) = Value
-        .Nombre(Top) = UserName
+    Duels
+    Kills
+    Rounds
+    Couple
+    Tournaments
+    Events
+    GuildVSGuild
+    GuildReputation
+    Castles
+    
+    'Semanal
+    Reputation
+    
+    UpperBound
+End Enum
+
+'Individuo perteneciente al ranking
+Private Type TYP_GRANK_Slot
+    Name As String
+    Value As Long
+End Type
+
+'Rankings
+Private m_rank(ENU_GRANK_Mode.LowerBound + 1 To ENU_GRANK_Mode.UpperBound - 1, 1 To kGRANK_LIMIT) As TYP_GRANK_Slot
+'Carga el archivo del ranking
+Public Sub GRANK_Setup()
+
+Dim l_file As clsIniReader
+Dim l_name As String
+Dim l_line As String
+
+Dim i As Long
+Dim j As Long
+
+    Set l_file = New clsIniReader
+
+    '@ load file
+    l_file.Initialize App.Path & "\Ranking.txt"
+        
+    '@ load all ranks
+    For i = ENU_GRANK_Mode.LowerBound + 1 To ENU_GRANK_Mode.UpperBound - 1
+        '@ get current rank's name
+        l_name = GRANK_Name_Get(i)
+        
+        For j = 1 To kGRANK_LIMIT
+            '@ get line
+            l_line = l_file.GetValue(l_name, j)
+            
+            '@ store
+            m_rank(i, j).Name = ReadField(1, l_line, Asc("-"))
+            m_rank(i, j).Value = ReadField(2, l_line, Asc("-"))
+            
+            If j <= 3 Then
+                Call SetStars(i, j)
+            End If
+            
+        Next
+    
+    Next
+
+End Sub
+Private Sub SetStars(ByVal mode_ As ENU_GRANK_Mode, ByVal Pos As Integer)
+
+    If mode_ = Duels Then
+        If m_rank(mode_, Pos).Value > 0 Then Estrella.TOPDuelos(Pos) = m_rank(mode_, Pos).Name
+    ElseIf mode_ = Couple Then
+        If m_rank(mode_, Pos).Value > 0 Then Estrella.TOPParejas(Pos) = m_rank(mode_, Pos).Name
+    ElseIf mode_ = Tournaments Then
+        If m_rank(mode_, Pos).Value > 0 Then Estrella.TOPTorneos(Pos) = m_rank(mode_, Pos).Name
+    ElseIf mode_ = Events Then
+        If m_rank(mode_, Pos).Value > 0 Then Estrella.TOPEvents(Pos) = m_rank(mode_, Pos).Name
+    ElseIf mode_ = Kills Then
+        If m_rank(mode_, Pos).Value > 0 Then Estrella.TOPFrags(Pos) = m_rank(mode_, Pos).Name
+    ElseIf mode_ = Rounds Then
+        If m_rank(mode_, Pos).Value > 0 Then Estrella.TOPRondas(Pos) = m_rank(mode_, Pos).Name
     End If
     
-        If Top = 1 Or Top = 2 Or Top = 3 Then
-           If Rank = TOPDuelos Then Estrella.TOPDuelos(Top) = UserName
-           If Rank = TOPFrags Then Estrella.TOPFrags(Top) = UserName
-           If Rank = TOPTorneos Then Estrella.TOPTorneos(Top) = UserName
-           If Rank = TOPParejas Then Estrella.TOPParejas(Top) = UserName
-           If Rank = TOPRondas Then Estrella.TOPRondas(Top) = UserName
-           If Rank = TOPReputacion Then Estrella.TOPReputacion(Top) = UserName
-        End If
+End Sub
+'Guarda el ranking en el archivo
+Public Sub GRANK_Dump(ByVal mode_ As ENU_GRANK_Mode)
+
+On Error Resume Next
+
+Dim i As Long
+Dim l_name As String
+Dim l_line As String
+    
+    '@ get current rank's name
+    l_name = GRANK_Name_Get(mode_)
+
+    For i = 1 To kGRANK_LIMIT
+    
+        Call WriteVar(App.Path & "\Ranking.txt", l_name, i, m_rank(mode_, i).Name & "-" & m_rank(mode_, i).Value)
         
-    End With
-    
-    If Rank = TOPTorneos And Top = 1 Then Call SendData(SendTarget.ToAll, 0, 0, "||633@" & UserName & "@torneos@" & Value)
-    If Rank = TOPDuelos And Top = 1 Then Call SendData(SendTarget.ToAll, 0, 0, "||633@" & UserName & "@duelos@" & Value)
-    If Rank = TOPFrags And Top = 1 Then Call SendData(SendTarget.ToAll, 0, 0, "||633@" & UserName & "@usuarios matados@" & Value)
-    If Rank = TOPRondas And Top = 1 Then Call SendData(SendTarget.ToAll, 0, 0, "||633@" & UserName & "@rondas@" & Value)
-    If Rank = TOPParejas And Top = 1 Then Call SendData(SendTarget.ToAll, 0, 0, "||633@" & UserName & "@parejas@" & Value)
-    If Rank = TOPReputacion And Top = 1 Then Call SendData(SendTarget.ToAll, 0, 0, "||633@" & UserName & "@reputacion@" & Value)
-    
+        If i <= 3 Then
+            Call SetStars(mode_, i)
+        End If
+    Next
+
 End Sub
-Public Sub ActualizarRanking(ByVal Top As Byte, ByVal Rank As eRanking, ByVal UserName As String, ByVal Value As Long)
-   
-    '@ Actualizamos la lista de ranking
-   
-    Dim loopC As Integer
-    Dim i As Integer
-    Dim j As Integer
-    Dim Valor(1 To MAX_TOP) As Long
-    Dim Nombre(1 To MAX_TOP) As String
+'Comprueba si un usuario entró/subió en el ranking
+Public Sub GRANK_User_Check(ByVal mode_ As ENU_GRANK_Mode, ByRef name_ As String, ByVal value_ As Long)
+
+Dim l_slot As Long
+Dim i As Long
     
-    ' @ Copia necesaria para evitar que se dupliquen repetidamente
-    For loopC = 1 To MAX_TOP
-        Valor(loopC) = Ranking(Rank).Value(loopC)
-        Nombre(loopC) = Ranking(Rank).Nombre(loopC)
-    Next loopC
-   
-    ' @ Corremos las pos, desde el "Top" que es la primera
-    For loopC = Top To MAX_TOP - 1
-        Ranking(Rank).Value(loopC + 1) = Valor(loopC)
-        Ranking(Rank).Nombre(loopC + 1) = Nombre(loopC)
-    Next loopC
-   
-    Ranking(Rank).Nombre(Top) = UserName
-    Ranking(Rank).Value(Top) = Value
+    If IsAdministrator(name_) Or IsDevelopment(name_) Or IsCoordination(name_) Or IsTournamentManager(name_) Or IsEventManager(name_) Or IsUserSupport(name_) Then Exit Sub
+
+    '@ find user
+    l_slot = GRANK_User_In(mode_, name_)
+
+    '@ he ain't here
+    If l_slot = -1 Then l_slot = kGRANK_LIMIT
     
-        If Top = 1 Or Top = 2 Or Top = 3 Then
-           If (NameIndex(UserName)) Then sendUserRank (NameIndex(UserName))
+    '@ check slots in reverse
+    For i = l_slot To 1 Step -1
+        If m_rank(mode_, i).Value > value_ Then Exit For
+    Next
+    
+    '@ he's not capable of entering the ranking
+    If (i = l_slot) Then
+        If (m_rank(mode_, i).Name <> name_) Then Exit Sub
+    End If
+    
+    '@ our real slot is i+1, so we fix it
+    i = i + 1
+    
+    '@ move list down
+    For i = l_slot To i + 1 Step -1
+    
+        '@ copy
+        m_rank(mode_, i) = m_rank(mode_, i - 1)
+    
+    Next
+    
+    '@ update data
+    m_rank(mode_, i).Name = name_
+    m_rank(mode_, i).Value = value_
+    
+    '@ save data
+    GRANK_Dump mode_
+    
+End Sub 'Devuelve el slot del ranking en el que se encuentra el usuario, -1 si no se encuentra
+Private Function GRANK_User_In(ByVal mode_ As ENU_GRANK_Mode, ByRef name_ As String) As Long
+
+Dim i As Long
+
+    For i = 1 To kGRANK_LIMIT
+    
+        '@ found them
+        If UCase$(m_rank(mode_, i).Name) = UCase$(name_) Then
+        
+            '@ return, leave
+            GRANK_User_In = i
+            Exit Function
+        
         End If
     
-    Call SaveRanking(Rank)
-
-    If Rank = TOPTorneos And Top = 1 Then Call SendData(SendTarget.ToAll, 0, 0, "||633@" & UserName & "@torneos@" & Value)
-    If Rank = TOPCastillos And Top = 1 Then Call SendData(SendTarget.ToAll, 0, 0, "||634@" & UserName & "@castillos conquistados@" & Value)
-    If Rank = TOPCVCS And Top = 1 Then Call SendData(SendTarget.ToAll, 0, 0, "||633@" & UserName & "@cvcs@" & Value)
-    If Rank = TOPRepuClanes And Top = 1 Then Call SendData(SendTarget.ToAll, 0, 0, "||634@" & UserName & "@reputación de clanes@" & Value)
-    If Rank = TOPDuelos And Top = 1 Then Call SendData(SendTarget.ToAll, 0, 0, "||633@" & UserName & "@duelos@" & Value)
-    If Rank = TOPFrags And Top = 1 Then Call SendData(SendTarget.ToAll, 0, 0, "||633@" & UserName & "@usuarios matados@" & Value)
-    If Rank = TOPRondas And Top = 1 Then Call SendData(SendTarget.ToAll, 0, 0, "||633@" & UserName & "@rondas@" & Value)
-    If Rank = TOPParejas And Top = 1 Then Call SendData(SendTarget.ToAll, 0, 0, "||633@" & UserName & "@parejas@" & Value)
-    If Rank = TOPReputacion And Top = 1 Then Call SendData(SendTarget.ToAll, 0, 0, "||633@" & UserName & "@reputacion@" & Value)
-
-End Sub
-Public Function tieneRanking(ByVal userindex As Integer) As Byte
-
-    Dim pRank As Byte, i, j As Long
-    pRank = 99
+    Next
     
-    For i = 1 To MAX_RANKINGS
-        For j = 1 To 3
-            If (UCase$(Ranking(i).Nombre(j)) = UCase$(UserList(userindex).Name)) Then
-                If (j < pRank) Then pRank = j
-            End If
-        Next j
-    Next i
-
-    tieneRanking = pRank
+    '@ not found
+    GRANK_User_In = -1
 
 End Function
+Public Sub Info_Rank(ByVal Rank As ENU_GRANK_Mode, ByVal userindex As Integer)
 
+    
+        Dim tStr As String, i As Long
+        tStr = ""
+            For i = 1 To 10
+                tStr = tStr & m_rank(Rank, i).Name & "-" & m_rank(Rank, i).Value & ","
+            Next i
+            
+            If Rank = Reputation Then
+                tStr = tStr & UserList(userindex).Stats.Reputacione
+            End If
+            
+            Call SendData(SendTarget.toindex, userindex, 0, "MTOP" & tStr)
+
+End Sub
+
+'Devuelve el nombre de un ranking con el que está ubicado en el archivo
+Private Function GRANK_Name_Get(ByVal rank_ As ENU_GRANK_Mode) As String
+
+    Select Case rank_
+    
+        Case ENU_GRANK_Mode.Duels
+            GRANK_Name_Get = "DUELS"
+            
+        Case ENU_GRANK_Mode.Kills
+            GRANK_Name_Get = "KILLS"
+            
+        Case ENU_GRANK_Mode.Reputation
+            GRANK_Name_Get = "REPUTATION"
+            
+        Case ENU_GRANK_Mode.Tournaments
+            GRANK_Name_Get = "TOURNAMENTS"
+            
+        Case ENU_GRANK_Mode.Events
+            GRANK_Name_Get = "EVENTS"
+            
+        Case ENU_GRANK_Mode.Couple
+            GRANK_Name_Get = "COUPLE"
+            
+        Case ENU_GRANK_Mode.Rounds
+            GRANK_Name_Get = "ROUNDS"
+            
+        Case ENU_GRANK_Mode.GuildVSGuild
+            GRANK_Name_Get = "CVC"
+            
+        Case ENU_GRANK_Mode.Castles
+            GRANK_Name_Get = "CASTLES"
+            
+        Case ENU_GRANK_Mode.GuildReputation
+            GRANK_Name_Get = "GUILDREPUTATION"
+    
+    End Select
+    
+End Function
+Public Sub SRANK_Gives()
+
+Dim mode_ As ENU_GRANK_Mode, TopIndex As Integer, TopName As String
+Dim NumCorreos As Byte
+Dim NueCorreos As String
+Dim NTCR As String
+Dim CorreoTemporal As String
+Dim iMoC As Long
+
+Dim TempActual As Long
+
+mode_ = Reputation
+
+TopIndex = NameIndex(m_rank(mode_, 1).Name)
+TopName = m_rank(mode_, 1).Name
+      
+If FileExist(CharPath & TopName & ".chr") = True Then
+    'Usuario ganador: TOP 1
+    
+      If TopIndex <> 0 Then
+        UserList(TopIndex).flags.NumCorreos = UserList(TopIndex).flags.NumCorreos + 1
+        UserList(TopIndex).flags.Correo(UserList(TopIndex).flags.NumCorreos) = "Servidor$Recibiste un objeto$El ranking semanal fue finalizado, recibes estos objetos por haber terminado en 1ra posición.$" & Date & "$1549-3-Cofre Común,0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),"
+        UserList(TopIndex).flags.NueCorreos(UserList(TopIndex).flags.NumCorreos) = 1
+        Call SendData(SendTarget.toindex, TopIndex, 0, "||631")
+        
+        UserList(TopIndex).Stats.GLD = UserList(TopIndex).Stats.GLD + 500000
+        UserList(TopIndex).Stats.PuntosTorneo = UserList(TopIndex).Stats.PuntosTorneo + 50
+        
+      Else
+            NumCorreos = GetVar(CharPath & TopName & ".chr", "CORREO", "NUMCORREOS")
+            NueCorreos = GetVar(CharPath & TopName & ".chr", "CORREO", "NUECORREOS")
+            Call WriteVar(CharPath & TopName & ".chr", "CORREO", "CORREONUM" & NumCorreos + 1, "Servidor$Recibiste un objeto$El ranking semanal fue finalizado, recibes estos objetos por haber terminado en 1ra posición.$" & Date & "1549-3-Cofre Común,0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),")
+            Call WriteVar(CharPath & TopName & ".chr", "CORREO", "NUMCORREOS", NumCorreos + 1)
+            
+            For iMoC = 1 To 30
+                CorreoTemporal = ReadField(iMoC, NueCorreos, Asc(","))
+                If iMoC = NumCorreos + 1 Then
+                    NTCR = NTCR & iMoC & "-1,"
+                Else
+                    NTCR = NTCR & iMoC & "-" & ReadField(2, CorreoTemporal, Asc("-")) & ","
+                End If
+            Next iMoC
+            
+            Call WriteVar(CharPath & TopName & ".chr", "CORREO", "NUECORREOS", NTCR)
+            
+            'ORO
+            TempActual = GetVar(CharPath & TopName & ".chr", "STATS", "GLD")
+            Call WriteVar(CharPath & TopName & ".chr", "STATS", "GLD", TempActual + 500000)
+            'PUNTOS
+            TempActual = GetVar(CharPath & TopName & ".chr", "STATS", "PUNTOSTORNEO")
+            Call WriteVar(CharPath & TopName & ".chr", "STATS", "PUNTOSTORNEO", TempActual + 50)
+        End If
+End If
+        
+
+TopIndex = NameIndex(m_rank(mode_, 2).Name)
+TopName = m_rank(mode_, 2).Name
+      
+
+If FileExist(CharPath & TopName & ".chr") = True Then
+    'Usuario ganador: TOP 2
+    
+      If TopIndex <> 0 Then
+        UserList(TopIndex).flags.NumCorreos = UserList(TopIndex).flags.NumCorreos + 1
+        UserList(TopIndex).flags.Correo(UserList(TopIndex).flags.NumCorreos) = "Servidor$Recibiste un objeto$El ranking semanal fue finalizado, recibes estos objetos por haber terminado en 2da posición.$" & Date & "$1549-2-Cofre Común,0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),"
+        UserList(TopIndex).flags.NueCorreos(UserList(TopIndex).flags.NumCorreos) = 1
+        Call SendData(SendTarget.toindex, TopIndex, 0, "||631")
+        
+        UserList(TopIndex).Stats.GLD = UserList(TopIndex).Stats.GLD + 300000
+        UserList(TopIndex).Stats.PuntosTorneo = UserList(TopIndex).Stats.PuntosTorneo + 35
+        
+      Else
+            NumCorreos = GetVar(CharPath & TopName & ".chr", "CORREO", "NUMCORREOS")
+            NueCorreos = GetVar(CharPath & TopName & ".chr", "CORREO", "NUECORREOS")
+            Call WriteVar(CharPath & TopName & ".chr", "CORREO", "CORREONUM" & NumCorreos + 1, "Servidor$Recibiste un objeto$El ranking semanal fue finalizado, recibes estos objetos por haber terminado en 2da posición.$" & Date & "$1549-2-Cofre Común,0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),")
+            Call WriteVar(CharPath & TopName & ".chr", "CORREO", "NUMCORREOS", NumCorreos + 1)
+            
+            For iMoC = 1 To 30
+                CorreoTemporal = ReadField(iMoC, NueCorreos, Asc(","))
+                If iMoC = NumCorreos + 1 Then
+                    NTCR = NTCR & iMoC & "-1,"
+                Else
+                    NTCR = NTCR & iMoC & "-" & ReadField(2, CorreoTemporal, Asc("-")) & ","
+                End If
+            Next iMoC
+            
+            Call WriteVar(CharPath & TopName & ".chr", "CORREO", "NUECORREOS", NTCR)
+            
+            'ORO
+            TempActual = GetVar(CharPath & TopName & ".chr", "STATS", "GLD")
+            Call WriteVar(CharPath & TopName & ".chr", "STATS", "GLD", TempActual + 300000)
+            'PUNTOS
+            TempActual = GetVar(CharPath & TopName & ".chr", "STATS", "PUNTOSTORNEO")
+            Call WriteVar(CharPath & TopName & ".chr", "STATS", "PUNTOSTORNEO", TempActual + 35)
+        End If
+End If
+
+
+TopIndex = NameIndex(m_rank(mode_, 3).Name)
+TopName = m_rank(mode_, 3).Name
+
+If FileExist(CharPath & TopName & ".chr") = True Then
+    'Usuario ganador: TOP 3
+    
+      If TopIndex <> 0 Then
+        UserList(TopIndex).flags.NumCorreos = UserList(TopIndex).flags.NumCorreos + 1
+        UserList(TopIndex).flags.Correo(UserList(TopIndex).flags.NumCorreos) = "Servidor$Recibiste un objeto$El ranking semanal fue finalizado, recibes estos objetos por haber terminado en 3ra posición.$" & Date & "$1549-1-Cofre Común,0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),"
+        UserList(TopIndex).flags.NueCorreos(UserList(TopIndex).flags.NumCorreos) = 1
+        Call SendData(SendTarget.toindex, TopIndex, 0, "||631")
+        
+        UserList(TopIndex).Stats.GLD = UserList(TopIndex).Stats.GLD + 150000
+        UserList(TopIndex).Stats.PuntosTorneo = UserList(TopIndex).Stats.PuntosTorneo + 20
+        
+      Else
+            NumCorreos = GetVar(CharPath & TopName & ".chr", "CORREO", "NUMCORREOS")
+            NueCorreos = GetVar(CharPath & TopName & ".chr", "CORREO", "NUECORREOS")
+            Call WriteVar(CharPath & TopName & ".chr", "CORREO", "CORREONUM" & NumCorreos + 1, "Servidor$Recibiste un objeto$El ranking semanal fue finalizado, recibes estos objetos por haber terminado en 3ra posición.$" & Date & "$1549-1-Cofre Común,0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),")
+            Call WriteVar(CharPath & TopName & ".chr", "CORREO", "NUMCORREOS", NumCorreos + 1)
+            
+            For iMoC = 1 To 30
+                CorreoTemporal = ReadField(iMoC, NueCorreos, Asc(","))
+                If iMoC = NumCorreos + 1 Then
+                    NTCR = NTCR & iMoC & "-1,"
+                Else
+                    NTCR = NTCR & iMoC & "-" & ReadField(2, CorreoTemporal, Asc("-")) & ","
+                End If
+            Next iMoC
+            
+            Call WriteVar(CharPath & TopName & ".chr", "CORREO", "NUECORREOS", NTCR)
+            
+            'ORO
+            TempActual = GetVar(CharPath & TopName & ".chr", "STATS", "GLD")
+            Call WriteVar(CharPath & TopName & ".chr", "STATS", "GLD", TempActual + 150000)
+            'PUNTOS
+            TempActual = GetVar(CharPath & TopName & ".chr", "STATS", "PUNTOSTORNEO")
+            Call WriteVar(CharPath & TopName & ".chr", "STATS", "PUNTOSTORNEO", TempActual + 20)
+        End If
+End If
+
+End Sub
+Public Sub ResetReputation()
+
+Dim mode_ As ENU_GRANK_Mode, i As Integer
+mode_ = Reputation
+
+haciendoBK = True
+Call SendData(SendTarget.ToAll, 0, 0, "BKW")
+Call SendData(SendTarget.ToAll, 0, 0, "||880")
+
+    For i = 1 To LastUser
+        If UserList(i).flags.UserLogged = True Then UserList(i).Stats.Reputacione = 0
+    Next
+    
+    Dim DirChar As String
+    DirChar = Dir(App.Path & "\Charfile\")
+     
+    Do While DirChar <> ""
+      If InStr(1, LCase$(DirChar), ".chr") > 0 Then
+        Call WriteVar(CharPath & DirChar & ".chr", "STATS", "Reputacione", "0")
+      End If
+      DirChar = Dir
+    Loop
+    
+    For i = 1 To 10
+        m_rank(mode_, i).Name = "N/A"
+        m_rank(mode_, i).Value = 0
+    Next
+
+'@ save data
+GRANK_Dump mode_
+
+Call SendData(SendTarget.ToAll, 0, 0, "BKW")
+haciendoBK = False
+Call SendData(SendTarget.ToAll, 0, 0, "||881")
+
+End Sub

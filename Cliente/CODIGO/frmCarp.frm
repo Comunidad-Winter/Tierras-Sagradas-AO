@@ -7,11 +7,10 @@ Begin VB.Form frmCarp
    ClientTop       =   -105
    ClientWidth     =   4755
    ControlBox      =   0   'False
-   Icon            =   "frmCarp.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   Picture         =   "frmCarp.frx":000C
+   Picture         =   "frmCarp.frx":0000
    ScaleHeight     =   3210
    ScaleWidth      =   4755
    ShowInTaskbar   =   0   'False

@@ -9,54 +9,46 @@ Begin VB.Form frmSubastar
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   442
-   ScaleMode       =   3  'Pixel
-   ScaleWidth      =   219
+   ScaleHeight     =   6630
+   ScaleWidth      =   3285
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.TextBox StartBid 
       Alignment       =   2  'Center
-      Appearance      =   0  'Flat
-      BackColor       =   &H00000000&
-      BorderStyle     =   0  'None
+      BackColor       =   &H00FFFFFF&
       BeginProperty Font 
-         Name            =   "Palatino Linotype"
-         Size            =   9.75
+         Name            =   "Times New Roman"
+         Size            =   12
          Charset         =   0
          Weight          =   700
          Underline       =   0   'False
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H80000005&
-      Height          =   345
+      Height          =   375
       Left            =   1680
       TabIndex        =   2
       Text            =   "1000"
-      Top             =   5535
+      Top             =   5520
       Width           =   1290
    End
    Begin VB.TextBox Amount 
       Alignment       =   2  'Center
-      Appearance      =   0  'Flat
-      BackColor       =   &H80000001&
-      BorderStyle     =   0  'None
       BeginProperty Font 
-         Name            =   "Palatino Linotype"
-         Size            =   9.75
+         Name            =   "Times New Roman"
+         Size            =   12
          Charset         =   0
          Weight          =   700
          Underline       =   0   'False
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H80000005&
-      Height          =   345
+      Height          =   405
       Left            =   1680
       TabIndex        =   1
       Text            =   "1"
-      Top             =   5010
-      Width           =   1290
+      Top             =   5000
+      Width           =   1335
    End
    Begin VB.ListBox ItemList 
       Appearance      =   0  'Flat
@@ -65,17 +57,17 @@ Begin VB.Form frmSubastar
       Height          =   3900
       IntegralHeight  =   0   'False
       ItemData        =   "frmSubastar.frx":0000
-      Left            =   300
+      Left            =   330
       List            =   "frmSubastar.frx":0007
       TabIndex        =   0
-      Top             =   945
-      Width           =   2700
+      Top             =   960
+      Width           =   2655
    End
    Begin VB.Image Image2 
       Height          =   465
-      Left            =   2880
+      Left            =   2760
       Stretch         =   -1  'True
-      Top             =   0
+      Top             =   120
       Width           =   405
    End
    Begin VB.Image Image1 
@@ -105,10 +97,6 @@ End Sub
 Private Sub Form_Load()
 Set form_Moviment = New clsFormMovementManager
 form_Moviment.Initialize Me
-
-ItemList.BackColor = RGB(19, 21, 23)
-Amount.BackColor = RGB(19, 21, 23)
-StartBid.BackColor = RGB(19, 21, 23)
 
 Image1.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Subasta_Iniciar_N.jpg")
 Me.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Subasta_Main.jpg")

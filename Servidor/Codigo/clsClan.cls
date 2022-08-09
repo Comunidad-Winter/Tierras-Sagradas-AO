@@ -233,42 +233,55 @@ Dim OldQ    As Integer
 Dim OldT As Integer
 Dim TempStr As String
 
-Dim NickMiembro As String, tmpUI As Integer
+Dim NickMiembro As String
 NickMiembro = ""
 
     OldT = 0
     OldQ = Me.CantidadDeMiembros
 
     While OldT <> OldQ
-    
+        
+    If Lider = True Then
+        TempStr = TempStr & GetVar(MEMBERSFILE, "Members", "Member" & OldT + 1) & "$"
         NickMiembro = GetVar(MEMBERSFILE, "Members", "Member" & OldT + 1)
     
-            If FileExist(CharPath & NickMiembro & ".chr") Then
-                TempStr = TempStr & NickMiembro & "$"
-                tmpUI = NameIndex(NickMiembro)
-                
-                If Lider = True Then
-                        If tmpUI Then
-                            TempStr = TempStr & UserList(tmpUI).Stats.ELV & "$"
-                            TempStr = TempStr & UserList(tmpUI).clase & "$"
-                            TempStr = TempStr & UserList(tmpUI).Raza & Separador
-                        Else
-                            TempStr = TempStr & GetVar(CharPath & NickMiembro & ".chr", "STATS", "ELV") & "$"
-                            TempStr = TempStr & GetVar(CharPath & NickMiembro & ".chr", "INIT", "Clase") & "$"
-                            TempStr = TempStr & GetVar(CharPath & NickMiembro & ".chr", "INIT", "Raza") & Separador
-                        End If
-                ElseIf Usuario = True Then
-                    If tmpUI Then
-                        TempStr = TempStr & "ONLINE$"
-                        TempStr = TempStr & "Mapa: " & UserList(tmpUI).Pos.Map & " X: " & UserList(tmpUI).Pos.X & " Y: " & UserList(tmpUI).Pos.Y & "" & Separador
-                    Else
-                        TempStr = TempStr & "OFFLINE$"
-                        TempStr = TempStr & "" & Separador
-                    End If
-                Else
-                    TempStr = TempStr & GetVar(MEMBERSFILE, "Members", "Member" & OldT + 1) & Separador
-                End If
-            End If
+        If NameIndex(NickMiembro) > 0 Then
+            TempStr = TempStr & "ON$"
+            TempStr = TempStr & UserList(NameIndex(NickMiembro)).Stats.ELV & "$"
+            TempStr = TempStr & UserList(NameIndex(NickMiembro)).Stats.Reputacione & "$"
+            TempStr = TempStr & UserList(NameIndex(NickMiembro)).Raza & "$"
+            TempStr = TempStr & UserList(NameIndex(NickMiembro)).clase & "$"
+            TempStr = TempStr & UserList(NameIndex(NickMiembro)).Stats.GLD & "$"
+            TempStr = TempStr & UserList(NameIndex(NickMiembro)).Faccion.CiudadanosMatados & "$"
+            TempStr = TempStr & UserList(NameIndex(NickMiembro)).Faccion.NeutralesMatados & "$"
+            TempStr = TempStr & UserList(NameIndex(NickMiembro)).Faccion.CriminalesMatados & "$"
+            TempStr = TempStr & UserList(NameIndex(NickMiembro)).UltimoLogeo & Separador
+        Else
+            TempStr = TempStr & "OFF$"
+            TempStr = TempStr & GetVar(CharPath & NickMiembro & ".chr", "STATS", "ELV") & "$"
+            TempStr = TempStr & GetVar(CharPath & NickMiembro & ".chr", "STATS", "Reputacione") & "$"
+            TempStr = TempStr & GetVar(CharPath & NickMiembro & ".chr", "INIT", "Raza") & "$"
+            TempStr = TempStr & GetVar(CharPath & NickMiembro & ".chr", "INIT", "Clase") & "$"
+            TempStr = TempStr & GetVar(CharPath & NickMiembro & ".chr", "STATS", "GLD") & "$"
+            TempStr = TempStr & GetVar(CharPath & NickMiembro & ".chr", "FACCIONES", "CiudMatados") & "$"
+            TempStr = TempStr & GetVar(CharPath & NickMiembro & ".chr", "FACCIONES", "NeutrMatados") & "$"
+            TempStr = TempStr & GetVar(CharPath & NickMiembro & ".chr", "FACCIONES", "CrimMatados") & "$"
+            TempStr = TempStr & GetVar(CharPath & NickMiembro & ".chr", "INIT", "UltimoLogeo") & Separador
+        End If
+    ElseIf Usuario = True Then
+        TempStr = TempStr & GetVar(MEMBERSFILE, "Members", "Member" & OldT + 1) & "$"
+        NickMiembro = GetVar(MEMBERSFILE, "Members", "Member" & OldT + 1)
+        
+        If NameIndex(NickMiembro) > 0 Then
+            TempStr = TempStr & "ONLINE$"
+            TempStr = TempStr & "Mapa: " & UserList(NameIndex(NickMiembro)).Pos.Map & " X: " & UserList(NameIndex(NickMiembro)).Pos.X & " Y: " & UserList(NameIndex(NickMiembro)).Pos.Y & "" & Separador
+        Else
+            TempStr = TempStr & "OFFLINE$"
+            TempStr = TempStr & "" & Separador
+        End If
+    Else
+        TempStr = TempStr & GetVar(MEMBERSFILE, "Members", "Member" & OldT + 1) & Separador
+    End If
         
         
         OldT = OldT + 1
@@ -399,21 +412,32 @@ NickMiembro = ""
     OldQ = Me.CantidadAspirantes()
     
     While OldT <> OldQ
+        TempStr = TempStr & GetVar(SOLICITUDESFILE, "SOLICITUD" & OldT + 1, "Nombre") & "$"
         NickMiembro = GetVar(SOLICITUDESFILE, "SOLICITUD" & OldT + 1, "Nombre")
         
-        
         If FileExist(CharPath & NickMiembro & ".chr") Then
-            Dim tmpUI As Integer
-           tmpUI = NameIndex(NickMiembro)
-           TempStr = TempStr & NickMiembro & "$"
-           If tmpUI Then
-                TempStr = TempStr & UserList(tmpUI).Stats.ELV & "$"
-                TempStr = TempStr & UserList(tmpUI).clase & "$"
-                TempStr = TempStr & UserList(tmpUI).Raza & Separador
+            If NameIndex(NickMiembro) > 0 Then
+                TempStr = TempStr & "ON$"
+                TempStr = TempStr & UserList(NameIndex(NickMiembro)).Stats.ELV & "$"
+                TempStr = TempStr & UserList(NameIndex(NickMiembro)).Stats.Reputacione & "$"
+                TempStr = TempStr & UserList(NameIndex(NickMiembro)).Raza & "$"
+                TempStr = TempStr & UserList(NameIndex(NickMiembro)).clase & "$"
+                TempStr = TempStr & UserList(NameIndex(NickMiembro)).Stats.GLD & "$"
+                TempStr = TempStr & UserList(NameIndex(NickMiembro)).Faccion.CiudadanosMatados & "$"
+                TempStr = TempStr & UserList(NameIndex(NickMiembro)).Faccion.NeutralesMatados & "$"
+                TempStr = TempStr & UserList(NameIndex(NickMiembro)).Faccion.CriminalesMatados & "$"
+                TempStr = TempStr & UserList(NameIndex(NickMiembro)).UltimoLogeo & Separador
             Else
+                TempStr = TempStr & "OFF$"
                 TempStr = TempStr & GetVar(CharPath & NickMiembro & ".chr", "STATS", "ELV") & "$"
+                TempStr = TempStr & GetVar(CharPath & NickMiembro & ".chr", "STATS", "Reputacione") & "$"
                 TempStr = TempStr & GetVar(CharPath & NickMiembro & ".chr", "INIT", "Raza") & "$"
-                TempStr = TempStr & GetVar(CharPath & NickMiembro & ".chr", "INIT", "Clase") & Separador
+                TempStr = TempStr & GetVar(CharPath & NickMiembro & ".chr", "INIT", "Clase") & "$"
+                TempStr = TempStr & GetVar(CharPath & NickMiembro & ".chr", "STATS", "GLD") & "$"
+                TempStr = TempStr & GetVar(CharPath & NickMiembro & ".chr", "FACCIONES", "CiudMatados") & "$"
+                TempStr = TempStr & GetVar(CharPath & NickMiembro & ".chr", "FACCIONES", "NeutrMatados") & "$"
+                TempStr = TempStr & GetVar(CharPath & NickMiembro & ".chr", "FACCIONES", "CrimMatados") & "$"
+                TempStr = TempStr & GetVar(CharPath & NickMiembro & ".chr", "INIT", "UltimoLogeo") & Separador
             End If
         End If
         

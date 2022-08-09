@@ -74,39 +74,39 @@ Public Sub InitAreas()
 'Last Modify Date: Unknow
 '
 '**************************************************************
-    Dim loopC As Long
+    Dim LoopC As Long
     Dim loopX As Long
     Dim CurArea As Byte
 
 ' Setup areas...
-    For loopC = 0 To 11
-        AreasRecive(loopC) = (2 ^ loopC) Or IIf(loopC <> 0, 2 ^ (loopC - 1), 0) Or IIf(loopC <> 11, 2 ^ (loopC + 1), 0)
+    For LoopC = 0 To 11
+        AreasRecive(LoopC) = (2 ^ LoopC) Or IIf(LoopC <> 0, 2 ^ (LoopC - 1), 0) Or IIf(LoopC <> 11, 2 ^ (LoopC + 1), 0)
 '        AreasEnvia(LoopC) = 2 ^ (LoopC + 1)
-    Next loopC
+    Next LoopC
     
-    For loopC = 1 To 100
-        PosToArea(loopC) = loopC \ 9
-    Next loopC
+    For LoopC = 1 To 100
+        PosToArea(LoopC) = LoopC \ 9
+    Next LoopC
     
-    For loopC = 1 To 100
+    For LoopC = 1 To 100
         For loopX = 1 To 100
             'Usamos 121 IDs de area para saber si pasasamos de area "más rápido"
-            AreasInfo(loopC, loopX) = (loopC \ 9 + 1) * (loopX \ 9 + 1)
+            AreasInfo(LoopC, loopX) = (LoopC \ 9 + 1) * (loopX \ 9 + 1)
         Next loopX
-    Next loopC
+    Next LoopC
 
 'Setup AutoOptimizacion de areas
     CurDay = IIf(Weekday(Date) > 6, 1, 2) 'A ke tipo de dia pertenece?
-    CurHour = Fix(Hour(time) \ 3) 'A ke parte de la hora pertenece
+    CurHour = Fix(Hour(Time) \ 3) 'A ke parte de la hora pertenece
     
     ReDim ConnGroups(1 To NumMaps) As ConnGroup
     
-    For loopC = 1 To NumMaps
-        ConnGroups(loopC).OptValue = val(GetVar(DatPath & "AreasStats.dat", "Mapa" & loopC, CurDay & "-" & CurHour))
+    For LoopC = 1 To NumMaps
+        ConnGroups(LoopC).OptValue = val(GetVar(DatPath & "AreasStats.dat", "Mapa" & LoopC, CurDay & "-" & CurHour))
         
-        If ConnGroups(loopC).OptValue = 0 Then ConnGroups(loopC).OptValue = 1
-        ReDim ConnGroups(loopC).UserEntrys(1 To ConnGroups(loopC).OptValue) As Long
-    Next loopC
+        If ConnGroups(LoopC).OptValue = 0 Then ConnGroups(LoopC).OptValue = 1
+        ReDim ConnGroups(LoopC).UserEntrys(1 To ConnGroups(LoopC).OptValue) As Long
+    Next LoopC
 End Sub
 
 Public Sub AreasOptimizacion()
@@ -115,24 +115,24 @@ Public Sub AreasOptimizacion()
 'Last Modify Date: Unknow
 'Es la función de autooptimizacion.... la idea es no mandar redimensionando arrays grandes todo el tiempo
 '**************************************************************
-    Dim loopC As Long
+    Dim LoopC As Long
     Dim tCurDay As Byte
     Dim tCurHour As Byte
     Dim EntryValue As Long
     
-    If (CurDay <> IIf(Weekday(Date) > 6, 1, 2)) Or (CurHour <> Fix(Hour(time) \ 3)) Then
+    If (CurDay <> IIf(Weekday(Date) > 6, 1, 2)) Or (CurHour <> Fix(Hour(Time) \ 3)) Then
         
         tCurDay = IIf(Weekday(Date) > 6, 1, 2) 'A ke tipo de dia pertenece?
-        tCurHour = Fix(Hour(time) \ 3) 'A ke parte de la hora pertenece
+        tCurHour = Fix(Hour(Time) \ 3) 'A ke parte de la hora pertenece
         
-        For loopC = 1 To NumMaps
-            EntryValue = val(GetVar(DatPath & "AreasStats.dat", "Mapa" & loopC, CurDay & "-" & CurHour))
-            Call WriteVar(DatPath & "AreasStats.dat", "Mapa" & loopC, CurDay & "-" & CurHour, CInt((EntryValue + ConnGroups(loopC).OptValue) \ 2))
+        For LoopC = 1 To NumMaps
+            EntryValue = val(GetVar(DatPath & "AreasStats.dat", "Mapa" & LoopC, CurDay & "-" & CurHour))
+            Call WriteVar(DatPath & "AreasStats.dat", "Mapa" & LoopC, CurDay & "-" & CurHour, CInt((EntryValue + ConnGroups(LoopC).OptValue) \ 2))
             
-            ConnGroups(loopC).OptValue = val(GetVar(DatPath & "AreasStats.dat", "Mapa" & loopC, tCurDay & "-" & tCurHour))
-            If ConnGroups(loopC).OptValue = 0 Then ConnGroups(loopC).OptValue = 1
-            If ConnGroups(loopC).OptValue >= MapInfo(loopC).NumUsers Then ReDim Preserve ConnGroups(loopC).UserEntrys(1 To ConnGroups(loopC).OptValue) As Long
-        Next loopC
+            ConnGroups(LoopC).OptValue = val(GetVar(DatPath & "AreasStats.dat", "Mapa" & LoopC, tCurDay & "-" & tCurHour))
+            If ConnGroups(LoopC).OptValue = 0 Then ConnGroups(LoopC).OptValue = 1
+            If ConnGroups(LoopC).OptValue >= MapInfo(LoopC).NumUsers Then ReDim Preserve ConnGroups(LoopC).UserEntrys(1 To ConnGroups(LoopC).OptValue) As Long
+        Next LoopC
         
         CurDay = tCurDay
         CurHour = tCurHour
@@ -213,6 +213,7 @@ Public Sub CheckUpdateNeededUser(ByVal userindex As Integer, ByVal Head As Byte)
                 
                 '<<< User >>>
                 If MapData(Map, X, Y).userindex Then
+                    
                     TempInt = MapData(Map, X, Y).userindex
                     
                     If userindex <> TempInt Then
@@ -251,24 +252,11 @@ Public Sub CheckUpdateNeededUser(ByVal userindex As Integer, ByVal Head As Byte)
                     Call MakeNPCChar(SendTarget.toindex, userindex, 0, MapData(Map, X, Y).NpcIndex, Map, X, Y)
                  End If
                  
-                 'PARTICULAS FER###
-                 If MapData(Map, X, Y).particle_group_index Then
-                    Call SendData(SendTarget.toindex, userindex, 0, "PCF" & MapData(Map, X, Y).particle_group_index & "," & X & "," & Y & "," & 0)
-                 End If
-                 
-                 If MapData(Map, X, Y).range_light Then
-                    Call SendData(SendTarget.toindex, userindex, 0, "PCL" & X & "," & Y & "," & MapData(Map, X, Y).range_light & "," & MapData(Map, X, Y).rgb_light(1) & "," & MapData(Map, X, Y).rgb_light(2) & "," & MapData(Map, X, Y).rgb_light(3))
-                 End If
-                 
                 '<<< Item >>>
                 If MapData(Map, X, Y).OBJInfo.ObjIndex Then
                     TempInt = MapData(Map, X, Y).OBJInfo.ObjIndex
-                    'If Not EsObjetoFijo(ObjData(TempInt).OBJType) Then
-                        'If (TempInt = 378) Then
-                       '     Call SendData(SendTarget.toindex, userindex, 0, "PCF" & 101 & "," & X & "," & Y & "-1")
-                        'Else
-                            Call SendData(SendTarget.toindex, userindex, 0, "HO" & ObjData(TempInt).GrhIndex & "," & X & "," & Y)
-                        'End If
+                    If Not EsObjetoFijo(ObjData(TempInt).OBJType) Then
+                        Call SendData(SendTarget.toindex, userindex, 0, "HO" & ObjData(TempInt).GrhIndex & "," & X & "," & Y)
                         
                         If ObjData(TempInt).OBJType = eOBJType.otPuertas Then
                             Call Bloquear(SendTarget.toindex, userindex, 0, CInt(Map), X, Y, MapData(Map, X, Y).Blocked)
@@ -299,7 +287,7 @@ Public Sub CheckUpdateNeededUser(ByVal userindex As Integer, ByVal Head As Byte)
                             
                         End If
                     End If
-                'End If
+                End If
             
             Next Y
         Next X
@@ -323,7 +311,6 @@ Public Sub CheckUpdateNeededNpc(ByVal NpcIndex As Integer, ByVal Head As Byte)
 'Last Modify Date: Unknow
 ' Se llama cuando se mueve un Npc
 '**************************************************************
-On Error Resume Next
     
     If Npclist(NpcIndex).AreasInfo.AreaID = AreasInfo(Npclist(NpcIndex).Pos.X, Npclist(NpcIndex).Pos.Y) Then Exit Sub
     
@@ -412,19 +399,19 @@ Public Sub QuitarUser(ByVal userindex As Integer, ByVal Map As Integer)
 '
 '**************************************************************
     Dim TempVal As Long
-    Dim loopC As Long
+    Dim LoopC As Long
     
     'Saco del viejo mapa
     ConnGroups(Map).CountEntrys = ConnGroups(Map).CountEntrys - 1
     TempVal = ConnGroups(Map).CountEntrys
     
-    For loopC = 1 To TempVal + 1
-        If ConnGroups(Map).UserEntrys(loopC) = userindex Then Exit For
-    Next loopC
+    For LoopC = 1 To TempVal + 1
+        If ConnGroups(Map).UserEntrys(LoopC) = userindex Then Exit For
+    Next LoopC
     
-    For loopC = loopC To TempVal
-        ConnGroups(Map).UserEntrys(loopC) = ConnGroups(Map).UserEntrys(loopC + 1)
-    Next loopC
+    For LoopC = LoopC To TempVal
+        ConnGroups(Map).UserEntrys(LoopC) = ConnGroups(Map).UserEntrys(LoopC + 1)
+    Next LoopC
     
     If TempVal > ConnGroups(Map).OptValue Then 'Nescesito Redim?
         ReDim Preserve ConnGroups(Map).UserEntrys(1 To TempVal) As Long
@@ -481,7 +468,7 @@ Public Sub SendToUserArea(ByVal userindex As Integer, ByVal sdData As String, Op
 'Last Modify Date: Unknow
 '
 '**************************************************************
-    Dim loopC As Long
+    Dim LoopC As Long
     Dim TempIndex As Integer
     
     Dim Map As Integer
@@ -495,8 +482,8 @@ Public Sub SendToUserArea(ByVal userindex As Integer, ByVal sdData As String, Op
     If Not MapaValido(Map) Then Exit Sub
     sdData = sdData & ENDC
     
-    For loopC = 1 To ConnGroups(Map).CountEntrys
-        TempIndex = ConnGroups(Map).UserEntrys(loopC)
+    For LoopC = 1 To ConnGroups(Map).CountEntrys
+        TempIndex = ConnGroups(Map).UserEntrys(LoopC)
         
         If UserList(TempIndex).AreasInfo.AreaReciveX And AreaX Then  'Esta en el area?
             If UserList(TempIndex).AreasInfo.AreaReciveY And AreaY Then
@@ -505,7 +492,7 @@ Public Sub SendToUserArea(ByVal userindex As Integer, ByVal sdData As String, Op
                 End If
             End If
         End If
-    Next loopC
+    Next LoopC
 End Sub
 Public Sub SendToUserAreaButindexBOT(ByVal userindex As Integer, ByVal sdData As String)
 '**************************************************************
@@ -513,7 +500,7 @@ Public Sub SendToUserAreaButindexBOT(ByVal userindex As Integer, ByVal sdData As
 'Last Modify Date: Unknow
 ' ESTA SOLO SE USA PARA ENVIAR MPs asi que se puede encriptar desde aca :)
 '**************************************************************
-    Dim loopC As Long
+    Dim LoopC As Long
     Dim TempInt As Integer
     Dim TempIndex As Integer
     
@@ -531,8 +518,8 @@ Public Sub SendToUserAreaButindexBOT(ByVal userindex As Integer, ByVal sdData As
     
     If Not MapaValido(Map) Then Exit Sub
 
-    For loopC = 1 To ConnGroups(Map).CountEntrys
-        TempIndex = ConnGroups(Map).UserEntrys(loopC)
+    For LoopC = 1 To ConnGroups(Map).CountEntrys
+        TempIndex = ConnGroups(Map).UserEntrys(LoopC)
             
         TempInt = UserList(TempIndex).AreasInfo.AreaReciveX And AreaX
         If TempInt Then  'Esta en el area?
@@ -541,7 +528,7 @@ Public Sub SendToUserAreaButindexBOT(ByVal userindex As Integer, ByVal sdData As
                 Call EnviarDatosASlot(TempIndex, sdData)
             End If
         End If
-    Next loopC
+    Next LoopC
 End Sub
 Public Sub SendToUserAreaButindex(ByVal userindex As Integer, ByVal sdData As String)
 '**************************************************************
@@ -549,7 +536,7 @@ Public Sub SendToUserAreaButindex(ByVal userindex As Integer, ByVal sdData As St
 'Last Modify Date: Unknow
 ' ESTA SOLO SE USA PARA ENVIAR MPs asi que se puede encriptar desde aca :)
 '**************************************************************
-    Dim loopC As Long
+    Dim LoopC As Long
     Dim TempInt As Integer
     Dim TempIndex As Integer
     
@@ -564,8 +551,8 @@ Public Sub SendToUserAreaButindex(ByVal userindex As Integer, ByVal sdData As St
 
     If Not MapaValido(Map) Then Exit Sub
 
-    For loopC = 1 To ConnGroups(Map).CountEntrys
-        TempIndex = ConnGroups(Map).UserEntrys(loopC)
+    For LoopC = 1 To ConnGroups(Map).CountEntrys
+        TempIndex = ConnGroups(Map).UserEntrys(LoopC)
             
         TempInt = UserList(TempIndex).AreasInfo.AreaReciveX And AreaX
         If TempInt Then  'Esta en el area?
@@ -578,7 +565,7 @@ Public Sub SendToUserAreaButindex(ByVal userindex As Integer, ByVal sdData As St
                 End If
             End If
         End If
-    Next loopC
+    Next LoopC
 End Sub
 
 Public Sub SendToNpcArea(ByVal NpcIndex As Long, ByVal sdData As String)
@@ -587,7 +574,7 @@ Public Sub SendToNpcArea(ByVal NpcIndex As Long, ByVal sdData As String)
 'Last Modify Date: Unknow
 '
 '**************************************************************
-    Dim loopC As Long
+    Dim LoopC As Long
     Dim TempInt As Integer
     Dim TempIndex As Integer
     
@@ -603,8 +590,8 @@ Public Sub SendToNpcArea(ByVal NpcIndex As Long, ByVal sdData As String)
     
     If Not MapaValido(Map) Then Exit Sub
     
-    For loopC = 1 To ConnGroups(Map).CountEntrys
-        TempIndex = ConnGroups(Map).UserEntrys(loopC)
+    For LoopC = 1 To ConnGroups(Map).CountEntrys
+        TempIndex = ConnGroups(Map).UserEntrys(LoopC)
         
         TempInt = UserList(TempIndex).AreasInfo.AreaReciveX And AreaX
         If TempInt Then  'Esta en el area?
@@ -615,7 +602,7 @@ Public Sub SendToNpcArea(ByVal NpcIndex As Long, ByVal sdData As String)
                 End If
             End If
         End If
-    Next loopC
+    Next LoopC
 End Sub
 
 Public Sub SendToAreaByPos(ByVal Map As Integer, ByVal AreaX As Integer, ByVal AreaY As Integer, ByVal sdData As String)
@@ -624,7 +611,7 @@ Public Sub SendToAreaByPos(ByVal Map As Integer, ByVal AreaX As Integer, ByVal A
 'Last Modify Date: Unknow
 '
 '**************************************************************
-    Dim loopC As Long
+    Dim LoopC As Long
     Dim TempInt As Integer
     Dim TempIndex As Integer
     
@@ -635,8 +622,8 @@ Public Sub SendToAreaByPos(ByVal Map As Integer, ByVal AreaX As Integer, ByVal A
     
     If Not MapaValido(Map) Then Exit Sub
 
-    For loopC = 1 To ConnGroups(Map).CountEntrys
-        TempIndex = ConnGroups(Map).UserEntrys(loopC)
+    For LoopC = 1 To ConnGroups(Map).CountEntrys
+        TempIndex = ConnGroups(Map).UserEntrys(LoopC)
             
         TempInt = UserList(TempIndex).AreasInfo.AreaReciveX And AreaX
         If TempInt Then  'Esta en el area?
@@ -647,5 +634,5 @@ Public Sub SendToAreaByPos(ByVal Map As Integer, ByVal AreaX As Integer, ByVal A
                 End If
             End If
         End If
-    Next loopC
+    Next LoopC
 End Sub

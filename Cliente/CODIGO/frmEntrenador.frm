@@ -16,7 +16,6 @@ Begin VB.Form frmEntrenador
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   Icon            =   "frmEntrenador.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -36,7 +35,7 @@ Begin VB.Form frmEntrenador
       EndProperty
       Height          =   390
       Left            =   2460
-      MouseIcon       =   "frmEntrenador.frx":000C
+      MouseIcon       =   "frmEntrenador.frx":0000
       MousePointer    =   99  'Custom
       TabIndex        =   3
       Top             =   3000
@@ -55,7 +54,7 @@ Begin VB.Form frmEntrenador
       EndProperty
       Height          =   390
       Left            =   780
-      MouseIcon       =   "frmEntrenador.frx":015E
+      MouseIcon       =   "frmEntrenador.frx":0152
       MousePointer    =   99  'Custom
       TabIndex        =   2
       Top             =   3000

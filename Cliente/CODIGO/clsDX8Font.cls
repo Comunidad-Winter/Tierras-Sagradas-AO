@@ -15,19 +15,16 @@ Option Explicit
  
 Private Declare Sub CopyMemory _
                 Lib "kernel32" _
-                Alias "RtlMoveMemory" (Destination As Any, _
-                                       Source As Any, _
-                                       ByVal Length As Long)
+                Alias "RtlMoveMemory" (destination As Any, _
+                                       source As Any, _
+                                       ByVal length As Long)
  
 'Describes the return from a texture init
 Private Type D3DXIMAGE_INFO_A
-    Width As Long
-    Height As Long
-    Depth As Long
-    MipLevels As Long
-    Format As CONST_D3DFORMAT
-    ResourceType As CONST_D3DRESOURCETYPE
-    ImageFileFormat As Long
+ 
+        Width As Long
+        Height As Long
+ 
 End Type
  
 Private Type POINTAPI
@@ -68,13 +65,13 @@ Private Type CustomFont
 End Type
  
 'public Const Font_Default_TextureNum As Long = -1   'The texture number used to represent this font - only used for AlternateRendering - keep negative to prevent interfering with game textures
-Private cfonts(1 To 3) As CustomFont  ' _Default2 As CustomFont
+Private cfonts(1 To 2) As CustomFont  ' _Default2 As CustomFont
 Sub Engine_Text_Draw(ByVal left As Long, _
                      ByVal top As Long, _
                      ByVal text As String, _
                      ByVal color As Long, _
                      Optional ByVal Alpha As Byte = 255, _
-                     Optional ByVal Center As Boolean = False, Optional ByVal font As Byte = 1)
+                     Optional ByVal Center As Boolean = False)
  
         Dim aux As D3DCOLORVALUE
  
@@ -83,7 +80,7 @@ Sub Engine_Text_Draw(ByVal left As Long, _
                 color = D3DColorARGB(Alpha, aux.r, aux.g, aux.b)
         End If
    
-        Engine_Render_Text cfonts(font), text, left, top, color, font, Center
+        Engine_Render_Text cfonts(1), text, left, top, color, Center
  
 End Sub
  
@@ -104,7 +101,6 @@ Private Sub Engine_Render_Text(ByRef UseFont As CustomFont, _
                                ByVal X As Long, _
                                ByVal Y As Long, _
                                ByVal color As Long, _
-                               ByVal Fnt As Byte, _
                                Optional ByVal Center As Boolean = False)
  
         Dim TempVA(0 To 3) As TLVERTEX
@@ -145,7 +141,7 @@ Private Sub Engine_Render_Text(ByRef UseFont As CustomFont, _
         DirectDevice.SetTexture 0, UseFont.Texture
    
         If Center Then
-                X = X - Engine_GetTextWidth(cfonts(Fnt), text) * 0.5
+                X = X - Engine_GetTextWidth(cfonts(1), text) * 0.5
         End If
    
         'Loop through each line if there are line breaks (vbCrLf)
@@ -184,10 +180,7 @@ Private Sub Engine_Render_Text(ByRef UseFont As CustomFont, _
                                 TempVA(3).color = TempColor
                        
                                 'Draw the verticies
-                                'DirectDevice.DrawPrimitiveUP D3DPT_TRIANGLESTRIP, 2, TempVA(0), Len(TempVA(0))
-                                DirectDevice.DrawIndexedPrimitiveUP D3DPT_TRIANGLESTRIP, 0, 4, 2, _
-                                indexList(0), D3DFMT_INDEX16, _
-                                TempVA(0), Len(TempVA(0))
+                                DirectDevice.DrawPrimitiveUP D3DPT_TRIANGLESTRIP, 2, TempVA(0), Len(TempVA(0))
                      
                                 'Shift over the the position to render the next character
                                 Count = Count + UseFont.HeaderInfo.CharWidth(ascii(j - 1))
@@ -236,20 +229,12 @@ Sub Engine_Init_FontTextures()
         '*** Default font ***
    
         'Set the texture
-        Set cfonts(1).Texture = DirectD3D8.CreateTextureFromFileEx(DirectDevice, App.Path & "\Data\INIT\Data\font1.png", D3DX_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED, D3DX_FILTER_POINT, D3DX_FILTER_POINT, &HFF000000, ByVal 0, ByVal 0)
-        Set cfonts(2).Texture = DirectD3D8.CreateTextureFromFileEx(DirectDevice, App.Path & "\Data\INIT\Data\font2.png", D3DX_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED, D3DX_FILTER_POINT, D3DX_FILTER_POINT, &HFF000000, ByVal 0, ByVal 0)
-        Set cfonts(3).Texture = DirectD3D8.CreateTextureFromFileEx(DirectDevice, App.Path & "\Data\INIT\Data\font3.png", D3DX_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED, D3DX_FILTER_POINT, D3DX_FILTER_POINT, &HFF000000, ByVal 0, ByVal 0)
+        Set cfonts(1).Texture = DirectD3D8.CreateTextureFromFileEx(DirectDevice, App.Path & "\Data\INIT\texdefault.png", D3DX_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED, D3DX_FILTER_POINT, D3DX_FILTER_POINT, &HFF000000, ByVal 0, ByVal 0)
    
         'Store the size of the texture
         cfonts(1).TextureSize.X = TexInfo.Width
         cfonts(1).TextureSize.Y = TexInfo.Height
-        
-        cfonts(2).TextureSize.X = TexInfo.Width
-        cfonts(2).TextureSize.Y = TexInfo.Height
-    
-        cfonts(3).TextureSize.X = TexInfo.Width
-        cfonts(3).TextureSize.Y = TexInfo.Height
-        
+   
         Exit Sub
  
 eDebug:
@@ -281,7 +266,7 @@ Sub Engine_Init_FontSettings()
  
         'Load the header information
         FileNum = FreeFile
-        Open App.Path & "\Data\INIT\Data\font1.dat" For Binary As #FileNum
+        Open App.Path & "\Data\INIT\texdefault.dat" For Binary As #FileNum
         Get #FileNum, , cfonts(1).HeaderInfo
         Close #FileNum
    
@@ -331,120 +316,6 @@ Sub Engine_Init_FontSettings()
                         .Vertex(3).tv = v + cfonts(1).RowFactor
                         .Vertex(3).X = cfonts(1).HeaderInfo.CellWidth
                         .Vertex(3).Y = cfonts(1).HeaderInfo.CellHeight
-                        .Vertex(3).Z = 0
-                End With
-       
-        Next LoopChar
-        
-        
-        
-        FileNum = FreeFile
-        Open App.Path & "\Data\INIT\Data\font2.dat" For Binary As #FileNum
-        Get #FileNum, , cfonts(2).HeaderInfo
-        Close #FileNum
-   
-        'Calculate some common values
-        cfonts(2).CharHeight = cfonts(2).HeaderInfo.CellHeight - 4
-        cfonts(2).RowPitch = cfonts(2).HeaderInfo.BitmapWidth \ cfonts(2).HeaderInfo.CellWidth
-        cfonts(2).ColFactor = cfonts(2).HeaderInfo.CellWidth / cfonts(2).HeaderInfo.BitmapWidth
-        cfonts(2).RowFactor = cfonts(2).HeaderInfo.CellHeight / cfonts(2).HeaderInfo.BitmapHeight
-   
-        'Cache the verticies used to draw the character (only requires setting the color and adding to the X/Y values)
-        For LoopChar = 0 To 255
-       
-                'tU and tV value (basically tU = BitmapXPosition / BitmapWidth, and height for tV)
-                Row = (LoopChar - cfonts(2).HeaderInfo.BaseCharOffset) \ cfonts(2).RowPitch
-                u = ((LoopChar - cfonts(2).HeaderInfo.BaseCharOffset) - (Row * cfonts(2).RowPitch)) * cfonts(2).ColFactor
-                v = Row * cfonts(2).RowFactor
- 
-                'Set the verticies
-                With cfonts(2).HeaderInfo.CharVA(LoopChar)
-                        .Vertex(0).color = D3DColorARGB(255, 0, 0, 0)   'Black is the most common color
-                        .Vertex(0).rhw = 1
-                        .Vertex(0).tu = u
-                        .Vertex(0).tv = v
-                        .Vertex(0).X = 0
-                        .Vertex(0).Y = 0
-                        .Vertex(0).Z = 0
-           
-                        .Vertex(1).color = D3DColorARGB(255, 0, 0, 0)
-                        .Vertex(1).rhw = 1
-                        .Vertex(1).tu = u + cfonts(2).ColFactor
-                        .Vertex(1).tv = v
-                        .Vertex(1).X = cfonts(2).HeaderInfo.CellWidth
-                        .Vertex(1).Y = 0
-                        .Vertex(1).Z = 0
-           
-                        .Vertex(2).color = D3DColorARGB(255, 0, 0, 0)
-                        .Vertex(2).rhw = 1
-                        .Vertex(2).tu = u
-                        .Vertex(2).tv = v + cfonts(2).RowFactor
-                        .Vertex(2).X = 0
-                        .Vertex(2).Y = cfonts(2).HeaderInfo.CellHeight
-                        .Vertex(2).Z = 0
-           
-                        .Vertex(3).color = D3DColorARGB(255, 0, 0, 0)
-                        .Vertex(3).rhw = 1
-                        .Vertex(3).tu = u + cfonts(2).ColFactor
-                        .Vertex(3).tv = v + cfonts(2).RowFactor
-                        .Vertex(3).X = cfonts(2).HeaderInfo.CellWidth
-                        .Vertex(3).Y = cfonts(2).HeaderInfo.CellHeight
-                        .Vertex(3).Z = 0
-                End With
-       
-        Next LoopChar
-        
-        FileNum = FreeFile
-        Open App.Path & "\Data\INIT\Data\font3.dat" For Binary As #FileNum
-        Get #FileNum, , cfonts(3).HeaderInfo
-        Close #FileNum
-   
-        'Calculate some common values
-        cfonts(3).CharHeight = cfonts(3).HeaderInfo.CellHeight - 4
-        cfonts(3).RowPitch = cfonts(3).HeaderInfo.BitmapWidth \ cfonts(3).HeaderInfo.CellWidth
-        cfonts(3).ColFactor = cfonts(3).HeaderInfo.CellWidth / cfonts(3).HeaderInfo.BitmapWidth
-        cfonts(3).RowFactor = cfonts(3).HeaderInfo.CellHeight / cfonts(3).HeaderInfo.BitmapHeight
-   
-        'Cache the verticies used to draw the character (only requires setting the color and adding to the X/Y values)
-        For LoopChar = 0 To 255
-       
-                'tU and tV value (basically tU = BitmapXPosition / BitmapWidth, and height for tV)
-                Row = (LoopChar - cfonts(3).HeaderInfo.BaseCharOffset) \ cfonts(3).RowPitch
-                u = ((LoopChar - cfonts(3).HeaderInfo.BaseCharOffset) - (Row * cfonts(3).RowPitch)) * cfonts(3).ColFactor
-                v = Row * cfonts(3).RowFactor
- 
-                'Set the verticies
-                With cfonts(3).HeaderInfo.CharVA(LoopChar)
-                        .Vertex(0).color = D3DColorARGB(255, 0, 0, 0)   'Black is the most common color
-                        .Vertex(0).rhw = 1
-                        .Vertex(0).tu = u
-                        .Vertex(0).tv = v
-                        .Vertex(0).X = 0
-                        .Vertex(0).Y = 0
-                        .Vertex(0).Z = 0
-           
-                        .Vertex(1).color = D3DColorARGB(255, 0, 0, 0)
-                        .Vertex(1).rhw = 1
-                        .Vertex(1).tu = u + cfonts(3).ColFactor
-                        .Vertex(1).tv = v
-                        .Vertex(1).X = cfonts(3).HeaderInfo.CellWidth
-                        .Vertex(1).Y = 0
-                        .Vertex(1).Z = 0
-           
-                        .Vertex(2).color = D3DColorARGB(255, 0, 0, 0)
-                        .Vertex(2).rhw = 1
-                        .Vertex(2).tu = u
-                        .Vertex(2).tv = v + cfonts(3).RowFactor
-                        .Vertex(2).X = 0
-                        .Vertex(2).Y = cfonts(3).HeaderInfo.CellHeight
-                        .Vertex(2).Z = 0
-           
-                        .Vertex(3).color = D3DColorARGB(255, 0, 0, 0)
-                        .Vertex(3).rhw = 1
-                        .Vertex(3).tu = u + cfonts(3).ColFactor
-                        .Vertex(3).tv = v + cfonts(3).RowFactor
-                        .Vertex(3).X = cfonts(3).HeaderInfo.CellWidth
-                        .Vertex(3).Y = cfonts(3).HeaderInfo.CellHeight
                         .Vertex(3).Z = 0
                 End With
        

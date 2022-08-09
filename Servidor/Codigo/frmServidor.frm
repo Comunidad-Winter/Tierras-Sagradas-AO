@@ -663,11 +663,11 @@ Private Sub Command21_Click()
 
 If EnPausa = False Then
     EnPausa = True
-    Call SendData(SendTarget.toall, 0, 0, "BKW")
+    Call SendData(SendTarget.ToAll, 0, 0, "BKW")
     Command21.caption = "Reanudar el servidor"
 Else
     EnPausa = False
-    Call SendData(SendTarget.toall, 0, 0, "BKW")
+    Call SendData(SendTarget.ToAll, 0, 0, "BKW")
     Command21.caption = "Pausar el servidor"
 End If
 
@@ -716,8 +716,6 @@ Private Sub Command5_Click()
 
 'Se asegura de que los sockets estan cerrados e ignora cualquier err
 On Error Resume Next
-
-If frmMain.Visible Then frmMain.txStatus.caption = "Reiniciando."
 
 FrmStat.Show
 
@@ -773,8 +771,6 @@ frmMain.Socket2(0).BufferSize = 2048
 frmMain.Socket1.LocalPort = Puerto
 frmMain.Socket1.listen
 #End If
-
-If frmMain.Visible Then frmMain.txStatus.caption = "Escuchando conexiones entrantes ..."
 
 End Sub
 

@@ -70,25 +70,25 @@ Procesado = True 'ver al final del sub
         Case "X"        ' >>> Sistema Consultas
             rData = Right$(rData, Len(rData) - 1)
             Dim Usuario As Integer
-            Dim texto As String
+            Dim Texto As String
             Usuario = NameIndex(ReadField(1, rData, Asc("*")))
-            texto = ReadField(2, rData, Asc("*"))
+            Texto = ReadField(2, rData, Asc("*"))
             If Usuario <= 0 Then Exit Sub
             UserList(Usuario).flags.ConsultaEnviada = False
             UserList(Usuario).flags.NumeroConsulta = 0
             SendData SendTarget.toindex, Usuario, 0, "||190"
-            Call SendData(SendTarget.toindex, Usuario, 0, "RESPUES" & texto & "*" & UserList(userindex).Name)
+            Call SendData(SendTarget.toindex, Usuario, 0, "RESPUES" & Texto & "*" & UserList(userindex).Name)
         Exit Sub
        Case "#"       ' >>> Sistema Consultas
             Debug.Print "Me llego SOS"
             rData = Right$(rData, Len(rData) - 1)
             Dim TipoConsulta As Byte
             Dim rDatax As String
-            TipoConsulta = ReadField(1, rData, Asc("|"))
-            rDatax = ReadField(2, rData, Asc("|"))
+            TipoConsulta = ReadField(1, rData, Asc(","))
+            rDatax = ReadField(2, rData, Asc(","))
    
-            If UserList(userindex).flags.Silenciado = 1 And UserList(userindex).Counters.timeSilenciado > 0 Then
-                    Call SendData(SendTarget.toindex, userindex, 0, "||945@" & UserList(userindex).Counters.timeSilenciado)
+            If UserList(userindex).flags.Silenciado = True Then
+                Call SendData(SendTarget.toindex, userindex, 0, "||191")
                 Exit Sub
             End If
             
@@ -96,26 +96,46 @@ Procesado = True 'ver al final del sub
                 Call SendData(SendTarget.toindex, userindex, 0, "||192")
                 Exit Sub
             End If
-            
-                Call SendData(SendTarget.ToAdmins, 0, 0, "||193")
-                MensajesNumber = MensajesNumber + 1
-                MensajesSOS(MensajesNumber).Tipo = "Consulta"
-                MensajesSOS(MensajesNumber).Autor = UserList(userindex).Name
-                MensajesSOS(MensajesNumber).Contenido = rDatax
-                UserList(userindex).flags.ConsultaEnviada = True
-                UserList(userindex).flags.NumeroConsulta = MensajesNumber
-        Exit Sub
-        
+       
+            If TipoConsulta = 0 Then
+                    Call SendData(SendTarget.ToAdmins, 0, 0, "||193")
+                    MensajesNumber = MensajesNumber + 1
+                    MensajesSOS(MensajesNumber).Tipo = "Consulta"
+                    MensajesSOS(MensajesNumber).Autor = UserList(userindex).Name
+                    MensajesSOS(MensajesNumber).Contenido = rDatax
+                    UserList(userindex).flags.ConsultaEnviada = True
+                    UserList(userindex).flags.NumeroConsulta = MensajesNumber
+                    Exit Sub
+            ElseIf TipoConsulta = 2 Then
+                    Call SendData(SendTarget.ToAdmins, 0, 0, "||193")
+                    MensajesNumber = MensajesNumber + 1
+                    MensajesSOS(MensajesNumber).Tipo = "Bug"
+                    MensajesSOS(MensajesNumber).Autor = UserList(userindex).Name
+                    MensajesSOS(MensajesNumber).Contenido = rDatax
+                    UserList(userindex).flags.ConsultaEnviada = True
+                    UserList(userindex).flags.NumeroConsulta = MensajesNumber
+                    Exit Sub
+            ElseIf TipoConsulta = 3 Then
+                    Call SendData(SendTarget.ToAdmins, 0, 0, "||193")
+                    MensajesNumber = MensajesNumber + 1
+                    MensajesSOS(MensajesNumber).Tipo = "Ayuda"
+                    MensajesSOS(MensajesNumber).Autor = UserList(userindex).Name
+                    MensajesSOS(MensajesNumber).Contenido = rDatax
+                    UserList(userindex).flags.ConsultaEnviada = True
+                    UserList(userindex).flags.NumeroConsulta = MensajesNumber
+                    Exit Sub
+                End If
+            Exit Sub
         Case ";" 'Hablar
             rData = Right$(rData, Len(rData) - 1)
             If InStr(rData, "°") Then
                 Exit Sub
             End If
             
-            If UserList(userindex).flags.EspectadorArena1 = 1 Or UserList(userindex).flags.EspectadorArena2 = 1 Or UserList(userindex).flags.EspectadorArena3 = 1 Or UserList(userindex).flags.EspectadorArena4 = 1 Then
-                    Call SendData(SendTarget.toindex, userindex, 0, "||194")
-                Exit Sub
-            End If
+        If UserList(userindex).flags.EspectadorArena1 = 1 Or UserList(userindex).flags.EspectadorArena2 = 1 Or UserList(userindex).flags.EspectadorArena3 = 1 Or UserList(userindex).flags.EspectadorArena4 = 1 Then
+                Call SendData(SendTarget.toindex, userindex, 0, "||194")
+            Exit Sub
+        End If
             
         If rData = ":|" Then
                 Call SendData(ToPCArea, userindex, UserList(userindex).Pos.Map, "CFE" & UserList(userindex).Char.CharIndex & "," & FXE1 & "," & 130)
@@ -180,7 +200,7 @@ Procesado = True 'ver al final del sub
         End If
             
             '[Consejeros]
-            If UserList(userindex).flags.Privilegios >= PlayerType.Consejero Then
+            If UserList(userindex).flags.Privilegios >= PlayerType.UserSupport Then
                 Call LogGMss(UserList(userindex).Name, "Dijo: " & rData, True)
             End If
             
@@ -190,22 +210,20 @@ Procesado = True 'ver al final del sub
             If UserList(userindex).flags.Oculto > 0 Then
                 UserList(userindex).flags.Oculto = 0
                 If UserList(userindex).flags.Invisible = 0 Then
-                    Call SendData(SendTarget.toMap, 0, UserList(userindex).Pos.Map, "NOVER" & UserList(userindex).Char.CharIndex & ",0")
+                    Call SendData(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, "NOVER" & UserList(userindex).Char.CharIndex & ",0")
                     Call SendData(SendTarget.toindex, userindex, 0, "||195")
                 End If
             End If
             
-            If (UserList(userindex).flags.evLuz) Then Call mEventoLUZ.evLuz_getText(userindex, rData)
-            
             If UserList(userindex).flags.Muerto = 1 Then
-                Call SendData(SendTarget.ToDeadArea, userindex, UserList(userindex).Pos.Map, "T|12632256°" & rData & "°" & CStr(ind))
+                Call SendData(SendTarget.ToDeadArea, userindex, UserList(userindex).Pos.Map, "N|12632256°" & rData & "°" & CStr(ind))
             Else
             If UserList(userindex).flags.Privilegios > User Then
-                  Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "T|" & vbYellow & "°" & rData & "°" & CStr(ind))
+                  Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "N|" & vbYellow & "°" & rData & "°" & CStr(ind))
                 If Not rData = vbNullString Then
                 End If
             ElseIf UserList(userindex).flags.Privilegios = User Then
-                Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "T|" & vbWhite & "°" & rData & "°" & CStr(ind))
+                Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "N|" & vbWhite & "°" & rData & "°" & CStr(ind))
                 If Not rData = vbNullString Then
                 End If
                 End If
@@ -221,7 +239,7 @@ Procesado = True 'ver al final del sub
                 Exit Sub
             End If
             '[Consejeros]
-            If UserList(userindex).flags.Privilegios >= PlayerType.Consejero Then
+            If UserList(userindex).flags.Privilegios >= PlayerType.UserSupport Then
                 Call LogGMss(UserList(userindex).Name, "Grito: " & rData, True)
             End If
     
@@ -229,14 +247,12 @@ Procesado = True 'ver al final del sub
             If UserList(userindex).flags.Oculto > 0 Then
                 UserList(userindex).flags.Oculto = 0
                 If UserList(userindex).flags.Invisible = 0 Then
-                    Call SendData(SendTarget.toMap, 0, UserList(userindex).Pos.Map, "NOVER" & UserList(userindex).Char.CharIndex & ",0")
+                    Call SendData(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, "NOVER" & UserList(userindex).Char.CharIndex & ",0")
                     Call SendData(SendTarget.toindex, userindex, 0, "||195")
                 End If
             End If
     
     
-            If (UserList(userindex).flags.evLuz) Then Call mEventoLUZ.evLuz_getText(userindex, rData)
-            
             ind = UserList(userindex).Char.CharIndex
             Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "N|" & vbRed & "°" & rData & "°" & str(ind))
             Exit Sub
@@ -268,7 +284,7 @@ Procesado = True 'ver al final del sub
             If tMessage = "" Or tMessage = " " Then Exit Sub
                 
             'A los dioses y admins no vale susurrarles si no sos uno vos mismo (así no pueden ver si están conectados o no)
-            If UserList(tIndex).flags.Privilegios > PlayerType.Semidios And UserList(tIndex).flags.DeseoRecibirMSJ = 0 Then
+            If UserList(tIndex).flags.Privilegios > PlayerType.EventManager And UserList(tIndex).flags.DeseoRecibirMSJ = 0 Then
                 Call SendData(SendTarget.toindex, userindex, 0, "||196")
                 Exit Sub
             End If
@@ -294,7 +310,7 @@ Procesado = True 'ver al final del sub
                 Next i
                      
                 '[Consejeros]
-                If UserList(userindex).flags.Privilegios >= PlayerType.Consejero Then
+                If UserList(userindex).flags.Privilegios >= PlayerType.UserSupport Then
                     Call LogGMss(UserList(userindex).Name, "Le dijo a '" & UserList(tIndex).Name & "' " & tMessage, True)
                 End If
                
@@ -316,86 +332,82 @@ Procesado = True 'ver al final del sub
         
         Case "M" 'Moverse
             rData = Right$(rData, Len(rData) - 1)
-
-            If UserList(userindex).flags.Stopped Or UserList(userindex).flags.NotMove Then Exit Sub
+            
+            If UserList(userindex).flags.Stopped Then Exit Sub
             
             If UserList(userindex).flags.EspectadorArena1 = 1 Or UserList(userindex).flags.EspectadorArena2 = 1 Or UserList(userindex).flags.EspectadorArena3 = 1 Or UserList(userindex).flags.EspectadorArena4 = 1 Then
                     Call SendData(SendTarget.toindex, userindex, 0, "||200")
                 Exit Sub
             End If
             
-            If TModalidad <> "0" And UserList(userindex).flags.EnTorneo = 1 Then
-                If (UCase$(TModalidad) = "DM" Or UCase$(TModalidad) = "CARRERA") And cuentaRegresiva > 0 And (UserList(userindex).Pos.Map = 100 Or UserList(userindex).Pos.Map = 107 Or UserList(userindex).Pos.Map = 118 Or UserList(userindex).Pos.Map = 162 Or UserList(userindex).Pos.Map = mapaCarrera) Then
-                    Call SendData(SendTarget.toindex, userindex, 0, "||161")
-                    Exit Sub
-                End If
-                
-                If (TModalidad = "1" Or TModalidad = "2" Or TModalidad = "3" Or TModalidad = "4") And (UsuarioPelea(1) = userindex Or UsuarioPelea(2) = userindex Or UsuarioPelea(3) = userindex Or UsuarioPelea(4) = userindex Or UsuarioPelea(5) = userindex Or UsuarioPelea(6) = userindex Or UsuarioPelea(7) = userindex Or UsuarioPelea(8) = userindex) And cuentaRegresiva > 0 And (UserList(userindex).Pos.Map = 100 Or UserList(userindex).Pos.Map = 107) Then
+            If TModalidad <> "0" Then
+                If UserList(userindex).flags.EnTorneo = 1 And UCase$(TModalidad) = "DM" And CuentaRegresiva > 0 And (UserList(userindex).Pos.Map = 100 Or UserList(userindex).Pos.Map = 99) Then
                     Call SendData(SendTarget.toindex, userindex, 0, "||161")
                     Exit Sub
                 End If
             
-                For i = 1 To 8
-                    If userindex = UsuarioPelea(i) And cuentaRegresiva > 0 Then
-                        Call SendData(SendTarget.toindex, userindex, 0, "||161")
-                        Exit Sub
-                    End If
-                Next i
+                If UserList(userindex).flags.EnTorneo = 1 And (TModalidad = "1" Or TModalidad = "2" Or TModalidad = "3" Or TModalidad = "4") And (UsuarioPelea(1) = userindex Or UsuarioPelea(2) = userindex Or UsuarioPelea(3) = userindex Or UsuarioPelea(4) = userindex Or UsuarioPelea(5) = userindex Or UsuarioPelea(6) = userindex Or UsuarioPelea(7) = userindex Or UsuarioPelea(8) = userindex) And CuentaRegresiva > 0 And (UserList(userindex).Pos.Map = 100 Or UserList(userindex).Pos.Map = 99) Then
+                    Call SendData(SendTarget.toindex, userindex, 0, "||161")
+                    Exit Sub
+                End If
+            
+            For i = 1 To 8
+                If userindex = UsuarioPelea(i) And CuentaRegresiva > 0 Then
+                    Call SendData(SendTarget.toindex, userindex, 0, "||161")
+                    Exit Sub
+                End If
+            Next i
+        End If
+           
+            'salida parche
+            If UserList(userindex).Counters.Saliendo Then
+                Call SendData(SendTarget.toindex, userindex, 0, "||201")
+                UserList(userindex).Counters.Saliendo = False
+                UserList(userindex).Counters.Salir = 0
+            End If
+            
+            If UserList(userindex).Counters.TransporteCastillos(31) > 0 Or UserList(userindex).Counters.TransporteCastillos(32) > 0 Or UserList(userindex).Counters.TransporteCastillos(33) > 0 Or UserList(userindex).Counters.TransporteCastillos(34) > 0 Or UserList(userindex).Counters.TransporteCastillos(35) > 0 Then
+                Call SendData(SendTarget.toindex, userindex, 0, "||202")
+                UserList(userindex).Counters.TransporteCastillos(31) = 0
+                UserList(userindex).Counters.TransporteCastillos(32) = 0
+                UserList(userindex).Counters.TransporteCastillos(33) = 0
+                UserList(userindex).Counters.TransporteCastillos(34) = 0
+                UserList(userindex).Counters.TransporteCastillos(35) = 0
+            ElseIf UserList(userindex).Counters.TransportePremium > 0 Then
+                Call SendData(SendTarget.toindex, userindex, 0, "||203")
+                UserList(userindex).Counters.TransportePremium = 0
+            End If
+            
+            If UserList(userindex).Counters.SegundosParaRevivir > 0 Then
+                Call SendData(SendTarget.toindex, userindex, 0, "||204")
+                UserList(userindex).Counters.SegundosParaRevivir = 0
             End If
             
           If UserList(userindex).flags.Paralizado = 0 Then
-                If UserList(userindex).flags.Meditando Then
+                If Not UserList(userindex).flags.Meditando Then
+                    Call MoveUserChar(userindex, val(rData))
+                ElseIf UserList(userindex).flags.Meditando Then
                   UserList(userindex).flags.Meditando = False
                   Call SendData(toindex, userindex, 0, "MEDOK")
                   Call SendData(toindex, userindex, 0, "||205")
                   UserList(userindex).Char.FX = 0
                   UserList(userindex).Char.loops = 0
                   Call SendData(ToPCArea, userindex, UserList(userindex).Pos.Map, "CFX" & UserList(userindex).Char.CharIndex & "," & 0 & "," & 0)
-                End If
-                
-                Call MoveUserChar(userindex, val(rData))
-            
-                'salida parche
-                If UserList(userindex).Counters.Saliendo Then
-                    Call SendData(SendTarget.toindex, userindex, 0, "||201")
-                    UserList(userindex).Counters.Saliendo = False
-                    UserList(userindex).Counters.Salir = 0
-                End If
-                
-                If UserList(userindex).Counters.TransporteCastillos(31) > 0 Or UserList(userindex).Counters.TransporteCastillos(32) > 0 Or UserList(userindex).Counters.TransporteCastillos(33) > 0 Or UserList(userindex).Counters.TransporteCastillos(34) > 0 Or UserList(userindex).Counters.TransporteCastillos(35) > 0 Then
-                    Call SendData(SendTarget.toindex, userindex, 0, "||202")
-                    UserList(userindex).Counters.TransporteCastillos(31) = 0
-                    UserList(userindex).Counters.TransporteCastillos(32) = 0
-                    UserList(userindex).Counters.TransporteCastillos(33) = 0
-                    UserList(userindex).Counters.TransporteCastillos(34) = 0
-                    UserList(userindex).Counters.TransporteCastillos(35) = 0
-                ElseIf UserList(userindex).Counters.TransportePremium > 0 Then
-                    Call SendData(SendTarget.toindex, userindex, 0, "||203")
-                    UserList(userindex).Counters.TransportePremium = 0
-                End If
-                
-                If UserList(userindex).Counters.SegundosParaRevivir > 0 Then
-                    Call SendData(SendTarget.toindex, userindex, 0, "||204")
-                    UserList(userindex).Counters.SegundosParaRevivir = 0
+                  Call MoveUserChar(userindex, val(rData))
                 End If
             End If
             
-            If UserList(userindex).flags.Oculto = 1 Then
-                If UCase$(UserList(userindex).clase) <> "LADRON" And UCase$(UserList(userindex).clase) <> "CAZADOR" And UCase$(UserList(userindex).clase) <> "GUERRERO" Then
-                    UserList(userindex).flags.Oculto = 0
-                    If UserList(userindex).flags.Invisible = 0 Then
-                        Call SendData(SendTarget.toindex, userindex, 0, "||195")
-                        Call SendData(SendTarget.toMap, 0, UserList(userindex).Pos.Map, "NOVER" & UserList(userindex).Char.CharIndex & ",0")
-                    End If
+                'Sumamos los movimientos que hace, si en 40 minutos no hace ningún mov lo rajamos a la mierda por down
+                If UserList(userindex).flags.AntiAFK < 10 Then
+                    UserList(userindex).flags.AntiAFK = UserList(userindex).flags.AntiAFK + 1
                 End If
-            End If
             
             If TesoroContando = True And UserList(userindex).flags.Desenterrando = 1 Then
                 TesoroContando = False
                 UserList(userindex).flags.Desenterrando = 0
                 TiempoTesoro = 30
             End If
-        Exit Sub
+            Exit Sub
     End Select
     
     Select Case UCase$(rData)
@@ -426,7 +438,7 @@ Procesado = True 'ver al final del sub
                 If UserList(userindex).flags.Oculto > 0 And UserList(userindex).flags.AdminInvisible = 0 Then
                     UserList(userindex).flags.Oculto = 0
                     If UserList(userindex).flags.Invisible = 0 Then
-                        Call SendData(SendTarget.toMap, 0, UserList(userindex).Pos.Map, "NOVER" & UserList(userindex).Char.CharIndex & ",0")
+                        Call SendData(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, "NOVER" & UserList(userindex).Char.CharIndex & ",0")
                         Call SendData(SendTarget.toindex, userindex, 0, "||195")
                     End If
                 End If
@@ -439,7 +451,7 @@ Procesado = True 'ver al final del sub
                     Exit Sub
             End If
             '[Consejeros]
-            If UserList(userindex).flags.Privilegios = PlayerType.Consejero And Not UserList(userindex).flags.EsRolesMaster Then Exit Sub
+            If UserList(userindex).flags.Privilegios = PlayerType.UserSupport And Not UserList(userindex).flags.EsRolesMaster Then Exit Sub
                 
             Call GetObj(userindex)
         Exit Sub
@@ -458,32 +470,180 @@ Procesado = True 'ver al final del sub
             tStr = SendTorneoList(userindex)
             Call SendData(SendTarget.toindex, userindex, 0, "LTR" & SendTorneoList(userindex))
         Exit Sub
-        Case "IQUEST"
-            tStr = SendQuestList(userindex)
-            Call SendData(SendTarget.toindex, userindex, 0, "QTL" & SendQuestList(userindex))
-            
-            Dim tmp_nroQuest As Byte
-            tmp_nroQuest = UserList(userindex).flags.UserNumQuest
-            
-            If tmp_nroQuest > 0 Then Call SendData(SendTarget.toindex, userindex, 0, "MQC" & QuestsList(tmp_nroQuest).CantNPC & "," & UserList(userindex).flags.MuereQuest & "," & QuestsList(tmp_nroQuest).Name & "," & QuestsList(tmp_nroQuest).Oro & "," & QuestsList(tmp_nroQuest).ptsTorneo & "," & QuestsList(tmp_nroQuest).Creditos & "," & QuestsList(tmp_nroQuest).ptsTS)
-        Exit Sub
         
-        Case "IDUELOS"
-            Call SendData(SendTarget.toindex, userindex, 0, "MAR" & NombreDueleando(1) & "," & NombreDueleando(2) & "," & NombreDueleando(3) & "," & NombreDueleando(4) & "," & NombreDueleando(5) & "," & NombreDueleando(6) & "," & NombreDueleando(7) & "," & NombreDueleando(8))
+        Case "SUBLVL1"
+        If GetVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "Leader") <> UserList(userindex).Name Then
+            Call SendData(SendTarget.toindex, userindex, 0, "||208")
         Exit Sub
+        End If
+    
+        If GetVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "NivelClan") = 7 Then
+            Call SendData(SendTarget.toindex, userindex, 0, "||209")
+        Exit Sub
+        End If
         
-        Case "TENGOMACROS"
-            With UserList(userindex)
-                .flags.tieneMacro = .flags.tieneMacro + 1
-            
-                If (.flags.tieneMacro = 2) Then
-                    Call SendData(SendTarget.ToAdmins, 0, 0, "N|Seguridad>> se detectó el uso de macros en el usuario: " & UserList(userindex).Name & ", hay que revisarlo. ~255~255~0")
-                    .flags.tieneMacro = 0
-                End If
-            End With
-        Exit Sub
+    Dim NivelClan As Byte
+    Dim PuntosClan As Integer
+    Dim SiguienteNivel As Integer
+    
+    NivelClan = GetVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "NivelClan")
+    PuntosClan = GetVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "PuntosClan")
+    SiguienteNivel = GetVar(IniPath & "Configuracion.ini", "NIVELCLAN", "2")
+    
+    If NivelClan = 1 Then
+      If PuntosClan >= SiguienteNivel Then
+            puntixasd = PuntosClan - SiguienteNivel
+            Call WriteVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "PuntosClan", puntixasd)
+            Call WriteVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "NivelClan", "2")
+            Call SendData(SendTarget.ToGuildMembers, UserList(userindex).GuildIndex, 0, "||210@" & Guilds(UserList(userindex).GuildIndex).GuildName & "@2")
+            Call SendData(SendTarget.ToGuildMembers, UserList(userindex).GuildIndex, 0, "||211@2@8")
+            Exit Sub
+      Else
+            Call SendData(SendTarget.toindex, userindex, 0, "||212@" & SiguienteNivel)
+      Exit Sub
+      End If
+    End If
+  Exit Sub
   
-    Case "CCANJE"
+  Case "SUBLVL2"
+    If GetVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "Leader") <> UserList(userindex).Name Then
+    Call SendData(SendTarget.toindex, userindex, 0, "||208")
+    Exit Sub
+    End If
+    
+    If GetVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "NivelClan") = 7 Then
+    Call SendData(SendTarget.toindex, userindex, 0, "||209")
+    Exit Sub
+    End If
+    
+    NivelClan = GetVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "NivelClan")
+    PuntosClan = GetVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "PuntosClan")
+    SiguienteNivel = GetVar(IniPath & "Configuracion.ini", "NIVELCLAN", "3")
+    
+    If NivelClan = 2 Then
+      If PuntosClan >= SiguienteNivel Then
+            puntixasd = PuntosClan - SiguienteNivel
+            Call WriteVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "PuntosClan", puntixasd)
+            Call WriteVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "NivelClan", "3")
+            Call SendData(SendTarget.ToGuildMembers, UserList(userindex).GuildIndex, 0, "||210@" & Guilds(UserList(userindex).GuildIndex).GuildName & "@3")
+            Call SendData(SendTarget.ToGuildMembers, UserList(userindex).GuildIndex, 0, "||211@3@12")
+            Exit Sub
+      Else
+            Call SendData(SendTarget.toindex, userindex, 0, "||212@" & SiguienteNivel)
+      Exit Sub
+      End If
+    End If
+  Exit Sub
+  
+  Case "SUBLVL3"
+    If GetVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "Leader") <> UserList(userindex).Name Then
+    Call SendData(SendTarget.toindex, userindex, 0, "||208")
+    Exit Sub
+    End If
+    
+    If GetVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "NivelClan") = 7 Then
+    Call SendData(SendTarget.toindex, userindex, 0, "||209")
+    Exit Sub
+    End If
+    
+    NivelClan = GetVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "NivelClan")
+    PuntosClan = GetVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "PuntosClan")
+    SiguienteNivel = GetVar(IniPath & "Configuracion.ini", "NIVELCLAN", "4")
+    
+    If NivelClan = 3 Then
+      If PuntosClan >= SiguienteNivel Then
+            puntixasd = PuntosClan - SiguienteNivel
+            Call WriteVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "PuntosClan", puntixasd)
+            Call WriteVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "NivelClan", "4")
+            Call SendData(SendTarget.ToGuildMembers, UserList(userindex).GuildIndex, 0, "||210@" & Guilds(UserList(userindex).GuildIndex).GuildName & "@4")
+            Call SendData(SendTarget.ToGuildMembers, UserList(userindex).GuildIndex, 0, "||211@4@16")
+            Exit Sub
+      Else
+            Call SendData(SendTarget.toindex, userindex, 0, "||212@" & SiguienteNivel)
+      Exit Sub
+      End If
+    End If
+  Exit Sub
+  
+  Case "SUBLVL4"
+    If GetVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "Leader") <> UserList(userindex).Name Then
+    Call SendData(SendTarget.toindex, userindex, 0, "||208")
+    Exit Sub
+    End If
+    
+    If GetVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "NivelClan") = 7 Then
+    Call SendData(SendTarget.toindex, userindex, 0, "||209")
+    Exit Sub
+    End If
+    
+    NivelClan = GetVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "NivelClan")
+    PuntosClan = GetVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "PuntosClan")
+    SiguienteNivel = GetVar(IniPath & "Configuracion.ini", "NIVELCLAN", "5")
+    
+    If NivelClan = 4 Then
+      If PuntosClan >= SiguienteNivel Then
+            puntixasd = PuntosClan - SiguienteNivel
+            Call WriteVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "PuntosClan", puntixasd)
+            Call WriteVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "NivelClan", "5")
+            Call SendData(SendTarget.ToGuildMembers, UserList(userindex).GuildIndex, 0, "||210@" & Guilds(UserList(userindex).GuildIndex).GuildName & "@5")
+            Call SendData(SendTarget.ToGuildMembers, UserList(userindex).GuildIndex, 0, "||211@5@20")
+            Exit Sub
+      Else
+            Call SendData(SendTarget.toindex, userindex, 0, "||212@" & SiguienteNivel)
+      Exit Sub
+      End If
+    End If
+  Exit Sub
+  
+  Case "SUBLVL5"
+    If GetVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "Leader") <> UserList(userindex).Name Then
+        Call SendData(SendTarget.toindex, userindex, 0, "||208")
+    Exit Sub
+    End If
+    
+    If GetVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "NivelClan") = 7 Then
+        Call SendData(SendTarget.toindex, userindex, 0, "||209")
+    Exit Sub
+    End If
+    
+    If GetVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "NivelClan") = 5 Then
+      If TieneObjetos(1481, 1, userindex) = True Then
+            Call WriteVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "NivelClan", "6")
+            Call SendData(SendTarget.ToGuildMembers, UserList(userindex).GuildIndex, 0, "||210@" & Guilds(UserList(userindex).GuildIndex).GuildName & "@6")
+            Call SendData(SendTarget.ToGuildMembers, UserList(userindex).GuildIndex, 0, "||211@6@24")
+            Call QuitarObjetos(1481, 1, userindex)
+            Exit Sub
+      Else
+            Call SendData(SendTarget.toindex, userindex, 0, "||213")
+      Exit Sub
+      End If
+    End If
+    
+    If GetVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "NivelClan") = 6 Then
+      If TieneObjetos(1482, 1, userindex) = True Then
+            Call WriteVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "NivelClan", "7")
+            Call SendData(SendTarget.ToGuildMembers, UserList(userindex).GuildIndex, 0, "||210@" & Guilds(UserList(userindex).GuildIndex).GuildName & "@7")
+            Call SendData(SendTarget.ToGuildMembers, UserList(userindex).GuildIndex, 0, "||211@7@28")
+            Call QuitarObjetos(1482, 1, userindex)
+            Exit Sub
+      Else
+            Call SendData(SendTarget.toindex, userindex, 0, "||214")
+      Exit Sub
+      End If
+    End If
+    
+  Exit Sub
+  
+    Case "DCANJE"
+            tStr = UserList(userindex).Stats.PuntosDonacion & "," & UBound(DonationList) & ","
+            For i = 1 To UBound(DonationList)
+                tStr = tStr & DonationList(i).ObjName & ","
+            Next
+            
+            Call SendData(SendTarget.toindex, userindex, 0, "DRM" & tStr)
+    Exit Sub
+  
+        Case "CCANJE"
         Dim Premios As Integer, SX As String
             SX = "PRM" & UBound(PremiosList) & ","
              
@@ -491,7 +651,7 @@ Procesado = True 'ver al final del sub
                 SX = SX & PremiosList(Premios).ObjName & ","
             Next Premios
              
-            Call SendData(SendTarget.toindex, userindex, 0, SX & UserList(userindex).Stats.PuntosTorneo & "," & UserList(userindex).Stats.TSPoints)
+            Call SendData(SendTarget.toindex, userindex, 0, SX & UserList(userindex).Stats.PuntosTorneo)
             Call SendData(SendTarget.toindex, userindex, 0, "INF" & PremiosList(val(rData)).ObjRequiere & "," & PremiosList(val(rData)).ObjMaxAt & "," & PremiosList(val(rData)).ObjMinAt & "," & PremiosList(val(rData)).ObjMaxdef & "," & PremiosList(val(rData)).ObjMindef & "," & PremiosList(val(rData)).ObjMaxAtMag & "," & PremiosList(val(rData)).ObjMinAtMag & "," & PremiosList(val(rData)).ObjMaxDefMag & "," & PremiosList(val(rData)).ObjMinDefMag & "," & PremiosList(val(rData)).ObjDescripcion)
         Exit Sub
         
@@ -509,6 +669,7 @@ Procesado = True 'ver al final del sub
               UserInfo = SendGuildUserInfo(userindex)
               If UserInfo <> vbNullString Then
                 Call SendData(SendTarget.toindex, userindex, 0, "IREDAEK" & UserInfo)
+                Call SendData(SendTarget.toindex, userindex, 0, "IRFORTA" & Fortaleza)
               Exit Sub
               End If
             End If
@@ -517,14 +678,24 @@ Procesado = True 'ver al final del sub
             If tStr = vbNullString And UserInfo = vbNullString Then
                 Call SendData(SendTarget.toindex, userindex, 0, "GL" & SendGuildsList(userindex))
             Else
-                If m_EsGuildLeader(UserList(userindex).Name, GI) Or m_EsGuildSubLeader1(UserList(userindex).Name, GI) Or m_EsGuildSubLeader2(UserList(userindex).Name, GI) Then
+                If m_EsGuildSubLeader1(UserList(userindex).Name, GI) Or m_EsGuildSubLeader2(UserList(userindex).Name, GI) Then
                     Call SendData(SendTarget.toindex, userindex, 0, "IREDAEL" & tStr)
+                    Call SendData(SendTarget.toindex, userindex, 0, "IRFORTA" & Fortaleza)
+                ElseIf m_EsGuildLeader(UserList(userindex).Name, GI) Then
+                    Call SendData(SendTarget.toindex, userindex, 0, "IREDAEL" & tStr)
+                    Call SendData(SendTarget.toindex, userindex, 0, "IRFORTA" & Fortaleza)
                 End If
             End If
            Exit Sub
+        Case "ATRI"
+            Call EnviarAtrib(userindex)
+            Exit Sub
+        Case "KEST"
+            Call InfoQuest(userindex)
+        Exit Sub
         Case "FEST" 'Mini estadisticas :)
             Call EnviarMiniEstadisticas(userindex)
-            Exit Sub
+        Exit Sub
         '[Alejo]
         Case "FINCOM"
             'User sale del modo COMERCIO
@@ -537,6 +708,13 @@ Procesado = True 'ver al final del sub
             Call SendUserGLD(userindex)
             Call IniciarDeposito(userindex)
             Exit Sub
+        Case "{IXION"
+            Call SendData(SendTarget.toindex, userindex, 0, "MISI" & UserList(userindex).Misiones.NumeroMision & "," & UserList(userindex).Misiones.ConteoUser & "," & MisionesDiarias(UserList(userindex).Misiones.NumeroMision).Cantidad)
+        Exit Sub
+        Case "{IZION"
+            If UserList(userindex).Misiones.Completada = 1 Then Exit Sub
+            VerificarMisionDiaria (userindex)
+        Exit Sub
         Case "FINBAN"
             'User sale del modo BANCO
             UserList(userindex).flags.Comerciando = False
@@ -557,23 +735,14 @@ Procesado = True 'ver al final del sub
     
      Select Case UCase$(Left$(rData, 6))
      
-     Case "DCANJE"
-            tStr = UserList(userindex).Stats.PuntosDonacion & "," & UBound(DonationList) & ","
-            For i = 1 To UBound(DonationList)
-                tStr = tStr & DonationList(i).ObjName & ","
-            Next
-            
-            Call SendData(SendTarget.toindex, userindex, 0, "DRM" & tStr)
-    Exit Sub
-     
     Case "CONSUL" 'Enviamos todos los s.o.s de los usuarios al cliente.
         rData = Right$(rData, Len(rData) - 6)
         
         Dim dataSOS As String
-        dataSOS = MensajesNumber & "|"
+        dataSOS = MensajesNumber & ","
         
         For loopC = 1 To MensajesNumber
-            dataSOS = dataSOS & MensajesSOS(loopC).Tipo & "-" & MensajesSOS(loopC).Autor & "-" & MensajesSOS(loopC).Contenido & "|"
+            dataSOS = dataSOS & MensajesSOS(loopC).Tipo & "-" & MensajesSOS(loopC).Autor & "-" & MensajesSOS(loopC).Contenido & ","
         Next loopC
         
         Call SendData(SendTarget.toindex, userindex, 0, "ZSOS" & dataSOS)
@@ -663,7 +832,7 @@ Procesado = True 'ver al final del sub
           
             UserList(userindex).OrigChar.Head = rData
             UserList(userindex).Char.Head = rData
-            Call ChangeUserChar(SendTarget.toMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.Body, UserList(userindex).Char.Head, UserList(userindex).Char.Heading, UserList(userindex).Char.WeaponAnim, UserList(userindex).Char.ShieldAnim, UserList(userindex).Char.CascoAnim)
+            Call ChangeUserChar(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.Body, UserList(userindex).Char.Head, UserList(userindex).Char.Heading, UserList(userindex).Char.WeaponAnim, UserList(userindex).Char.ShieldAnim, UserList(userindex).Char.CascoAnim)
             
             SendData SendTarget.toindex, userindex, 0, "||217@" & rData
             
@@ -763,109 +932,29 @@ Procesado = True 'ver al final del sub
         
         Call SendData(SendTarget.ToAdmins, 0, 0, "||218@" & UserList(userindex).Name & "@" & rData)
     Exit Sub
-    
-    Case "FTSPTS"
-    rData = Right$(rData, Len(rData) - 6)
-        Dim tsIndex As Byte, tsPrice As Byte, tsObj As obj, Enano As Boolean
-        tsIndex = val(ReadField(1, rData, 44))
-        
-        tsObj.Amount = 1
-        
-        Enano = (UCase$(UserList(userindex).Raza) = "ENANO" Or UCase$(UserList(userindex).Raza) = "GNOMO")
-    
-        Select Case tsIndex
-            Case 0
-                tsObj.ObjIndex = 1055
-                tsPrice = 10
-            Case 1
-                tsObj.ObjIndex = 1033
-                tsPrice = 15
-            Case 2
-                tsObj.ObjIndex = 915
-                tsPrice = 25
-            Case 3
-                tsObj.ObjIndex = 1227
-                tsPrice = 35
-            Case 4
-                tsObj.ObjIndex = 1215
-                tsPrice = 30
-            Case 5
-                tsObj.ObjIndex = 1050
-                tsPrice = 40
-            Case 6
-                tsObj.ObjIndex = 1050
-                tsPrice = 40
-            Case 7
-                tsObj.ObjIndex = 1539
-                tsObj.Amount = 2
-                tsPrice = 5
-            Case 8
-                tsObj.ObjIndex = 1035
-                tsPrice = 30
-            Case 9
-                tsObj.ObjIndex = 1059
-                tsPrice = 65
-            Case 10
-                tsObj.ObjIndex = 1060
-                tsPrice = 70
-            Case 11
-                tsObj.ObjIndex = 1535
-                tsPrice = 20
-        End Select
-        
-        If UserList(userindex).Stats.TSPoints < tsPrice Then
-            Call SendData(SendTarget.toindex, userindex, 0, "||212@" & tsPrice)
-            Exit Sub
-        End If
-        
-        If Not MeterItemEnInventario(userindex, tsObj) Then
-            Call SendData(SendTarget.toindex, userindex, 0, "||108")
-         Exit Sub
-        End If
-        
-        Call SendData(SendTarget.toindex, userindex, 0, "||232@" & tsObj.Amount & "@" & ObjData(tsObj.ObjIndex).Name)
-        UserList(userindex).Stats.TSPoints = UserList(userindex).Stats.TSPoints - tsPrice
-    Exit Sub
      
      Case "ADDPTS"
-        rData = Right$(rData, Len(rData) - 6)
-        Dim cantpts As Integer
-        cantpts = val(ReadField(1, rData, 44))
-        
-        If UserList(userindex).GuildIndex <= 0 Then Exit Sub
-        
-        If UserList(userindex).Stats.PuntosTorneo < cantpts Then
-            Call SendData(SendTarget.toindex, userindex, 0, "||219")
-        Exit Sub
-        End If
+    rData = Right$(rData, Len(rData) - 6)
+    Dim cantpts As Integer
+    cantpts = val(ReadField(1, rData, 44))
     
-        If cantpts < 0 Then Exit Sub
-        
-        Dim NivelClan As Byte
-        Dim SiguienteNivel, PuntosClan As Integer
-        
-        NivelClan = Guilds(UserList(userindex).GuildIndex).NivelClan
-        SiguienteNivel = val(GetVar(IniPath & "Configuracion.ini", "NIVELCLAN", NivelClan + 1))
-        
-        If NivelClan >= 5 Then
-            Call SendData(SendTarget.toindex, userindex, 0, "||209")
-        Exit Sub
-        End If
-        
-        PuntosClan = GetVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "PuntosClan") + cantpts
-        Call WriteVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "PuntosClan", PuntosClan)
-        UserList(userindex).Stats.PuntosTorneo = UserList(userindex).Stats.PuntosTorneo - cantpts
-        Call SendData(SendTarget.ToGuildMembers, UserList(userindex).GuildIndex, 0, "||220@" & UserList(userindex).Name & "@" & cantpts)
-
-          If PuntosClan >= SiguienteNivel Then
-                PuntosClan = PuntosClan - SiguienteNivel
-                Call WriteVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "PuntosClan", PuntosClan)
-                Call WriteVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "NivelClan", NivelClan + 1)
-                Call SendData(SendTarget.ToGuildMembers, UserList(userindex).GuildIndex, 0, "||210@" & Guilds(UserList(userindex).GuildIndex).GuildName & "@" & NivelClan + 1)
-                Call SendData(SendTarget.ToGuildMembers, UserList(userindex).GuildIndex, 0, "||211@" & NivelClan + 1 & "@" & (NivelClan + 1) * 4)
-                Exit Sub
-          End If
-        
+    If GetVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "NivelClan") = 5 Then
+    Call SendData(SendTarget.toindex, userindex, 0, "||209")
+    Exit Sub
+    End If
+    
+    If UserList(userindex).Stats.PuntosTorneo < cantpts Then
+    Call SendData(SendTarget.toindex, userindex, 0, "||219")
+    Exit Sub
+    End If
+    
+    If cantpts < 0 Then Exit Sub
+    
+    Dim puntitosfinal As Integer
+    puntitosfinal = GetVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "PuntosClan") + cantpts
+    Call WriteVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "PuntosClan", puntitosfinal)
+    UserList(userindex).Stats.PuntosTorneo = UserList(userindex).Stats.PuntosTorneo - cantpts
+    Call SendData(SendTarget.ToGuildMembers, UserList(userindex).GuildIndex, 0, "||220@" & UserList(userindex).Name & "@" & cantpts)
   Exit Sub
   
   Case "ADDCON" 'Agrega contactos - lista de amigos
@@ -874,31 +963,7 @@ Procesado = True 'ver al final del sub
     nombrepj = ReadField(1, rData, 44)
     
     
-    If EsAdministrador(nombrepj) = True Then
-        Call SendData(SendTarget.toindex, userindex, 0, "ERONo podes agregar GM's.")
-        Exit Sub
-    ElseIf EsDeveloper(nombrepj) = True Then
-        Call SendData(SendTarget.toindex, userindex, 0, "ERONo podes agregar GM's.")
-        Exit Sub
-    ElseIf EsSubAdministrador(nombrepj) = True Then
-        Call SendData(SendTarget.toindex, userindex, 0, "ERONo podes agregar GM's.")
-        Exit Sub
-    ElseIf EsDirector(nombrepj) = True Then
-        Call SendData(SendTarget.toindex, userindex, 0, "ERONo podes agregar GM's.")
-        Exit Sub
-    ElseIf EsGranDios(nombrepj) = True Then
-        Call SendData(SendTarget.toindex, userindex, 0, "ERONo podes agregar GM's.")
-        Exit Sub
-    ElseIf EsDios(nombrepj) = True Then
-        Call SendData(SendTarget.toindex, userindex, 0, "ERONo podes agregar GM's.")
-        Exit Sub
-    ElseIf EsEventMaster(nombrepj) = True Then
-        Call SendData(SendTarget.toindex, userindex, 0, "ERONo podes agregar GM's.")
-        Exit Sub
-    ElseIf EsSemiDios(nombrepj) Then
-        Call SendData(SendTarget.toindex, userindex, 0, "ERONo podes agregar GM's.")
-        Exit Sub
-    ElseIf EsConsejero(nombrepj) Then
+    If (IsAdministrator(nombrepj)) Or (IsDevelopment(nombrepj)) Or (IsCoordination(nombrepj)) Or (IsTournamentManager(nombrepj)) Or (IsEventManager(nombrepj)) Or (IsUserSupport(nombrepj)) Then
         Call SendData(SendTarget.toindex, userindex, 0, "ERONo podes agregar GM's.")
         Exit Sub
     End If
@@ -909,32 +974,39 @@ Procesado = True 'ver al final del sub
     End If
     
         Dim forsitoh As Integer
-        For forsitoh = 1 To UserList(userindex).flags.cantAmigos
+        For forsitoh = 1 To 20
             If UCase$(UserList(userindex).flags.NombreAmigo(forsitoh)) = UCase$(nombrepj) Then
                     Call SendData(SendTarget.toindex, userindex, 0, "EROEl usuario ya está en tu lista de amigos.")
                 Exit Sub
             End If
         Next forsitoh
         
-        Dim indexLibre As Byte
-        indexLibre = UserList(userindex).flags.cantAmigos + 1
-        
+        Dim SumamoUno As Byte
+        SumamoUno = 0
+    
+        For forsitoh = 1 To 20
             If FileExist(CharPath & nombrepj & ".chr", vbNormal) Then
-                If indexLibre <= 20 Then
-                  UserList(userindex).flags.NombreAmigo(indexLibre) = UCase$(nombrepj)
-                  UserList(userindex).flags.cantAmigos = UserList(userindex).flags.cantAmigos + 1
+                If UserList(userindex).flags.NombreAmigo(forsitoh) = "(Nadie)" Or UserList(userindex).flags.NombreAmigo(forsitoh) = "(NADIE)" Then
+                  UserList(userindex).flags.NombreAmigo(forsitoh) = UCase$(nombrepj)
+                    tStr = SendFriendList(userindex)
                     Call SendData(SendTarget.toindex, userindex, 0, "LDM" & SendFriendList(userindex))
                     
                     If NameIndex(nombrepj) > 0 Then Call SendData(SendTarget.toindex, NameIndex(nombrepj), 0, "||221@" & UserList(userindex).Name)
                     Exit Sub
                 Else
+                    SumamoUno = SumamoUno + 1
+                    
+                    If SumamoUno = 20 Then
                         Call SendData(SendTarget.toindex, userindex, 0, "ERRLista de amigos llena, solo puedes agregar 20.")
                      Exit Sub
+                    End If
+                    
                 End If
             Else
                 Call SendData(SendTarget.toindex, userindex, 0, "EROEl personaje no existe.")
                 Exit Sub
             End If
+        Next forsitoh
     
     Exit Sub
     
@@ -950,7 +1022,7 @@ Procesado = True 'ver al final del sub
     tIndex = NameIndex(NombreUser)
     ObjetoIndex = UserList(userindex).Invent.Object(ObjetoIndex).ObjIndex
     
-        If UserList(userindex).flags.Privilegios > PlayerType.User And UserList(userindex).flags.Privilegios < PlayerType.Administrador Then
+        If UserList(userindex).flags.Privilegios > PlayerType.User And UserList(userindex).flags.Privilegios < PlayerType.Administrator Then
             Call LogGM(UserList(userindex).Name, "Transferencias: " & UserList(userindex).Name & " quiso transferir " & ObjData(ObjetoIndex).Name & " - " & ObjetoAmount, False)
             Exit Sub
         End If
@@ -977,11 +1049,9 @@ Procesado = True 'ver al final del sub
             Exit Sub
         End If
         
-        If UserList(userindex).Pos.Map = 190 Then Exit Sub
-        
         If tIndex = userindex Then Exit Sub
         
-        Dim ObjetoTransferido As obj
+        Dim ObjetoTransferido As Obj
         ObjetoTransferido.ObjIndex = ObjetoIndex
         ObjetoTransferido.Amount = ObjetoAmount
 
@@ -1019,23 +1089,21 @@ Procesado = True 'ver al final del sub
     tIndex = NameIndex(Contactito)
     
     If tIndex <= 0 Then
-        Call SendData(SendTarget.toindex, userindex, 0, "||196")
+        Call SendData(SendTarget.toindex, userindex, 0, "||209")
         Exit Sub
     End If
-    
-    If (MensajitoChat = "" Or MensajitoChat = " ") Then Exit Sub
     
     Dim revisionmaxima As Boolean, conteoAG As Byte
     conteoAG = 0
     
-    For i = 1 To UserList(userindex).flags.cantAmigos
+    For i = 1 To 20
         If UCase$(UserList(tIndex).flags.NombreAmigo(i)) = UCase$(UserList(userindex).Name) Then
            revisionmaxima = True
         Else
             conteoAG = conteoAG + 1
         End If
         
-        If (revisionmaxima = True) Or conteoAG = 20 Then
+        If ((revisionmaxima = True) And (UserList(tIndex).flags.AmigoDesadmitido(i) = 1)) Or conteoAG = 20 Then
             Call SendData(SendTarget.toindex, userindex, 0, "||227")
             Exit Sub
         End If
@@ -1052,11 +1120,11 @@ Procesado = True 'ver al final del sub
     Case "BORRAC" 'Borrar contacto - lista de amigos
     rData = Right$(rData, Len(rData) - 6)
     
-        If UCase$(UserList(userindex).flags.NombreAmigo(rData)) <> "(NADIE)" Then
-            UserList(userindex).flags.NombreAmigo(rData) = ""
-            UserList(userindex).flags.cantAmigos = UserList(userindex).flags.cantAmigos - 1
-        End If
-        
+    If UCase$(UserList(userindex).flags.NombreAmigo(rData)) <> "(NADIE)" Then
+        UserList(userindex).flags.NombreAmigo(rData) = "(Nadie)"
+    End If
+    
+        tStr = SendFriendList(userindex)
         Call SendData(SendTarget.toindex, userindex, 0, "LDM" & SendFriendList(userindex))
     
     Exit Sub
@@ -1078,21 +1146,14 @@ Procesado = True 'ver al final del sub
       Call SendData(SendTarget.toindex, userindex, 0, "||230@" & CantAlmas & "@" & UserList(userindex).flags.SirvienteDeDios)
       Call LogAlmas("" & UserList(userindex).Name & " sacrifico: " & CantAlmas & "")
       
-        If (UserList(userindex).flags.AlmasOfrecidas >= 120000 And UserList(userindex).flags.SirvienteDeDios = "Tarraske" And TieneObjetos(1479, 1, userindex)) Or _
-           (UserList(userindex).flags.AlmasOfrecidas >= 120000 And UserList(userindex).flags.SirvienteDeDios = "Poseidon" And TieneObjetos(1477, 1, userindex)) Or _
-           (UserList(userindex).flags.AlmasOfrecidas >= 120000 And UserList(userindex).flags.SirvienteDeDios = "Mifrit" And TieneObjetos(1475, 1, userindex)) Or _
-           (UserList(userindex).flags.AlmasOfrecidas >= 120000 And UserList(userindex).flags.SirvienteDeDios = "Erebros" And TieneObjetos(1473, 1, userindex)) Then
-                Call QuitarObjetos(1274, 1, userindex)
-        End If
-      
       If UserList(userindex).flags.SirvienteDeDios = "Mifrit" Then
-        Call SendData(SendTarget.toMap, 0, UserList(userindex).Pos.Map, "PCF" & 77 & "," & 84 & "," & 51 & "," & 30)
+        Call SendData(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, "PCF" & 77 & "," & 84 & "," & 51 & "," & 30)
       ElseIf UserList(userindex).flags.SirvienteDeDios = "Poseidon" Then
-        Call SendData(SendTarget.toMap, 0, UserList(userindex).Pos.Map, "PCF" & 77 & "," & 49 & "," & 14 & "," & 30)
+        Call SendData(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, "PCF" & 77 & "," & 49 & "," & 14 & "," & 30)
       ElseIf UserList(userindex).flags.SirvienteDeDios = "Tarraske" Then
-        Call SendData(SendTarget.toMap, 0, UserList(userindex).Pos.Map, "PCF" & 77 & "," & 16 & "," & 51 & "," & 30)
+        Call SendData(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, "PCF" & 77 & "," & 16 & "," & 51 & "," & 30)
       ElseIf UserList(userindex).flags.SirvienteDeDios = "Erebros" Then
-        Call SendData(SendTarget.toMap, 0, UserList(userindex).Pos.Map, "PCF" & 77 & "," & 50 & "," & 87 & "," & 30)
+        Call SendData(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, "PCF" & 77 & "," & 50 & "," & 87 & "," & 30)
       End If
       
     Dim ClaseUsuario As String
@@ -1100,7 +1161,7 @@ Procesado = True 'ver al final del sub
       
     If UserList(userindex).flags.JerarquiaDios = 1 Then
         If UserList(userindex).flags.AlmasOfrecidas >= (AlmasNecesarias * UserList(userindex).flags.JerarquiaDios) Then
-          Dim Entregar As obj
+          Dim Entregar As Obj
           
             If UCase$(UserList(userindex).Raza) = "ENANO" Or UCase$(UserList(userindex).Raza) = "GNOMO" Then
               Entregar.ObjIndex = GetVar(App.Path & "\Dioses\" & UserList(userindex).flags.SirvienteDeDios & "\Bajos.dat", "" & ClaseUsuario & "", "Obj1")
@@ -1233,7 +1294,7 @@ End Select
         Case "TR" 'Tirar item por mouse
                 If UserList(userindex).flags.Navegando = 1 Or _
                    UserList(userindex).flags.Muerto = 1 Or _
-                   (UserList(userindex).flags.Privilegios = PlayerType.Consejero And UserList(userindex).flags.Privilegios < PlayerType.Administrador) Then Exit Sub
+                   (UserList(userindex).flags.Privilegios = PlayerType.UserSupport And UserList(userindex).flags.Privilegios < PlayerType.Administrator) Then Exit Sub
                    '[Consejeros]
                
                 rData = Right$(rData, Len(rData) - 2)
@@ -1254,7 +1315,7 @@ End Select
         Case "TI" 'Tirar item
                 If UserList(userindex).flags.Navegando = 1 Or _
                    UserList(userindex).flags.Muerto = 1 Or _
-                   (UserList(userindex).flags.Privilegios = PlayerType.Consejero And Not UserList(userindex).flags.EsRolesMaster) Then Exit Sub
+                   (UserList(userindex).flags.Privilegios = PlayerType.UserSupport And Not UserList(userindex).flags.EsRolesMaster) Then Exit Sub
                    '[Consejeros]
                 
                 rData = Right$(rData, Len(rData) - 2)
@@ -1278,6 +1339,10 @@ End Select
                 End If
                 Exit Sub
         Case "LH" ' Lanzar hechizo
+            If UserList(userindex).flags.Muerto = 1 Then
+                Call SendData(SendTarget.toindex, userindex, 0, "||3")
+                Exit Sub
+            End If
             rData = Right$(rData, Len(rData) - 2)
             UserList(userindex).flags.Hechizo = val(rData)
             Exit Sub
@@ -1344,7 +1409,7 @@ End Select
     
         Case "SPÑ"
             rData = Right$(rData, Len(rData) - 3)
-            Dim NumeroMejorado As Integer, Objeto As obj, Requiere As Integer
+            Dim NumeroMejorado As Integer, Objeto As Obj, Requiere As Integer
             
             NumeroMejorado = GetVar(DatPath & "Mejorados.dat", "ITEMS", rData)
              
@@ -1400,20 +1465,15 @@ End Select
        Case "ARE"
         rData = Right$(rData, Len(rData) - 3)
         
-            If MapInfo(UserList(userindex).Pos.Map).Pk = True Then
-                Call SendData(SendTarget.toindex, userindex, 0, "||291")
-                Exit Sub
-            End If
-        
-            If UserList(userindex).Stats.GLD < 100000 Then
-                Call SendData(SendTarget.toindex, userindex, 0, "||215@100.000")
+            If UserList(userindex).Stats.GLD < 40000 Then
+                Call SendData(SendTarget.toindex, userindex, 0, "||215@40.000")
              Exit Sub
             End If
             
             If UserList(userindex).flags.EspectadorArena1 = 1 Or UserList(userindex).flags.EspectadorArena2 = 1 Or UserList(userindex).flags.EspectadorArena3 = 1 Or UserList(userindex).flags.EspectadorArena4 = 1 Then Exit Sub
             
             
-            If MapaEspecial(userindex) Or UserList(userindex).EnCvc = True Or UserList(userindex).flags.Muerto = 1 Then
+            If UserList(userindex).Pos.Map = 101 Or UserList(userindex).Pos.Map = 72 Or UserList(userindex).Pos.Map = 110 Or UserList(userindex).Pos.Map = 118 Or MapInfo(UserList(userindex).Pos.Map).Pk = True Or UserList(userindex).Pos.Map = 100 Or UserList(userindex).Pos.Map = 99 Or UserList(userindex).Pos.Map = 54 Or UserList(userindex).EnCvc = True Or UserList(userindex).flags.Muerto = 1 Then
                 Call SendData(SendTarget.toindex, userindex, 0, "||239")
                 Exit Sub
             End If
@@ -1428,18 +1488,18 @@ End Select
                         UserList(userindex).flags.EspectadorArena1 = 1
                     
                     'Transporte
-                    If MapData(71, 33, 34).userindex = 0 Then
-                        Call WarpUserChar(userindex, 71, 33, 34, False)
-                    ElseIf MapData(71, 34, 34).userindex = 0 Then
-                        Call WarpUserChar(userindex, 71, 34, 34, False)
-                    ElseIf MapData(71, 33, 35).userindex = 0 Then
-                        Call WarpUserChar(userindex, 71, 33, 35, False)
-                    ElseIf MapData(71, 34, 35).userindex = 0 Then
-                        Call WarpUserChar(userindex, 71, 34, 35, False)
+                    If MapData(101, 33, 34).userindex = 0 Then
+                        Call WarpUserChar(userindex, 101, 33, 34, False)
+                    ElseIf MapData(101, 34, 34).userindex = 0 Then
+                        Call WarpUserChar(userindex, 101, 34, 34, False)
+                    ElseIf MapData(101, 33, 35).userindex = 0 Then
+                        Call WarpUserChar(userindex, 101, 33, 35, False)
+                    ElseIf MapData(101, 34, 35).userindex = 0 Then
+                        Call WarpUserChar(userindex, 101, 34, 35, False)
                     End If
                         
                     EspectadoresEnArena1 = EspectadoresEnArena1 + 1
-                    UserList(userindex).Stats.GLD = UserList(userindex).Stats.GLD - 100000
+                    UserList(userindex).Stats.GLD = UserList(userindex).Stats.GLD - 40000
                     Call SendData(SendTarget.toindex, userindex, 0, "||240")
                 
               Else
@@ -1456,18 +1516,18 @@ End Select
                         UserList(userindex).flags.EspectadorArena2 = 1
                     
                     'Transporte
-                    If MapData(71, 33, 68).userindex = 0 Then
-                        Call WarpUserChar(userindex, 71, 33, 68, False)
-                    ElseIf MapData(71, 34, 68).userindex = 0 Then
-                        Call WarpUserChar(userindex, 71, 34, 68, False)
-                    ElseIf MapData(71, 33, 69).userindex = 0 Then
-                        Call WarpUserChar(userindex, 71, 33, 69, False)
-                    ElseIf MapData(71, 34, 69).userindex = 0 = 3 Then
-                        Call WarpUserChar(userindex, 71, 34, 69, False)
+                    If MapData(101, 33, 68).userindex = 0 Then
+                        Call WarpUserChar(userindex, 101, 33, 68, False)
+                    ElseIf MapData(101, 34, 68).userindex = 0 Then
+                        Call WarpUserChar(userindex, 101, 34, 68, False)
+                    ElseIf MapData(101, 33, 69).userindex = 0 Then
+                        Call WarpUserChar(userindex, 101, 33, 69, False)
+                    ElseIf MapData(101, 34, 69).userindex = 0 = 3 Then
+                        Call WarpUserChar(userindex, 101, 34, 69, False)
                     End If
                         
                     EspectadoresEnArena2 = EspectadoresEnArena2 + 1
-                    UserList(userindex).Stats.GLD = UserList(userindex).Stats.GLD - 100000
+                    UserList(userindex).Stats.GLD = UserList(userindex).Stats.GLD - 40000
                     Call SendData(SendTarget.toindex, userindex, 0, "||240")
                     
               Else
@@ -1484,18 +1544,18 @@ End Select
                         UserList(userindex).flags.EspectadorArena3 = 1
                     
                     'Transporte
-                    If MapData(71, 69, 34).userindex = 0 Then
-                        Call WarpUserChar(userindex, 71, 69, 34, False)
-                    ElseIf MapData(71, 70, 34).userindex = 0 Then
-                        Call WarpUserChar(userindex, 71, 70, 34, False)
-                    ElseIf MapData(71, 69, 35).userindex = 0 Then
-                        Call WarpUserChar(userindex, 71, 69, 35, False)
-                    ElseIf MapData(71, 70, 35).userindex = 0 Then
-                        Call WarpUserChar(userindex, 71, 70, 35, False)
+                    If MapData(101, 69, 34).userindex = 0 Then
+                        Call WarpUserChar(userindex, 101, 69, 34, False)
+                    ElseIf MapData(101, 70, 34).userindex = 0 Then
+                        Call WarpUserChar(userindex, 101, 70, 34, False)
+                    ElseIf MapData(101, 69, 35).userindex = 0 Then
+                        Call WarpUserChar(userindex, 101, 69, 35, False)
+                    ElseIf MapData(101, 70, 35).userindex = 0 Then
+                        Call WarpUserChar(userindex, 101, 70, 35, False)
                     End If
                         
                     EspectadoresEnArena3 = EspectadoresEnArena3 + 1
-                    UserList(userindex).Stats.GLD = UserList(userindex).Stats.GLD - 100000
+                    UserList(userindex).Stats.GLD = UserList(userindex).Stats.GLD - 40000
                     Call SendData(SendTarget.toindex, userindex, 0, "||240")
                     
               Else
@@ -1512,18 +1572,18 @@ End Select
                         UserList(userindex).flags.EspectadorArena4 = 1
                     
                     'Transporte
-                    If MapData(71, 69, 68).userindex = 0 Then
-                        Call WarpUserChar(userindex, 71, 69, 68, False)
-                    ElseIf MapData(71, 70, 68).userindex = 0 Then
-                        Call WarpUserChar(userindex, 71, 70, 68, False)
-                    ElseIf MapData(71, 69, 69).userindex = 0 Then
-                        Call WarpUserChar(userindex, 71, 69, 69, False)
-                    ElseIf MapData(71, 70, 69).userindex = 0 Then
-                        Call WarpUserChar(userindex, 71, 70, 69, False)
+                    If MapData(101, 69, 68).userindex = 0 Then
+                        Call WarpUserChar(userindex, 101, 69, 68, False)
+                    ElseIf MapData(101, 70, 68).userindex = 0 Then
+                        Call WarpUserChar(userindex, 101, 70, 68, False)
+                    ElseIf MapData(101, 69, 69).userindex = 0 Then
+                        Call WarpUserChar(userindex, 101, 69, 69, False)
+                    ElseIf MapData(101, 70, 69).userindex = 0 Then
+                        Call WarpUserChar(userindex, 101, 70, 69, False)
                     End If
                         
                     EspectadoresEnArena4 = EspectadoresEnArena4 + 1
-                    UserList(userindex).Stats.GLD = UserList(userindex).Stats.GLD - 100000
+                    UserList(userindex).Stats.GLD = UserList(userindex).Stats.GLD - 40000
                     Call SendData(SendTarget.toindex, userindex, 0, "||240")
                     
               Else
@@ -1553,26 +1613,26 @@ End Select
         Case "QSA"
             rData = Right$(rData, Len(rData) - 3)
             
-            Dim numObj As Integer
+            Dim NumOBJ As Integer
             Dim InvenVisible As String
-                numObj = ReadField(1, rData, 44)
+                NumOBJ = ReadField(1, rData, 44)
                 InvenVisible = ReadField(2, rData, 44)
                 
             If UCase$(InvenVisible) = "FALSO" Then Call SendData(SendTarget.ToAdmins, 0, 0, "||242@" & UserList(userindex).Name): Exit Sub
 
-            If val(numObj) <= MAX_INVENTORY_SLOTS And val(numObj) > 0 Then
-                If UserList(userindex).Invent.Object(val(numObj)).ObjIndex = 0 Then Exit Sub
+            If val(NumOBJ) <= MAX_INVENTORY_SLOTS And val(NumOBJ) > 0 Then
+                If UserList(userindex).Invent.Object(val(NumOBJ)).ObjIndex = 0 Then Exit Sub
             Else
                 Exit Sub
             End If
             
-            If ObjData(UserList(userindex).Invent.Object(val(numObj)).ObjIndex).proyectil = 1 Then
+            If ObjData(UserList(userindex).Invent.Object(val(NumOBJ)).ObjIndex).proyectil = 1 Then
                 'nada
             Else
                 If (Mod_AntiCheat.PuedoClickear(userindex) = False) Then Exit Sub
             End If
             
-            Call UseInvItem(userindex, val(numObj))
+            Call UseInvItem(userindex, val(NumOBJ))
         Exit Sub
             
         Case "TCM" 'CERRAR COMERCIO (CANCELAR)
@@ -1645,7 +1705,7 @@ End Select
     Exit Sub
     End If
    
-    Dim llavexx As obj
+    Dim llavexx As Obj
     
     If NumCasax > 0 Then
         llavexx.ObjIndex = 1093 + NumCasax
@@ -1695,7 +1755,7 @@ End Select
         Arg1 = ReadField(1, rData, 44)
         Arg2 = ReadField(2, rData, 44)
         
-        Dim Premio As obj
+        Dim Premio As Obj
            
             If val(Arg1) >= 0 And val(Arg1) < UBound(PremiosList) + 1 Then
                If val(Arg2) <= 0 And val(Arg2) > 10000 Then Exit Sub
@@ -1718,6 +1778,10 @@ End Select
                Call SendData(SendTarget.toindex, userindex, 0, "||108")
             Exit Sub
             End If
+            
+            If MisionesDiarias(UserList(userindex).Misiones.NumeroMision).Tipo = 11 And MisionesDiarias(UserList(userindex).Misiones.NumeroMision).PTS <= PremiosList(val(Arg1)).ObjRequiere Then
+                If UserList(userindex).Misiones.ConteoUser < MisionesDiarias(UserList(userindex).Misiones.NumeroMision).Cantidad Then UserList(userindex).Misiones.ConteoUser = UserList(userindex).Misiones.ConteoUser + 1
+            End If
            
             'Metemos en inventario
             Call LogCanjeos("(ITEMS TORNEO) " & UserList(userindex).Name & " canjeo: " & Premio.Amount & " - " & ObjData(Premio.ObjIndex).Name)
@@ -1731,7 +1795,7 @@ End Select
         Case "BOF" 'Bonificadores
             rData = Right$(rData, Len(rData) - 3)
             
-            If (UserList(userindex).Stats.ELV = 53 And UserList(userindex).Stats.ELV < 56) Then
+            If UserList(userindex).Stats.ELV >= 20 And (rData = GetVar(DatPath & "ClassBonus.dat", "" & UCase$(UserList(userindex).clase) & "", "Nivel1Opcion1") Or rData = GetVar(DatPath & "ClassBonus.dat", "" & UCase$(UserList(userindex).clase) & "", "Nivel1Opcion2")) And UserList(userindex).Bon1 = "Ninguno/No elegido." Then
                 UserList(userindex).Bon1 = rData
                 
                 If rData = "Aumenta en 5 puntos tu vida." Then
@@ -1744,7 +1808,7 @@ End Select
                     SendUserHP (userindex)
                 End If
                 
-            ElseIf (UserList(userindex).Stats.ELV = 56 And UserList(userindex).Stats.ELV < 60) Then
+            ElseIf UserList(userindex).Stats.ELV >= 40 And (rData = GetVar(DatPath & "ClassBonus.dat", "" & UCase$(UserList(userindex).clase) & "", "Nivel2Opcion1") Or rData = GetVar(DatPath & "ClassBonus.dat", "" & UCase$(UserList(userindex).clase) & "", "Nivel2Opcion2")) And UserList(userindex).Bon2 = "Ninguno/No elegido." Then
                 UserList(userindex).Bon2 = rData
                 
                 If rData = "Aumenta en 5 puntos tu vida." Then
@@ -1752,8 +1816,7 @@ End Select
                     UserList(userindex).Stats.MinHP = UserList(userindex).Stats.MaxHP
                     SendUserHP (userindex)
                 End If
-                
-            ElseIf UserList(userindex).Stats.ELV >= 60 Then
+            ElseIf UserList(userindex).Stats.ELV = 60 And (rData = GetVar(DatPath & "ClassBonus.dat", "" & UCase$(UserList(userindex).clase) & "", "Nivel3Opcion1") Or rData = GetVar(DatPath & "ClassBonus.dat", "" & UCase$(UserList(userindex).clase) & "", "Nivel3Opcion2")) And UserList(userindex).Bon3 = "Ninguno/No elegido." Then
                 UserList(userindex).Bon3 = rData
                 
                 If rData = "Aumenta en 5 puntos tu vida." Then
@@ -2173,8 +2236,8 @@ End Select
                             If RejaNorte > 10000 Then
                                 RejaNorte = 10000
                                 
-                                MapData(167, 49, 48).OBJInfo.ObjIndex = 1470
-                                Call ModAreas.SendToAreaByPos(167, 49, 48, "HO" & ObjData(1470).GrhIndex & "," & 49 & "," & 48)
+                                MapData(81, 49, 48).OBJInfo.ObjIndex = 1470
+                                Call ModAreas.SendToAreaByPos(81, 49, 48, "HO" & ObjData(1470).GrhIndex & "," & 49 & "," & 48)
                             End If
                             
                             'Avisamos
@@ -2188,8 +2251,8 @@ End Select
                             If RejaCentral > 10000 Then
                                 RejaCentral = 10000
                                 
-                                MapData(167, 49, 68).OBJInfo.ObjIndex = 1470
-                                Call ModAreas.SendToAreaByPos(167, 49, 68, "HO" & ObjData(1470).GrhIndex & "," & 49 & "," & 68)
+                                MapData(81, 49, 68).OBJInfo.ObjIndex = 1470
+                                Call ModAreas.SendToAreaByPos(81, 49, 68, "HO" & ObjData(1470).GrhIndex & "," & 49 & "," & 68)
                             End If
                             
                             'Avisamos
@@ -2203,8 +2266,8 @@ End Select
                             If RejaSur > 10000 Then
                                 RejaSur = 10000
                                 
-                                MapData(167, 49, 84).OBJInfo.ObjIndex = 1470
-                                Call ModAreas.SendToAreaByPos(167, 49, 84, "HO" & ObjData(1470).GrhIndex & "," & 49 & "," & 84)
+                                MapData(81, 49, 84).OBJInfo.ObjIndex = 1470
+                                Call ModAreas.SendToAreaByPos(81, 49, 84, "HO" & ObjData(1470).GrhIndex & "," & 49 & "," & 84)
                             End If
                             
                             'Avisamos
@@ -2292,7 +2355,7 @@ End Select
             Close n
                 
             Else
-                Call SendData(SendTarget.toindex, userindex, 0, "||504@" & tStr)
+                Call SendData(SendTarget.toindex, userindex, 0, "N|504@" & tStr)
             End If
             
             Exit Sub
@@ -2371,19 +2434,19 @@ End Select
              
              If rData = 1 Then
                 Votos(1) = Votos(1) + 1
-                .VotoPorLaOpcion = 1
+                .VotoPorLaOpcion(1) = 1
              ElseIf rData = 2 Then
                 Votos(2) = Votos(2) + 1
-                .VotoPorLaOpcion = 2
+                .VotoPorLaOpcion(2) = 1
              ElseIf rData = 3 Then
                 Votos(3) = Votos(3) + 1
-                .VotoPorLaOpcion = 3
+                .VotoPorLaOpcion(3) = 1
              ElseIf rData = 4 Then
                  Votos(4) = Votos(4) + 1
-                .VotoPorLaOpcion = 4
+                .VotoPorLaOpcion(4) = 1
              ElseIf rData = 5 Then
                 Votos(5) = Votos(5) + 1
-                .VotoPorLaOpcion = 5
+                .VotoPorLaOpcion(5) = 1
              End If
              
                 Call SendData(SendTarget.toindex, userindex, 0, "||267")
@@ -2403,11 +2466,11 @@ End Select
     
             If tIndex <= 0 Then
                 Call WriteVar(CharPath & NombreDenunciado & ".chr", "INIT", "PrimeraDenuncia", GetVar(CharPath & NombreDenunciado & ".chr", "INIT", "UltimaDenuncia"))
-                Call WriteVar(CharPath & NombreDenunciado & ".chr", "INIT", "UltimaDenuncia", "" & Date & " - " & time & "")
+                Call WriteVar(CharPath & NombreDenunciado & ".chr", "INIT", "UltimaDenuncia", "" & Date & " - " & Time & "")
                 Call SendData(SendTarget.ToAdmins, 0, 0, "NEWDENU" & UserList(userindex).Name & "," & Motivox & "," & GetVar(CharPath & NombreDenunciado & ".chr", "INIT", "LastIP") & "," & GetVar(CharPath & NombreDenunciado & ".chr", "INIT", "LastIP") & "," & NombreDenunciado & "," & GetVar(CharPath & NombreDenunciado & ".chr", "INIT", "UltimoLogeo") & "," & GetVar(CharPath & NombreDenunciado & ".chr", "INIT", "UltimaDenuncia") & "," & GetVar(CharPath & NombreDenunciado & ".chr", "INIT", "PrimeraDenuncia"))
             Else
                 UserList(tIndex).PrimeraDenuncia = UserList(tIndex).UltimaDenuncia
-                UserList(tIndex).UltimaDenuncia = "" & Date & " - " & time & ""
+                UserList(tIndex).UltimaDenuncia = "" & Date & " - " & Time & ""
                 Call SendData(SendTarget.ToAdmins, 0, 0, "NEWDENU" & UserList(userindex).Name & "," & Motivox & "," & UserList(tIndex).ip & "," & UserList(tIndex).ip & "," & NombreDenunciado & "," & UserList(tIndex).UltimoLogeo & "," & UserList(tIndex).UltimaDenuncia & "," & UserList(tIndex).PrimeraDenuncia)
             End If
         Exit Sub
@@ -2483,16 +2546,16 @@ End Select
         End If
         
         'Puntos de torneo
-        If rData = 2 Then
-            Call AgregarPuntos(userindex, 1500)
-            Call SendData(SendTarget.toindex, userindex, 0, "||57@1.500")
+        If rData = 1 Then
+            Call AgregarPuntos(userindex, 2500)
+            Call SendData(SendTarget.toindex, userindex, 0, "||57@2.500")
             
-            Call LogMedallas("" & UserList(userindex).Name & " canjeo /gemas: 1.500 puntos de torneo")
+            Call LogMedallas("" & UserList(userindex).Name & " canjeo /gemas: 2.500 puntos de torneo")
         
         'Gema octarina
-        ElseIf rData = 1 Then
+        ElseIf rData = 2 Then
         
-            Dim Octarina As obj
+            Dim Octarina As Obj
             Octarina.ObjIndex = 1448
             Octarina.Amount = 1
             
@@ -2504,21 +2567,36 @@ End Select
             Call LogMedallas("" & UserList(userindex).Name & " canjeo /gemas: 1 gema octarina")
             Call SendData(SendTarget.toindex, userindex, 0, "||232@1@Gema Octarina")
             
-        '30.000 ALMAS
+        'Perdón faccionario
         ElseIf rData = 3 Then
-        
-            If TieneObjetos(1274, 1, userindex) = False Then
-                Call SendData(SendTarget.toindex, userindex, 0, "||127")
-             Exit Sub
+            If UserList(userindex).StatusMith.EsStatus = 0 And UserList(userindex).StatusMith.EligioStatus = 1 Then
+                UserList(userindex).StatusMith.EligioStatus = 0
+                UserList(userindex).Faccion.ArmadaReal = 0
+                UserList(userindex).Faccion.FuerzasCaos = 0
+                UserList(userindex).Faccion.RecibioArmaduraCaos = 0
+                UserList(userindex).Faccion.RecibioArmaduraReal = 0
+                UserList(userindex).Faccion.RecibioExpInicialCaos = 0
+                UserList(userindex).Faccion.RecibioExpInicialReal = 0
+                UserList(userindex).Faccion.RecompensasCaos = 0
+                UserList(userindex).Faccion.RecompensasReal = 0
+                UserList(userindex).Faccion.Reenlistadas = 0
+                Call SendData(SendTarget.toindex, userindex, 0, "||272")
+                
+                Call LogMedallas("" & UserList(userindex).Name & " canjeo /gemas: perdón faccionario")
+            Else
+                Call SendData(SendTarget.toindex, userindex, 0, "||273")
+                Exit Sub
             End If
-        
-            UserList(userindex).flags.AlmasContenidas = UserList(userindex).flags.AlmasContenidas + 30000
-            Call SendData(SendTarget.toindex, userindex, 0, "||274@30.000")
             
-            Call LogMedallas("" & UserList(userindex).Name & " canjeo /gemas: 30.000 almas")
+        '45.000 ALMAS
+        ElseIf rData = 4 Then
+            UserList(userindex).flags.AlmasContenidas = UserList(userindex).flags.AlmasContenidas + 45000
+            Call SendData(SendTarget.toindex, userindex, 0, "||274@45.000")
+            
+            Call LogMedallas("" & UserList(userindex).Name & " canjeo /gemas: 45.000 almas")
         
         'Renuncia dios
-        ElseIf rData = 0 Then
+        ElseIf rData = 5 Then
           If UCase$(UserList(userindex).flags.SirvienteDeDios) = "MIFRIT" Or UCase$(UserList(userindex).flags.SirvienteDeDios) = "POSEIDON" Or UCase$(UserList(userindex).flags.SirvienteDeDios) = "EREBROS" Or UCase$(UserList(userindex).flags.SirvienteDeDios) = "TARRASKE" Then
             Call QuitarObjetos(1274, 1, userindex)
             
@@ -2549,8 +2627,8 @@ End Select
           End If
           
         'Fragmento
-        ElseIf rData = 4 Then
-            Dim fragmentix As obj
+        ElseIf rData = 6 Then
+            Dim fragmentix As Obj
             fragmentix.ObjIndex = 1272
             fragmentix.Amount = 1
             If Not MeterItemEnInventario(userindex, fragmentix) Then
@@ -2573,32 +2651,21 @@ End Select
         
         Exit Sub
         
-        Case "GEPS"
+        Case "GEDS"
         rData = Right$(rData, Len(rData) - 4)
         
-        Dim PremioMedallas As obj
+        Dim PremioMedallas As Obj
         
-        If rData = 4 Then
-            If TieneObjetos(1025, 2, userindex) Then
-            
-                PremioMedallas.ObjIndex = 1512
-                PremioMedallas.Amount = 1
+        'Champions
+        If rData = 1 Then
+            If TieneObjetos(1025, 30, userindex) Then
                 
-                If Not MeterItemEnInventario(userindex, PremioMedallas) Then
-                    Call SendData(SendTarget.toindex, userindex, 0, "||108")
-                    Exit Sub
+                If UCase$(UserList(userindex).Raza) = "GNOMO" Or UCase$(UserList(userindex).Raza) = "ENANO" Then
+                    PremioMedallas.ObjIndex = 1056
                 Else
-                    Call LogMedallas("" & UserList(userindex).Name & " canjeo: " & ObjData(PremioMedallas.ObjIndex).Name)
-                    Call SendData(SendTarget.toindex, userindex, 0, "||232@1@" & ObjData(PremioMedallas.ObjIndex).Name)
-                    Call QuitarObjetos(1025, 2, userindex)
+                    PremioMedallas.ObjIndex = 1055
                 End If
-            Else
-                Call SendData(SendTarget.toindex, userindex, 0, "||278")
-            End If
-        ElseIf rData = 5 Then
-            If TieneObjetos(1025, 3, userindex) Then
-            
-                PremioMedallas.ObjIndex = 1513
+                
                 PremioMedallas.Amount = 1
                 
                 If Not MeterItemEnInventario(userindex, PremioMedallas) Then
@@ -2607,32 +2674,27 @@ End Select
                 Else
                     Call LogMedallas("" & UserList(userindex).Name & " canjeo: " & ObjData(PremioMedallas.ObjIndex).Name)
                     Call SendData(SendTarget.toindex, userindex, 0, "||232@1@" & ObjData(PremioMedallas.ObjIndex).Name)
-                    Call QuitarObjetos(1025, 3, userindex)
+                    Call QuitarObjetos(1025, 30, userindex)
                 End If
             Else
                 Call SendData(SendTarget.toindex, userindex, 0, "||278")
             End If
         'Almas
-        ElseIf rData = 3 Then
+        ElseIf rData = 2 Then
         
-            If TieneObjetos(1274, 1, userindex) = False Then
-                Call SendData(SendTarget.toindex, userindex, 0, "||127")
-             Exit Sub
-            End If
-        
-            If TieneObjetos(1025, 6, userindex) Then
+            If TieneObjetos(1025, 7, userindex) Then
                 UserList(userindex).flags.AlmasContenidas = UserList(userindex).flags.AlmasContenidas + 5000
                 Call SendData(SendTarget.toindex, userindex, 0, "||274@5.000")
                 Call LogMedallas("" & UserList(userindex).Name & " canjeo: 5.000 almas")
-                Call QuitarObjetos(1025, 6, userindex)
+                Call QuitarObjetos(1025, 7, userindex)
             Else
                 Call SendData(SendTarget.toindex, userindex, 0, "||278")
             End If
             
             
         'Gema al azar
-        ElseIf rData = 0 Then
-            If TieneObjetos(1025, 8, userindex) Then
+        ElseIf rData = 3 Then
+            If TieneObjetos(1025, 10, userindex) Then
                 PremioMedallas.ObjIndex = RandomNumber(406, 411)
                 PremioMedallas.Amount = 1
                 
@@ -2642,26 +2704,26 @@ End Select
                 Else
                     Call LogMedallas("" & UserList(userindex).Name & " canjeo: " & ObjData(PremioMedallas.ObjIndex).Name)
                     Call SendData(SendTarget.toindex, userindex, 0, "||232@1@" & ObjData(PremioMedallas.ObjIndex).Name)
-                    Call QuitarObjetos(1025, 8, userindex)
+                    Call QuitarObjetos(1025, 10, userindex)
                 End If
             Else
                 Call SendData(SendTarget.toindex, userindex, 0, "||278")
             End If
             
-        '150 puntos de torneo
-        ElseIf rData = 2 Then
-            If TieneObjetos(1025, 1, userindex) Then
-                Call AgregarPuntos(userindex, 150)
-                Call SendData(SendTarget.toindex, userindex, 0, "||57@150")
-                Call LogMedallas("" & UserList(userindex).Name & " canjeo: 150 puntos de torneo.")
-                Call QuitarObjetos(1025, 1, userindex)
+        '100 puntos de torneo
+        ElseIf rData = 4 Then
+            If TieneObjetos(1025, 3, userindex) Then
+                Call AgregarPuntos(userindex, 100)
+                Call SendData(SendTarget.toindex, userindex, 0, "||57@100")
+                Call LogMedallas("" & UserList(userindex).Name & " canjeo: 100 puntos de torneo.")
+                Call QuitarObjetos(1025, 3, userindex)
             Else
                 Call SendData(SendTarget.toindex, userindex, 0, "||278")
             End If
                 
         'Sacris
-        ElseIf rData = 1 Then
-            If TieneObjetos(1025, 1, userindex) Then
+        ElseIf rData = 5 Then
+            If TieneObjetos(1025, 4, userindex) Then
                 PremioMedallas.ObjIndex = 936
                 PremioMedallas.Amount = 1
                 
@@ -2670,23 +2732,30 @@ End Select
                     Exit Sub
                 Else
                     Call SendData(SendTarget.toindex, userindex, 0, "||232@" & PremioMedallas.Amount & "@" & ObjData(PremioMedallas.ObjIndex).Name)
-                    Call QuitarObjetos(1025, 1, userindex)
+                    Call QuitarObjetos(1025, 4, userindex)
                     Call LogMedallas("" & UserList(userindex).Name & " canjeo: " & ObjData(PremioMedallas.ObjIndex).Name)
+                End If
+            Else
+                Call SendData(SendTarget.toindex, userindex, 0, "||278")
+            End If
+    'Desbloquea slot
+    ElseIf rData = 6 Then
+            If TieneObjetos(1025, 5, userindex) Then
+                
+                If UserList(userindex).InventorySlots < 35 Then
+                    UserList(userindex).InventorySlots = UserList(userindex).InventorySlots + 1
+                    Call SendData(SendTarget.toindex, userindex, 0, "||894@" & UserList(userindex).InventorySlots)
+                    Call SendData(SendTarget.toindex, userindex, 0, "IVX" & UserList(userindex).InventorySlots)
+                    Call QuitarObjetos(1025, 5, userindex)
+                    Call LogMedallas("" & UserList(userindex).Name & " desbloqueo un slot")
+                Else
+                    Call SendData(SendTarget.toindex, userindex, 0, "||895")
                 End If
             Else
                 Call SendData(SendTarget.toindex, userindex, 0, "||278")
             End If
         End If
         
-        Exit Sub
-        
-        Case "INFD" 'Aceptquest
-            Dim ttx As String
-            rData = Right$(rData, Len(rData) - 4)
-            ttx = ReadField(1, rData, 44)
-               
-                Call SendData(SendTarget.toindex, userindex, 0, "MQS" & QuestsList(ttx).Name & "," & QuestsList(ttx).Oro & "," & QuestsList(ttx).ptsTorneo & "," & QuestsList(ttx).Creditos & "," & QuestsList(ttx).ptsTS)
-           
         Exit Sub
    
         Case "ACQT"
@@ -2699,8 +2768,8 @@ End Select
                 Exit Sub
             End If
             
-            If MapInfo(UserList(userindex).Pos.Map).Pk = True Then
-                Call SendData(SendTarget.toindex, userindex, 0, "||291")
+            If QuestsList(numakest).NivelMinimo > UserList(userindex).Stats.ELV Then
+                Call SendData(SendTarget.toindex, userindex, 0, "||878@" & QuestsList(numakest).NivelMinimo)
                 Exit Sub
             End If
             
@@ -2708,7 +2777,9 @@ End Select
             UserList(userindex).flags.Questeando = 1
             UserList(userindex).flags.UserNumQuest = val(numakest)
             
-            UserList(userindex).flags.MuereQuest = 0
+            For i = 1 To 3
+                UserList(userindex).flags.MuereQuest(i) = 0
+            Next i
         Exit Sub
         Case "SWAP" ' Te muevo el item
             rData = Right$(rData, Len(rData) - 4)
@@ -2723,12 +2794,11 @@ End Select
             SwapObjects (userindex)
         Exit Sub
     Case "PCGF"
-            Dim proceso As String, tmpPeso As Long
+            Dim proceso As String
             rData = Right$(rData, Len(rData) - 4)
             proceso = ReadField(1, rData, 44)
-            tmpPeso = ReadField(2, rData, 44)
-            tIndex = ReadField(3, rData, 44)
-            Call SendData(SendTarget.toindex, tIndex, 0, "PCGN" & proceso & "," & tmpPeso & "," & UserList(userindex).Name)
+            tIndex = ReadField(2, rData, 44)
+            Call SendData(SendTarget.toindex, tIndex, 0, "PCGN" & proceso & "," & UserList(userindex).Name)
             Exit Sub
     Case "PCWC"
             Dim proseso As String
@@ -2779,7 +2849,7 @@ End Select
             rData = Right$(rData, Len(rData) - 4)
             If val(rData) > 0 And val(rData) < 5 Then
                 UserList(userindex).Char.Heading = rData
-                Call ChangeUserHeading(SendTarget.toMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.Heading)
+                Call ChangeUserHeading(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.Heading)
             End If
             Exit Sub
         Case "SKSE" 'Modificar skills

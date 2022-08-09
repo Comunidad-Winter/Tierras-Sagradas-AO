@@ -7,7 +7,6 @@ Begin VB.Form frmForo
    ClientTop       =   45
    ClientWidth     =   6150
    ControlBox      =   0   'False
-   Icon            =   "frmForo.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -29,7 +28,7 @@ Begin VB.Form frmForo
       EndProperty
       Height          =   375
       Left            =   2205
-      MouseIcon       =   "frmForo.frx":000C
+      MouseIcon       =   "frmForo.frx":0000
       MousePointer    =   99  'Custom
       Style           =   1  'Graphical
       TabIndex        =   8
@@ -82,7 +81,7 @@ Begin VB.Form frmForo
       EndProperty
       Height          =   375
       Left            =   4200
-      MouseIcon       =   "frmForo.frx":015E
+      MouseIcon       =   "frmForo.frx":0152
       MousePointer    =   99  'Custom
       Style           =   1  'Graphical
       TabIndex        =   3
@@ -103,7 +102,7 @@ Begin VB.Form frmForo
       EndProperty
       Height          =   375
       Left            =   345
-      MouseIcon       =   "frmForo.frx":02B0
+      MouseIcon       =   "frmForo.frx":02A4
       MousePointer    =   99  'Custom
       Style           =   1  'Graphical
       TabIndex        =   2
@@ -119,7 +118,7 @@ Begin VB.Form frmForo
       Locked          =   -1  'True
       MultiLine       =   -1  'True
       TabIndex        =   1
-      Text            =   "frmForo.frx":0402
+      Text            =   "frmForo.frx":03F6
       Top             =   285
       Visible         =   0   'False
       Width           =   5430
@@ -213,7 +212,7 @@ Option Explicit
 Public ForoIndex As Integer
 Private Sub Command1_Click()
 Dim i
-For Each i In text
+For Each i In Text
     i.Visible = False
 Next
 
@@ -226,10 +225,10 @@ If Not MiMensaje(0).Visible Then
     Label1.Visible = True
     Label2.Visible = True
 Else
-    Call SendData("DEMSG" & MiMensaje(0).text & Chr(176) & left(MiMensaje(1).text, 450))
-    List.AddItem MiMensaje(0).text
-    Load text(List.ListCount)
-    text(List.ListCount - 1).text = MiMensaje(1).text
+    Call SendData("DEMSG" & MiMensaje(0).Text & Chr(176) & Left(MiMensaje(1).Text, 450))
+    List.AddItem MiMensaje(0).Text
+    Load Text(List.ListCount)
+    Text(List.ListCount - 1).Text = MiMensaje(1).Text
     List.Visible = True
     
     MiMensaje(0).Visible = False
@@ -252,7 +251,7 @@ Command1.Enabled = True
 Label1.Visible = False
 Label2.Visible = False
 Dim i
-For Each i In text
+For Each i In Text
     i.Visible = False
 Next
 List.Visible = True
@@ -265,12 +264,12 @@ End Sub
 
 Private Sub List_Click()
 List.Visible = False
-text(List.ListIndex).Visible = True
+Text(List.ListIndex).Visible = True
 
 End Sub
 
 Private Sub MiMensaje_Change(Index As Integer)
-If Len(MiMensaje(0).text) <> 0 And Len(MiMensaje(1).text) <> 0 Then
+If Len(MiMensaje(0).Text) <> 0 And Len(MiMensaje(1).Text) <> 0 Then
 Command1.Enabled = True
 End If
 

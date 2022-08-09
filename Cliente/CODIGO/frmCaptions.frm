@@ -6,7 +6,6 @@ Begin VB.Form frmCaptions
    ClientLeft      =   165
    ClientTop       =   525
    ClientWidth     =   8280
-   Icon            =   "frmCaptions.frx":0000
    LinkTopic       =   "Form1"
    ScaleHeight     =   3660
    ScaleWidth      =   8280
@@ -53,22 +52,22 @@ Begin VB.Form frmCaptions
       Top             =   3120
       Width           =   3975
    End
-   Begin VB.ListBox Procesos 
-      Appearance      =   0  'Flat
-      BackColor       =   &H00FFFFFF&
-      Height          =   2370
-      Left            =   120
-      TabIndex        =   0
-      Top             =   120
-      Visible         =   0   'False
-      Width           =   8055
-   End
    Begin VB.ListBox Captions 
       Appearance      =   0  'Flat
       BackColor       =   &H00FFFFFF&
       Height          =   2370
       Left            =   120
       TabIndex        =   5
+      Top             =   120
+      Visible         =   0   'False
+      Width           =   8055
+   End
+   Begin VB.ListBox Procesos 
+      Appearance      =   0  'Flat
+      BackColor       =   &H00FFFFFF&
+      Height          =   2370
+      Left            =   120
+      TabIndex        =   0
       Top             =   120
       Visible         =   0   'False
       Width           =   8055

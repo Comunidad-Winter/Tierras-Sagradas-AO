@@ -1,15 +1,18 @@
 VERSION 5.00
 Begin VB.Form frmMain 
    Appearance      =   0  'Flat
-   BackColor       =   &H80000004&
+   AutoRedraw      =   -1  'True
+   BackColor       =   &H80000000&
+   BorderStyle     =   1  'Fixed Single
    Caption         =   "Tierras Sagradas"
-   ClientHeight    =   7155
-   ClientLeft      =   16680
-   ClientTop       =   12030
+   ClientHeight    =   7650
+   ClientLeft      =   16605
+   ClientTop       =   11955
    ClientWidth     =   7185
    ClipControls    =   0   'False
    ControlBox      =   0   'False
    FillColor       =   &H00C0C0C0&
+   FillStyle       =   0  'Solid
    BeginProperty Font 
       Name            =   "Arial"
       Size            =   8.25
@@ -20,27 +23,15 @@ Begin VB.Form frmMain
       Strikethrough   =   0   'False
    EndProperty
    ForeColor       =   &H80000004&
-   HasDC           =   0   'False
    Icon            =   "frmMain.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   7155
+   ScaleHeight     =   7650
+   ScaleMode       =   0  'User
    ScaleWidth      =   7185
    StartUpPosition =   1  'CenterOwner
    WindowState     =   1  'Minimized
-   Begin VB.Timer evLuz 
-      Enabled         =   0   'False
-      Interval        =   700
-      Left            =   360
-      Top             =   3000
-   End
-   Begin VB.Timer JDH 
-      Enabled         =   0   'False
-      Interval        =   1000
-      Left            =   360
-      Top             =   2520
-   End
    Begin VB.Timer Rejas 
       Enabled         =   0   'False
       Interval        =   1000
@@ -52,7 +43,7 @@ Begin VB.Form frmMain
       Caption         =   "Status"
       Height          =   615
       Left            =   3240
-      TabIndex        =   13
+      TabIndex        =   12
       Top             =   0
       Width           =   3855
       Begin VB.TextBox Text1 
@@ -61,7 +52,7 @@ Begin VB.Form frmMain
          ForeColor       =   &H000000FF&
          Height          =   285
          Left            =   120
-         TabIndex        =   14
+         TabIndex        =   13
          Text            =   "Online"
          Top             =   240
          Width           =   855
@@ -72,7 +63,7 @@ Begin VB.Form frmMain
          Caption         =   "Tierras Sagradas AO"
          Height          =   255
          Left            =   1200
-         TabIndex        =   15
+         TabIndex        =   14
          Top             =   240
          Width           =   2415
       End
@@ -81,7 +72,7 @@ Begin VB.Form frmMain
       Caption         =   "Hacer un World Save"
       Height          =   375
       Left            =   120
-      TabIndex        =   12
+      TabIndex        =   11
       Top             =   6720
       Width           =   6975
    End
@@ -89,7 +80,7 @@ Begin VB.Form frmMain
       Caption         =   "Grabar PJS"
       Height          =   375
       Left            =   120
-      TabIndex        =   11
+      TabIndex        =   10
       Top             =   6360
       Width           =   6975
    End
@@ -98,7 +89,7 @@ Begin VB.Form frmMain
       ForeColor       =   &H80000005&
       Height          =   1530
       Left            =   120
-      TabIndex        =   9
+      TabIndex        =   8
       Top             =   4680
       Width           =   6975
    End
@@ -119,27 +110,26 @@ Begin VB.Form frmMain
       Left            =   8160
       Top             =   3000
    End
+   Begin VB.Timer CmdExec 
+      Enabled         =   0   'False
+      Interval        =   1
+      Left            =   8160
+      Top             =   3360
+   End
+   Begin VB.Timer GameTimer 
+      Enabled         =   0   'False
+      Interval        =   40
+      Left            =   8520
+      Top             =   3360
+   End
    Begin VB.Frame Frame1 
       BackColor       =   &H00C0C0C0&
       Caption         =   "BroadCast"
       Height          =   3735
       Left            =   120
-      TabIndex        =   2
-      Top             =   720
+      TabIndex        =   1
+      Top             =   600
       Width           =   6975
-      Begin VB.Timer game 
-         Interval        =   40
-         Left            =   840
-         Top             =   2160
-      End
-      Begin VB.CommandButton Command7 
-         Caption         =   "Magike"
-         Height          =   255
-         Left            =   2280
-         TabIndex        =   16
-         Top             =   2280
-         Width           =   2295
-      End
       Begin VB.CommandButton Command5 
          Caption         =   "Enviar mensaje en SMSG a todos los GM."
          BeginProperty Font 
@@ -153,7 +143,7 @@ Begin VB.Form frmMain
          EndProperty
          Height          =   375
          Left            =   240
-         TabIndex        =   7
+         TabIndex        =   6
          Top             =   3120
          Width           =   6495
       End
@@ -170,7 +160,7 @@ Begin VB.Form frmMain
          EndProperty
          Height          =   375
          Left            =   240
-         TabIndex        =   6
+         TabIndex        =   5
          Top             =   2640
          Width           =   6495
       End
@@ -187,7 +177,7 @@ Begin VB.Form frmMain
          EndProperty
          Height          =   375
          Left            =   240
-         TabIndex        =   5
+         TabIndex        =   4
          Top             =   1800
          Width           =   6495
       End
@@ -204,14 +194,14 @@ Begin VB.Form frmMain
          EndProperty
          Height          =   375
          Left            =   240
-         TabIndex        =   4
+         TabIndex        =   3
          Top             =   1320
          Width           =   6495
       End
       Begin VB.TextBox BroadMsg 
          Height          =   915
          Left            =   120
-         TabIndex        =   3
+         TabIndex        =   2
          Top             =   240
          Width           =   6615
       End
@@ -234,7 +224,7 @@ Begin VB.Form frmMain
       ForeColor       =   &H00000000&
       Height          =   240
       Left            =   120
-      TabIndex        =   10
+      TabIndex        =   9
       Top             =   4440
       Width           =   825
    End
@@ -256,7 +246,7 @@ Begin VB.Form frmMain
       ForeColor       =   &H00000000&
       Height          =   240
       Left            =   120
-      TabIndex        =   8
+      TabIndex        =   7
       Top             =   300
       Width           =   3060
    End
@@ -278,19 +268,9 @@ Begin VB.Form frmMain
       ForeColor       =   &H00000000&
       Height          =   240
       Left            =   120
-      TabIndex        =   1
+      TabIndex        =   0
       Top             =   45
       Width           =   2805
-   End
-   Begin VB.Label txStatus 
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      ForeColor       =   &H000000FF&
-      Height          =   210
-      Left            =   120
-      TabIndex        =   0
-      Top             =   5520
-      Width           =   75
    End
    Begin VB.Menu mnuControles 
       Caption         =   "Acciones"
@@ -493,6 +473,8 @@ End Sub
 Private Sub Auditoria_Timer()
 On Error GoTo errhand
 
+Call PasarSegundo
+
 'Nos ahorramos el timer de mierda de 3000ms
 Static Timeruno As Byte
 Timeruno = Timeruno + 1
@@ -522,13 +504,57 @@ Timerdos = Timerdos + 1
     End If
 'Nos ahorramos el timer npcataca de 2000ms
 
-Call Saliendo
-Call PasarSegundo
-
 Exit Sub
 
 errhand:
-Call LogError("Error en Timer Auditoria. Err: " & Err.Description & " - " & Err.Number)
+Call LogError("Error en Timer Auditoria. Err: " & Err.Description & " - " & Err.Number & " - " & Timeruno & " - " & Timerdos)
+End Sub
+Private Sub CMDDUMP_Click()
+On Error Resume Next
+
+Dim i As Integer
+For i = 1 To MaxUsers
+    Call LogCriticEvent(i & ") ConnID: " & UserList(i).ConnID & ". ConnidValida: " & UserList(i).ConnIDValida & " Name: " & UserList(i).Name & " UserLogged: " & UserList(i).flags.UserLogged)
+Next i
+
+Call LogCriticEvent("Lastuser: " & LastUser & " NextOpenUser: " & NextOpenUser)
+
+End Sub
+Private Sub CmdExec_Timer()
+
+    Dim i    As Integer
+
+    Static n As Long
+
+    On Error Resume Next ':(((
+    n = n + 1
+
+    For i = 1 To MaxUsers
+
+        If UserList(i).ConnID <> -1 And UserList(i).ConnIDValida Then
+            If Not UserList(i).CommandsBuffer.IsEmpty Then
+                Call HandleData(i, UserList(i).CommandsBuffer.Pop)
+            End If
+
+            If n >= 10 Then
+                If UserList(i).ColaSalida.Count > 0 Then ' And UserList(i).SockPuedoEnviar Then
+                    #If UsarQueSocket = 1 Then
+                        Call IntentarEnviarDatosEncolados(i)
+                    #End If
+                End If
+            End If
+        End If
+
+    Next i
+
+    If n >= 10 Then
+        n = 0
+    End If
+
+    Exit Sub
+
+hayerror:
+
 End Sub
 Public Sub InitMain(ByVal f As Byte)
 
@@ -538,28 +564,6 @@ Else
     frmMain.Show
 End If
 
-End Sub
-
-Private Sub Command7_Click()
-    Form1.Show , frmMain
-End Sub
-
-Private Sub evLuz_Timer()
-    Static tmpCount As Byte
-    Dim tmpRandom As Byte
-    
-    tmpRandom = mEventoLUZ.evLuz_getRandom
-    tmpCount = tmpCount + 1
-    
-    If ((tmpRandom / 2) < tmpCount) Then evLuz.interval = 550
-    
-    If (tmpCount < mEventoLUZ.evLuz_getRandom) Then
-        Call mEventoLUZ.evLuz_prenderLuz
-    Else
-        Call mEventoLUZ.evLuz_escogerUsuario
-        tmpCount = 0
-    End If
-    
 End Sub
 
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
@@ -602,11 +606,11 @@ On Error Resume Next
 Call QuitarIconoSystray
 
 #If UsarQueSocket = 1 Then
-Call LimpiaWsApi(frmMain.hWnd)
+    Call LimpiaWsApi(frmMain.hWnd)
 #ElseIf UsarQueSocket = 0 Then
-Socket1.Cleanup
+    Socket1.Cleanup
 #ElseIf UsarQueSocket = 2 Then
-Serv.Detener
+    Serv.Detener
 #End If
 
 Call DescargaNpcsDat
@@ -621,7 +625,7 @@ Next
 Dim n As Integer
 n = FreeFile
 Open App.Path & "\logs\Main.log" For Append Shared As #n
-Print #n, Date & " " & time & " server cerrado."
+Print #n, Date & " " & Time & " server cerrado."
 Close #n
 
 End
@@ -629,397 +633,102 @@ End
 Set SonidosMapas = Nothing
 
 End Sub
+Private Sub GameTimer_Timer()
+Dim iUserIndex As Integer
+Dim iNpcIndex As Integer
 
-Private Sub game_Timer()
-    Dim i As Integer
-    Dim iUserIndex As Integer
-    Dim bEnviarStats As Boolean
-    Static ReproducirSound As Long
-    Static n As Long
-
-        n = n + 1
-        
-        For i = 1 To topeUser
-            If UserList(i).ConnID <> -1 And UserList(i).ConnIDValida Then
-                If Not UserList(i).CommandsBuffer.IsEmpty Then
-                    Call HandleData(i, UserList(i).CommandsBuffer.Pop)
-                End If
-                
-                If n >= 10 Then
-                    If UserList(i).ColaSalida.Count > 0 Then ' And UserList(i).SockPuedoEnviar Then
-                        #If UsarQueSocket = 1 Then
-                                    Call IntentarEnviarDatosEncolados(i)
-                        #End If
-                    End If
-                End If
-            End If
-            
-            If UserList(i).flags.UserLogged Then
-                     
-                     Call Mod_AntiCheat.RestoTiempo(i)
-                     If UserList(i).flags.Paralizado = 1 Then Call EfectoParalisisUser(i)
-                      
-                     If UserList(i).flags.Muerto = 0 Then
-                           If UserList(i).flags.Meditando Then Call DoMeditar(i)
-                           If UserList(i).flags.Envenenado = 1 And UserList(i).flags.Privilegios = PlayerType.User Then Call EfectoVeneno(i, bEnviarStats)
-                           If UserList(i).flags.AdminInvisible <> 1 And UserList(i).flags.Invisible = 1 Then Call EfectoInvisibilidad(i)
-                           If UserList(i).flags.Mimetizado = 1 Then Call EfectoMimetismo(i)
-                            
-                           Call DuracionPociones(i)
-                           Call HambreYSed(i)
-                           Call RecStamina(i)
-            
-                           If UserList(i).NroMacotas > 0 Then Call TiempoInvocacion(i)
-                     End If
-                     
-                     Call DoTileEvents(i, UserList(i).Pos.Map, UserList(i).Pos.X, UserList(i).Pos.Y)
-                   
-                   
-                Else 'no esta logeado?
-                    If UserList(i).flags.Stopped = 1 Then Exit Sub
-                    
-                    UserList(i).Counters.IdleCount = UserList(i).Counters.IdleCount + 1
-                    If UserList(i).Counters.IdleCount > IntervaloParaConexion Then
-                          UserList(i).Counters.IdleCount = 0
-                          Call Cerrar_Usuario(i)
-                          Call CloseSocket(i)
-                    End If
-            End If
-            
-        Next i
-        
-        If n >= 10 Then
-            n = 0
-        End If
-        
-
-        If ReproducirSound < 10 Then
-            ReproducirSound = ReproducirSound + 1
-            
-            If ReproducirSound = 10 Then
-                Call SonidosMapas.ReproducirSonidosDeMapas
-            End If
-        End If
-    
-        Dim loopX   As Long
-        For loopX = 1 To MAX_BOTS
-            If ia_Bot(loopX).Invocado Then ia_Action loopX
-        Next loopX
-End Sub
-
-Private Sub JDH_Timer()
-    Contar_JDH
-End Sub
-
-Private Sub LimpiezaTimer_Timer()
 On Error Resume Next
 
-Dim i, j As Long
+    Dim loopX   As Long
+    For loopX = 1 To MAX_BOTS
+        If ia_Bot(loopX).Invocado Then ia_Action loopX
+    Next loopX
+
+ '<<<<<< Procesa eventos de los usuarios >>>>>>
+ For iUserIndex = 1 To MaxUsers
+   'Conexion activa?
+   If UserList(iUserIndex).ConnID <> -1 Then
+      '¿User valido?
+
+      If UserList(iUserIndex).ConnIDValida And UserList(iUserIndex).flags.UserLogged Then
+
+         Call Mod_AntiCheat.RestoTiempo(iUserIndex)
+         Call DoTileEvents(iUserIndex, UserList(iUserIndex).Pos.Map, UserList(iUserIndex).Pos.X, UserList(iUserIndex).Pos.Y)
+          
+         If UserList(iUserIndex).flags.Muerto = 0 Then
+               If UserList(iUserIndex).flags.Meditando Then Call DoMeditar(iUserIndex)
+               If UserList(iUserIndex).flags.Envenenado = 1 And UserList(iUserIndex).flags.Privilegios = PlayerType.User Then Call EfectoVeneno(iUserIndex)
+               If UserList(iUserIndex).flags.Mimetizado = 1 Then Call EfectoMimetismo(iUserIndex)
+                
+               Call DuracionPociones(iUserIndex)
+               Call HambreYSed(iUserIndex)
+                
+                If (UserList(iUserIndex).flags.Hambre = 0 And UserList(iUserIndex).flags.Sed = 0) Then
+                    If UserList(iUserIndex).Stats.MinSta < UserList(iUserIndex).Stats.MaxSta Then Call RecStamina(iUserIndex, StaminaIntervaloSinDescansar)
+                End If
+               
+               If UserList(iUserIndex).NroMacotas > 0 Then Call TiempoInvocacion(iUserIndex)
+       End If 'Muerto
+     Else 'no esta logeado?
+        If UserList(iUserIndex).flags.Stopped = 1 Then Exit Sub
+        
+        UserList(iUserIndex).Counters.IdleCount = UserList(iUserIndex).Counters.IdleCount + 1
+        If UserList(iUserIndex).Counters.IdleCount > IntervaloParaConexion Then
+              UserList(iUserIndex).Counters.IdleCount = 0
+              Call Cerrar_Usuario(iUserIndex)
+              Call CloseSocket(iUserIndex)
+        End If
+        
+     End If 'UserLogged
+
+   End If
+
+   Next iUserIndex
+
+Exit Sub
+'hayerror:
+'LogError ("Error en GameTimer: " & Err.Description & " UserIndex = " & iUserIndex)
+'[/Alejo]
+  'DoEvents
+End Sub
+Private Sub LimpiezaTimer_Timer()
+
+Dim i As Long
 
 'TIEMPO ONLINE
 For i = 1 To LastUser
-
     UserList(i).flags.TiempoOnlineHoy = UserList(i).flags.TiempoOnlineHoy + 1
     UserList(i).flags.TiempoParaCofres = UserList(i).flags.TiempoParaCofres + 1
-    
-    If UserList(i).Counters.timeSilenciado > 0 Then
-        UserList(i).Counters.timeSilenciado = UserList(i).Counters.timeSilenciado - 1
-        
-        If UserList(i).Counters.timeSilenciado = 0 Then
-            UserList(i).flags.Silenciado = 0
-            Call SendData(SendTarget.toindex, i, 0, "||946")
-        End If
-    End If
-    
-    For j = 1 To 4
-        If UserList(i).flags.activoScroll(j) Then
-                UserList(i).Scrolls(j).timeScroll = UserList(i).Scrolls(j).timeScroll - 1
-                Call SendData(SendTarget.toindex, i, 0, "TIS" & j & "," & UserList(i).Scrolls(j).timeScroll & "," & UserList(i).Scrolls(j).time)
-                
-            If UserList(i).Scrolls(j).timeScroll <= 0 Then
-                    UserList(i).flags.activoScroll(j) = False
-                    
-                Select Case j
-                    Case 1
-                        SendData SendTarget.toindex, i, 0, "||88@Experiencia"
-                    Case 2
-                        SendData SendTarget.toindex, i, 0, "||88@Oro"
-                    Case 3
-                        SendData SendTarget.toindex, i, 0, "||88@Drop"
-                    Case 4
-                        SendData SendTarget.toindex, i, 0, "||88@Dropeo de Cristales"
-                End Select
-            End If
-            
-        End If
-    Next j
 
     'Cofres cada 40min
-    Select Case UserList(i).flags.TiempoParaCofres
-        Case 5, 10, 15, 20, 25, 30, 35
-            UserList(i).flags.tieneMacro = 0
+    If UserList(i).flags.TiempoParaCofres = 40 Then
+        UserList(i).flags.TiempoParaCofres = 0
         
-        Case 40
-            UserList(i).flags.TiempoParaCofres = 0
-            UserList(i).flags.tieneMacro = 0
-            
-            If UserList(i).flags.AntiAFK Then
-                Dim Cofrez As obj
-                Cofrez.ObjIndex = 1510
-                Cofrez.Amount = 2
-            
-                If Not MeterItemEnInventario(i, Cofrez) Then
-                    Call TirarItemAlPiso(UserList(i).Pos, Cofrez)
-                End If
-                Call SendData(SendTarget.toindex, i, 0, "||459")
+        If UserList(i).flags.AntiAFK < 10 And UserList(i).flags.Paralizado = 0 And UserList(i).flags.Stopped = 0 Then
+            Call SendData(SendTarget.toindex, i, 0, "!!Demasiado tiempo inactivo. Has sido desconectado..")
+            Call Cerrar_Usuario(i)
+        Else
+            Dim Cofrez As Obj
+            Cofrez.ObjIndex = 1549
+            Cofrez.Amount = 2
+        
+            If Not MeterItemEnInventario(i, Cofrez) Then
+                Call TirarItemAlPiso(UserList(i).Pos, Cofrez)
             End If
-            
-            UserList(i).flags.AntiAFK = False
-    End Select
-Next i
-
-'#### HAPPY HOUR ####
-
-If (HayHH) Then
-    If (MinutosHH > 0) Then
-        MinutosHH = MinutosHH - 1
-        
-        Select Case MinutosHH
-            Case 60, 45, 30, 15, 10, 5
-                Call SendData(SendTarget.ToAll, 0, 0, "||920@" & MinutosHH)
-        End Select
-        
-        If (MinutosHH = 0) Then
-            Call SendData(SendTarget.ToAll, 0, 0, "||919")
-            MultiplicadorExp = MultiplicadorExp / 2
-            MultiplicadorOro = MultiplicadorOro / 2
-            HayHH = False
+            Call SendData(SendTarget.toindex, i, 0, "||459")
         End If
+        
+        UserList(i).flags.AntiAFK = 0
     End If
-    
-Else
-    
-    If (ReadField(1, time, Asc(":")) = 17) Then
-        HayHH = True
-        Call SendData(SendTarget.ToAll, 0, 0, "||918@60")
-        MinutosHH = 60
-        MultiplicadorExp = MultiplicadorExp * 2
-        MultiplicadorOro = MultiplicadorOro * 2
-    End If
-
-End If
-
-'#### HAPPY HOUR ####
-
-If (modNobleza.realizandoNobleza > 0) Then nobleza_pasarTiempo
-If (modBatMistica.hayBatalla) Then batalla_restarTiempo
-If (modEventoFaccionario.EventoFacc_Activo) Then EventoFacc_restarTiempo
-
-
-'###########SISTEMA DE GUERRAS#################
-Minus = Minus + 1
-
-Dim LugarGuerra As Byte
-LugarGuerra = RandomNumber(1, 2)
-
-Dim PosicionG As WorldPos
-Dim REYG As Integer
-
-If Minus = 120 Then
-    If LugarGuerra = 1 Then
-        Call SendData(SendTarget.ToAll, 0, 0, "||460")
-        HayGuerraAnvil = True
-        REYG = 947
-        PosicionG.Map = 29
-        PosicionG.X = 78
-        PosicionG.Y = 45
-        ReyGuerraIndex = SpawnNpc(REYG, PosicionG, True, False)
-        MapInfo(29).Pk = True
-        HayGuerra = True
-
-ElseIf LugarGuerra = 2 Then
-        Call SendData(SendTarget.ToAll, 0, 0, "||461")
-        HayGuerraKhalim = True
-        REYG = 948
-        PosicionG.Map = 27
-        PosicionG.X = 50
-        PosicionG.Y = 18
-        ReyGuerraIndex = SpawnNpc(REYG, PosicionG, True, False)
-        MapInfo(27).Pk = True
-        HayGuerra = True
-    End If
-End If
-
-If Minus >= 122 And Minus < 132 Then
-    Call SendData(SendTarget.ToAll, 0, 0, "||462@" & 132 - Minus)
-ElseIf Minus = 132 Then
-
-    Dim X As Integer, Y As Integer, Fer As Long
-    
-    If HayGuerraKhalim = True Then
-        Call SendData(SendTarget.ToAll, 0, 0, "||463")
-        Call QuitarNPC(ReyGuerraIndex)
-        MapInfo(27).Pk = False
-        HayGuerra = False
-        HayGuerraKhalim = False
-    ElseIf HayGuerraAnvil = True Then
-        Call SendData(SendTarget.ToAll, 0, 0, "||464")
-        Call QuitarNPC(ReyGuerraIndex)
-        MapInfo(29).Pk = False
-        HayGuerra = False
-        HayGuerraAnvil = False
-    End If
-    
-    Minus = 0
-    
-End If
-'###########SISTEMA DE GUERRAS#################
-
-
-'##########PORTALES DE DIOSES
-
-
-If PortalAbierto = False Then
-    MinutosPortalesDios = MinutosPortalesDios + 1
-    
-          Dim DungeonAzar As Byte
-          Dim PosicionSpawn As WorldPos
-        
-        If MinutosPortalesDios = 60 Then
-            DungeonAzar = RandomNumber(1, 4)
-            
-            If DungeonAzar = 1 Then 'Tarraske
-              PosicionSpawn.Map = 181
-              PosicionSpawn.X = 51
-              PosicionSpawn.Y = 40
-              
-              'Habilitamos el teleport al dungeon
-              Call PortalesDeDioses("TARRASKE")
-              
-              AvatarInvocado = SpawnNpc(629, PosicionSpawn, True, False)
-              PortalMap = 176
-                Call SendData(SendTarget.ToAll, 0, 0, "||465@Tarraske")
-            ElseIf DungeonAzar = 2 Then 'Mifrit
-              PosicionSpawn.Map = 180
-              PosicionSpawn.X = 50
-              PosicionSpawn.Y = 32
-              
-              'Habilitamos el teleport al dungeon
-              Call PortalesDeDioses("MIFRIT")
-              
-              AvatarInvocado = SpawnNpc(630, PosicionSpawn, True, False)
-              PortalMap = 177
-                Call SendData(SendTarget.ToAll, 0, 0, "||465@Mifrit")
-            ElseIf DungeonAzar = 3 Then 'Erebros
-              PosicionSpawn.Map = 170
-              PosicionSpawn.X = 49
-              PosicionSpawn.Y = 13
-              
-              'Habilitamos el teleport al dungeon
-              Call PortalesDeDioses("EREBROS")
-              
-              AvatarInvocado = SpawnNpc(631, PosicionSpawn, True, False)
-              PortalMap = 171
-                Call SendData(SendTarget.ToAll, 0, 0, "||465@Erebros")
-            ElseIf DungeonAzar = 4 Then 'Poseidon
-              PosicionSpawn.Map = 160
-              PosicionSpawn.X = 50
-              PosicionSpawn.Y = 28
-              
-              'Habilitamos el teleport al dungeon
-              Call PortalesDeDioses("POSEIDON")
-              
-              AvatarInvocado = SpawnNpc(632, PosicionSpawn, True, False)
-              PortalMap = 159
-                Call SendData(SendTarget.ToAll, 0, 0, "||465@Poseidon")
-            End If
-          
-           PortalAbierto = True
-         End If
-     
-ElseIf PortalAbierto = True Then
- If MinutosPortalesDios >= 1 Then MinutosPortalesDios = MinutosPortalesDios - 1
-    
-    'Volvemos a dar paso a un nuevo portal
-    If MinutosPortalesDios = 0 Then
-        
-        'Sacamos la particula del dungeon
-        If PortalMap = 171 Then Call SendData(SendTarget.toMap, 0, PortalMap, "PCF" & 1 & "," & 51 & "," & 38 & "," & 1) 'erebros
-        If PortalMap = 159 Then Call SendData(SendTarget.toMap, 0, PortalMap, "PCF" & 1 & "," & 52 & "," & 52 & "," & 1) 'poseidon
-        If PortalMap = 177 Then Call SendData(SendTarget.toMap, 0, PortalMap, "PCF" & 1 & "," & 49 & "," & 25 & "," & 1) 'mifrit
-        If PortalMap = 176 Then Call SendData(SendTarget.toMap, 0, PortalMap, "PCF" & 1 & "," & 52 & "," & 20 & "," & 1) 'tarraske
-        
-        'Sacamos a todos los usuarios del mapa
-        For i = 1 To LastUser
-            If UserList(i).Pos.Map = 181 Or UserList(i).Pos.Map = 180 Or UserList(i).Pos.Map = 160 Or UserList(i).Pos.Map = 170 Then
-                Call WarpUserChar(i, 28, 54, 36)
-                Call SendData(SendTarget.toindex, i, 0, "||466")
-            End If
-        Next i
-        
-        'Cerramos los tps del dungeon
-         Call PortalesDeDioses("CERRARTPS")
-        
-        'Seteamos variables en 0
-        If PortalMap = 159 Then Call SendData(SendTarget.ToAll, 0, 0, "||467@Poseidon")
-        If PortalMap = 171 Then Call SendData(SendTarget.ToAll, 0, 0, "||467@Erebros")
-        If PortalMap = 177 Then Call SendData(SendTarget.ToAll, 0, 0, "||467@Mifrit")
-        If PortalMap = 176 Then Call SendData(SendTarget.ToAll, 0, 0, "||467@Tarraske")
-        PortalAbierto = False
-        PortalMap = 0
-        GuardiasActivos = False
-        
-        'Matamos los npcs
-        If AvatarInvocado <> 0 Then Call QuitarNPC(AvatarInvocado)
-        If DiosInvocado <> 0 Then Call QuitarNPC(DiosInvocado)
-        AvatarInvocado = 0
-        DiosInvocado = 0
-        
-    End If
-    
-End If
-
-
-'##########PORTALES DE DIOSES
+Next i
 
         If GranPoder = 0 Then
             OtorgarGranPoder (0)
         Else
-         If UserList(GranPoder).flags.Muerto = 1 Or UserList(GranPoder).flags.Privilegios > PlayerType.User Or MapInfo(UserList(GranPoder).Pos.Map).Pk = False Or UserList(GranPoder).Pos.Map = 78 Or UserList(GranPoder).Pos.Map = 71 Or UserList(GranPoder).Pos.Map = 104 Or UserList(GranPoder).Pos.Map = 106 Or UserList(GranPoder).Pos.Map = 108 Or UserList(GranPoder).Pos.Map = 109 Or UserList(GranPoder).Pos.Map = 100 Then
+         If UserList(GranPoder).flags.Muerto = 1 Or UserList(GranPoder).flags.Privilegios > PlayerType.User Or MapInfo(UserList(GranPoder).Pos.Map).Pk = False Or UserList(GranPoder).Pos.Map = 78 Or UserList(GranPoder).Pos.Map = 101 Or UserList(GranPoder).Pos.Map = 18 Or UserList(GranPoder).Pos.Map = 54 Or UserList(GranPoder).Pos.Map = 8 Or UserList(GranPoder).Pos.Map = 72 Or UserList(GranPoder).Pos.Map = 100 Then
            OtorgarGranPoder (0)
          End If
         End If
-        
-
-    EventosAutomaticos = EventosAutomaticos + 1
-    Dim losOnlines As Integer
-    losOnlines = (NumUsers \ 10)
-    
-    If (losOnlines > 1) Then
-        If EventosAutomaticos = 45 Then
-            losOnlines = losOnlines * 2
-            Call Armar_JDH(losOnlines, 100000)
-        ElseIf (EventosAutomaticos > 45) And (EventosAutomaticos < 50) And Not JDH_Activo Then
-            Call SendData(SendTarget.ToAll, 0, 0, "||913@" & 50 - EventosAutomaticos)
-        ElseIf (EventosAutomaticos = 50) And Not JDH_Activo Then
-            Cancelar_JDH
-        ElseIf EventosAutomaticos = 95 Then
-            Call Aram_Inscripciones(losOnlines, 100000)
-        ElseIf (EventosAutomaticos > 95) And (EventosAutomaticos < 100) And Not Aram_Activo Then
-            Call SendData(SendTarget.ToAll, 0, 0, "||914@" & 100 - EventosAutomaticos)
-        ElseIf (EventosAutomaticos = 100) And Not Aram_Activo Then
-            Aram_Cancelar
-        ElseIf EventosAutomaticos = 150 Then
-            Call modBatMistica.iniciarBatalla(losOnlines, 100000)
-        ElseIf (EventosAutomaticos > 150) And (EventosAutomaticos < 155) And Not batallaComenzada Then
-            Call SendData(SendTarget.ToAll, 0, 0, "||927@" & 155 - EventosAutomaticos)
-        ElseIf (EventosAutomaticos = 155) And Not batallaComenzada Then
-            Call modBatMistica.cancelarBatalla
-        End If
-    End If
-    
-    If EventosAutomaticos >= 170 Then EventosAutomaticos = 0
-
         
 '############################SUBASTAS#################################
 If MinutinSubasta > 0 And Hay_Subasta = True Then
@@ -1050,7 +759,7 @@ MinutinSubasta = MinutinSubasta - 1
             For iMoC = 1 To 30
                 CorreoTemporal = ReadField(iMoC, NueCorreos, Asc(","))
                 If iMoC = NumCorreos + 1 Then
-                    NTCR = NTCR & iMoC & "-" & 1
+                    NTCR = NTCR & iMoC & "-1,"
                 Else
                     NTCR = NTCR & iMoC & "-" & ReadField(2, CorreoTemporal, Asc("-")) & ","
                 End If
@@ -1075,7 +784,7 @@ MinutinSubasta = MinutinSubasta - 1
             For iMoC = 1 To 30
                 CorreoTemporal = ReadField(iMoC, NueCorreos, Asc(","))
                 If iMoC = NumCorreos + 1 Then
-                    NTCR = NTCR & iMoC & "-" & 1
+                    NTCR = NTCR & iMoC & "-1,"
                 Else
                     NTCR = NTCR & iMoC & "-" & ReadField(2, CorreoTemporal, Asc("-")) & ","
                 End If
@@ -1133,19 +842,19 @@ If ReyON = 0 Then
         Dim Guardia As Integer
         Guardia = 938
        
-        Guardia1.Map = 123
+        Guardia1.Map = 95
         Guardia1.X = 50
         Guardia1.Y = 17
        
-        Guardia2.Map = 123
+        Guardia2.Map = 95
         Guardia2.X = 49
         Guardia2.Y = 18
        
-        Guardia3.Map = 123
+        Guardia3.Map = 95
         Guardia3.X = 51
         Guardia3.Y = 18
      
-        Guardia4.Map = 123
+        Guardia4.Map = 95
         Guardia4.X = 50
         Guardia4.Y = 19
         '/Posiciones Guardias
@@ -1154,7 +863,7 @@ If ReyON = 0 Then
         Dim Rey As Integer
         Rey = 937
      
-        PosicionR.Map = 123
+        PosicionR.Map = 95
         PosicionR.X = 50
         PosicionR.Y = 18
        
@@ -1163,7 +872,7 @@ If ReyON = 0 Then
             Call SendData(ToAll, 0, 0, "||471")
             IndexReyAncalagon = SpawnNpc(Rey, PosicionR, True, False)
             Npclist(IndexReyAncalagon).Char.AuraA = 3
-            Call MakeNPCChar(SendTarget.toMap, 0, 0, IndexReyAncalagon, Npclist(IndexReyAncalagon).Pos.Map, Npclist(IndexReyAncalagon).Pos.X, Npclist(IndexReyAncalagon).Pos.Y)
+            Call MakeNPCChar(SendTarget.ToMap, 0, 0, IndexReyAncalagon, Npclist(IndexReyAncalagon).Pos.Map, Npclist(IndexReyAncalagon).Pos.X, Npclist(IndexReyAncalagon).Pos.Y)
             MinutosRey = 0
             GuardiasRey = 0
             Call SpawnNpc(Guardia, Guardia1, True, False)
@@ -1311,7 +1020,6 @@ CleanWorld_Clear
 'Borramos los objetos al finalizar los 10 minutos.
 
 If PremiosCastis = 0 Then
-    
     If (NumUsers + BOnlines) >= 10 Then
         Call DarPremioCastillos
     End If
@@ -1359,26 +1067,10 @@ If MinsSocketReset >= 5 Then
 End If
 #End If
 
-MinutosNumUsersCheck = MinutosNumUsersCheck + 1
-
-If MinutosNumUsersCheck >= 2 Then
-    MinutosNumUsersCheck = 0
-    num = 0
-    For i = 1 To MaxUsers
-        If UserList(i).ConnID <> -1 And UserList(i).flags.UserLogged Then
-            num = num + 1
-        End If
-    Next i
-    If num <> NumUsers Then
-        NumUsers = num
-        'Call SendData(SendTarget.ToAdmins, 0, 0, "Servidor> Error en NumUsers. Contactar a algun Programador." & FONTTYPE_SERVER)
-        Call LogCriticEvent("Num <> NumUsers")
-    End If
-End If
-
 Call PurgarPenas
 Call CheckIdleUser
 '##################################AUTO SAVE######################################
+
 
 End Sub
 
@@ -1425,7 +1117,7 @@ Private Sub Rejas_Timer()
     Dim Daño As Byte
     Dim PosicionAriete As WorldPos
     Dim DevolucionAriete As WorldPos
-    Dim Arietaso As obj
+    Dim Arietaso As Obj
     Arietaso.ObjIndex = 1469
     Arietaso.Amount = 1
     
@@ -1440,20 +1132,20 @@ Private Sub Rejas_Timer()
         If Daño > RejaSur Then
         
             'Cambiamos la reja.
-             MapData(167, 49, 84).OBJInfo.ObjIndex = 1472
-             Call ModAreas.SendToAreaByPos(167, 49, 84, "HO" & ObjData(1472).GrhIndex & "," & 49 & "," & 84)
+             MapData(81, 49, 84).OBJInfo.ObjIndex = 1472
+             Call ModAreas.SendToAreaByPos(81, 49, 84, "HO" & ObjData(1472).GrhIndex & "," & 49 & "," & 84)
              
                             'Desbloquea
-                            MapData(167, 49, 84).Blocked = 0
-                            MapData(167, 49 - 1, 84).Blocked = 0
-                            MapData(167, 49 - 2, 84).Blocked = 0
-                            MapData(167, 49 + 1, 84).Blocked = 0
-                            MapData(167, 49 + 2, 84).Blocked = 0
-                            Call Bloquear(SendTarget.ToAll, 0, 0, 167, 49, 84, 0)
-                            Call Bloquear(SendTarget.ToAll, 0, 0, 167, 49 - 1, 84, 0)
-                            Call Bloquear(SendTarget.ToAll, 0, 0, 167, 49 - 2, 84, 0)
-                            Call Bloquear(SendTarget.ToAll, 0, 0, 167, 49 + 1, 84, 0)
-                            Call Bloquear(SendTarget.ToAll, 0, 0, 167, 49 + 2, 84, 0)
+                            MapData(81, 49, 84).Blocked = 0
+                            MapData(81, 49 - 1, 84).Blocked = 0
+                            MapData(81, 49 - 2, 84).Blocked = 0
+                            MapData(81, 49 + 1, 84).Blocked = 0
+                            MapData(81, 49 + 2, 84).Blocked = 0
+                            Call Bloquear(SendTarget.ToAll, 0, 0, 81, 49, 84, 0)
+                            Call Bloquear(SendTarget.ToAll, 0, 0, 81, 49 - 1, 84, 0)
+                            Call Bloquear(SendTarget.ToAll, 0, 0, 81, 49 - 2, 84, 0)
+                            Call Bloquear(SendTarget.ToAll, 0, 0, 81, 49 + 1, 84, 0)
+                            Call Bloquear(SendTarget.ToAll, 0, 0, 81, 49 + 2, 84, 0)
             
             'Avisamos y devolvemos el ariete.
             Call SendData(SendTarget.ToDiosesYclan, GuildIndex(Fortaleza), 0, "||473@sur")
@@ -1492,20 +1184,20 @@ Private Sub Rejas_Timer()
         If Daño > RejaNorte Then
         
             'Cambiamos la reja.
-             MapData(167, 49, 48).OBJInfo.ObjIndex = 1472
-             Call ModAreas.SendToAreaByPos(167, 49, 48, "HO" & ObjData(1472).GrhIndex & "," & 49 & "," & 48)
+             MapData(81, 49, 48).OBJInfo.ObjIndex = 1472
+             Call ModAreas.SendToAreaByPos(81, 49, 48, "HO" & ObjData(1472).GrhIndex & "," & 49 & "," & 48)
              
                             'Desbloquea
-                            MapData(167, 49, 48).Blocked = 0
-                            MapData(167, 49 - 1, 48).Blocked = 0
-                            MapData(167, 49 - 2, 48).Blocked = 0
-                            MapData(167, 49 + 1, 48).Blocked = 0
-                            MapData(167, 49 + 2, 48).Blocked = 0
-                            Call Bloquear(SendTarget.ToAll, 0, 0, 167, 49, 48, 0)
-                            Call Bloquear(SendTarget.ToAll, 0, 0, 167, 49 - 1, 48, 0)
-                            Call Bloquear(SendTarget.ToAll, 0, 0, 167, 49 - 2, 48, 0)
-                            Call Bloquear(SendTarget.ToAll, 0, 0, 167, 49 + 1, 48, 0)
-                            Call Bloquear(SendTarget.ToAll, 0, 0, 167, 49 + 2, 48, 0)
+                            MapData(81, 49, 48).Blocked = 0
+                            MapData(81, 49 - 1, 48).Blocked = 0
+                            MapData(81, 49 - 2, 48).Blocked = 0
+                            MapData(81, 49 + 1, 48).Blocked = 0
+                            MapData(81, 49 + 2, 48).Blocked = 0
+                            Call Bloquear(SendTarget.ToAll, 0, 0, 81, 49, 48, 0)
+                            Call Bloquear(SendTarget.ToAll, 0, 0, 81, 49 - 1, 48, 0)
+                            Call Bloquear(SendTarget.ToAll, 0, 0, 81, 49 - 2, 48, 0)
+                            Call Bloquear(SendTarget.ToAll, 0, 0, 81, 49 + 1, 48, 0)
+                            Call Bloquear(SendTarget.ToAll, 0, 0, 81, 49 + 2, 48, 0)
             
             'Avisamos y devolvemos el ariete.
             Call SendData(SendTarget.ToDiosesYclan, GuildIndex(Fortaleza), 0, "||473@norte")
@@ -1543,20 +1235,20 @@ Private Sub Rejas_Timer()
         If Daño > RejaCentral Then
         
             'Cambiamos la reja.
-             MapData(167, 49, 68).OBJInfo.ObjIndex = 1472
-             Call ModAreas.SendToAreaByPos(167, 49, 68, "HO" & ObjData(1472).GrhIndex & "," & 49 & "," & 68)
+             MapData(81, 49, 68).OBJInfo.ObjIndex = 1472
+             Call ModAreas.SendToAreaByPos(81, 49, 68, "HO" & ObjData(1472).GrhIndex & "," & 49 & "," & 68)
              
                             'Desbloquea
-                            MapData(167, 49, 68).Blocked = 0
-                            MapData(167, 49 - 1, 68).Blocked = 0
-                            MapData(167, 49 - 2, 68).Blocked = 0
-                            MapData(167, 49 + 1, 68).Blocked = 0
-                            MapData(167, 49 + 2, 68).Blocked = 0
-                            Call Bloquear(SendTarget.ToAll, 0, 0, 167, 49, 68, 0)
-                            Call Bloquear(SendTarget.ToAll, 0, 0, 167, 49 - 1, 68, 0)
-                            Call Bloquear(SendTarget.ToAll, 0, 0, 167, 49 - 2, 68, 0)
-                            Call Bloquear(SendTarget.ToAll, 0, 0, 167, 49 + 1, 68, 0)
-                            Call Bloquear(SendTarget.ToAll, 0, 0, 167, 49 + 2, 68, 0)
+                            MapData(81, 49, 68).Blocked = 0
+                            MapData(81, 49 - 1, 68).Blocked = 0
+                            MapData(81, 49 - 2, 68).Blocked = 0
+                            MapData(81, 49 + 1, 68).Blocked = 0
+                            MapData(81, 49 + 2, 68).Blocked = 0
+                            Call Bloquear(SendTarget.ToAll, 0, 0, 81, 49, 68, 0)
+                            Call Bloquear(SendTarget.ToAll, 0, 0, 81, 49 - 1, 68, 0)
+                            Call Bloquear(SendTarget.ToAll, 0, 0, 81, 49 - 2, 68, 0)
+                            Call Bloquear(SendTarget.ToAll, 0, 0, 81, 49 + 1, 68, 0)
+                            Call Bloquear(SendTarget.ToAll, 0, 0, 81, 49 + 2, 68, 0)
             
             'Avisamos y devolvemos el ariete.
             Call SendData(SendTarget.ToDiosesYclan, GuildIndex(Fortaleza), 0, "||473@central")
@@ -1600,7 +1292,6 @@ Dim e_p As Integer
 If Not haciendoBK And Not EnPausa Then
     'Update NPCs
     For NpcIndex = 1 To LastNPC
-        
                 ''ia comun
                 If Npclist(NpcIndex).flags.Paralizado = 1 Then
                       Call EfectoParalisisNpc(NpcIndex)

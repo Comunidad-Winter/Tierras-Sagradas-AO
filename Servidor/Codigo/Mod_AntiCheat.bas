@@ -15,8 +15,6 @@ Public Type Intervalos
      Flechas As Integer
 
      Trabajar As Integer
-     
-     PU As Integer
  
 End Type
 
@@ -27,7 +25,6 @@ Private Type tIntervals
     PoteoU As Integer
     PoteoClick As Integer
     Work As Integer
-    PU As Integer
 End Type
 
 Public setIntervals As tIntervals
@@ -48,7 +45,6 @@ Dim l_file As clsIniReader
     setIntervals.PoteoU = l_file.GetValue("INTERVALOS", "PoteoU")
     setIntervals.PoteoClick = l_file.GetValue("INTERVALOS", "PoteoClick")
     setIntervals.Work = l_file.GetValue("INTERVALOS", "Work")
-    setIntervals.PU = 10
 
 End Sub
 Public Sub RestoTiempo(ByVal userindex As Integer)
@@ -99,12 +95,6 @@ Public Sub RestoTiempo(ByVal userindex As Integer)
                      .Seguimiento.Trabajar = .Seguimiento.Trabajar - 1
  
              End If
-             
-             If .Seguimiento.PU > 0 Then '// Restamos al intervalo "Trabajar" para poder potear
- 
-                     .Seguimiento.PU = .Seguimiento.PU - 1
- 
-             End If
  
      End With
  
@@ -134,49 +124,12 @@ Public Sub SetIntervalos(ByVal userindex As Integer)
              .Seguimiento.Click = 0
              
              .Seguimiento.Trabajar = 0
-             
-             .Seguimiento.PU = 0
  
      End With
  
  
 End Sub
- Public Function PuedoPU(ByVal userindex As Integer) As Boolean
  
- 
-     '// Miqueas
- 
-        '// Controlamos que pueda Tirar Hechizos
- 
- 
-     With UserList(userindex).Counters
- 
- 
-             If .Seguimiento.PU > 0 Then
- 
-                     PuedoPU = False
- 
- 
-                     Exit Function
- 
- 
-             End If
- 
-       
- 
-             PuedoPU = True
- 
-       
- 
-             '// 21 * 40 = 840 Mseg entre casteo y casteo
- 
-                .Seguimiento.PU = setIntervals.PU
- 
- 
-        End With
- 
- 
-End Function
  
 Public Function PuedoCasteoHechizo(ByVal userindex As Integer) As Boolean
  
@@ -470,4 +423,17 @@ Private Sub BanAntiCheat(ByVal userindex As String)
      End With
  
  
+End Sub
+Public Sub InicializarContadores(userindex As Integer)
+    UserList(userindex).Counters.TransportePremium = 0
+    UserList(userindex).Counters.TransporteCastillos(31) = 0
+    UserList(userindex).Counters.TransporteCastillos(32) = 0
+    UserList(userindex).Counters.TransporteCastillos(33) = 0
+    UserList(userindex).Counters.TransporteCastillos(34) = 0
+    UserList(userindex).Counters.TransporteCastillos(35) = 0
+    UserList(userindex).Counters.TimeComandos = 0
+    UserList(userindex).Counters.InmoManopla = 0
+    UserList(userindex).Counters.Saliendo = False
+    UserList(userindex).Counters.Salir = 0
+    UserList(userindex).Counters.IdleCount = 0
 End Sub

@@ -46,7 +46,7 @@ Public LeyendaFormateada() As String
 Public textura As Integer
 
 
-Sub InitCartel(Ley As String, Grh As Long)
+Sub InitCartel(Ley As String, Grh As Integer)
 If Not Cartel Then
     Leyenda = Ley
     textura = Grh
@@ -88,38 +88,18 @@ Sub DibujarCartel()
  
         If Not Cartel Then Exit Sub
  
-        Dim X As Integer, Y As Integer, j As Long, desp As Integer
+        Dim x As Integer, y As Integer, j As Long, desp As Integer
  
-        X = XPosCartel + 25
-        Y = YPosCartel + 60
+        x = XPosCartel + 25
+        y = YPosCartel + 60
    
         Call engine.Draw_GrhIndex(textura, XPosCartel, YPosCartel)
  
         For j = 0 To UBound(LeyendaFormateada)
-                Texto.Engine_Text_Draw X, Y + desp, LeyendaFormateada(j), -1
+                Texto.Engine_Text_Draw x, y + desp, LeyendaFormateada(j), -1
                 desp = desp + (frmMain.font.size) + 5
         Next
  
 End Sub
-Public Sub realizarSuma(ByVal charindex As Integer)
 
-        Dim tmpChar, tmpName As String
-        Dim i As Long, pos As Integer
-        
-With charlist(charindex)
-        pos = InStr(.Nombre, "<")
-        If pos = 0 Then pos = Len(.Nombre) + 2
-        tmpName = left$(.Nombre, pos - 2)
-        
-        .sumatoriaEstrella = 0
-        For i = 1 To Len(tmpName)
-            tmpChar = Asc(mid(tmpName, i, 1))
-            If tmpChar >= 65 And tmpChar <= 90 Then
-                .sumatoriaEstrella = .sumatoriaEstrella + 4.2
-            Else
-                .sumatoriaEstrella = .sumatoriaEstrella + 3.8
-            End If
-        Next i
-End With
 
-End Sub

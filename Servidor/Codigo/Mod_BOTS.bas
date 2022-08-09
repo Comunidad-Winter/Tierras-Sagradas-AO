@@ -5,7 +5,7 @@ Option Explicit
 Private Const IA_MINDEF  As Integer = 10
 Private Const IA_MAXDEF  As Integer = 12
  
- Public Const MAX_BOTS   As Byte = 25
+ Public Const MAX_BOTS   As Byte = 10
  
 'Charindex reservado.
 Private Const IA_CHAR    As Integer = (MAXCHARSX - MAX_BOTS)
@@ -27,17 +27,17 @@ Private Const IA_BODY    As Integer = 859
 'Cantidad de hechizos que lanza
  
 Private Const IA_M_SPELL As Byte = 3
-Private Const IA_NUMCHAT As Byte = 11
+Private Const IA_NUMCHAT As Byte = 5
  
 'Constantes de intervalos.
  
 Private Const IA_SINT   As Integer = 800    'Intervalo entre hechizo-hechizo.
 Private Const IA_SREMO  As Integer = 500    'Intervalo remo.
-Private Const IA_MOVINT As Integer = 280   'Intervalo caminta.
+Private Const IA_MOVINT As Integer = 240    'Intervalo caminta.
 Private Const IA_USEOBJ As Integer = 250    'Intervalo usar potas.
 Private Const IA_HITINT As Integer = 200    'Intervalo para golpe
 Private Const IA_PROINT As Integer = 700    'Intervalo de flecha
-Private Const IA_TALKIN As Integer = 2000   'Intervalo de hablAR :P
+Private Const IA_TALKIN As Integer = 400   'Intervalo de hablAR :P
  
 'Probabilidades de que te pegue
  
@@ -106,7 +106,7 @@ Type BOT
      UltimoMovimiento   As eIAMoviments 'ULTIMO MOVIMIENTO
      Navegando          As Boolean      'Navegando?
      ViajanteAntes      As WorldPos     'Pos cuando un viajante ataca un usuario.
-     Inv(1 To IA_SLOTS) As obj          'Inventario del bot.
+     Inv(1 To IA_SLOTS) As Obj          'Inventario del bot.
      UltimaIdaObjeto    As Boolean      'Ultimo movimiento fue buscar objs?
 End Type
  
@@ -371,7 +371,7 @@ With ia_Bot(ProximoBot).Char
                tmp_Color = 3
             End If
    
-    Call SendData(SendTarget.toMap, ia_Bot(ProximoBot).Char.CharIndex, ia_Bot(ProximoBot).Pos.Map, "CC" & .Body & "," & .Head & "," & eHeading.SOUTH & "," & .CharIndex & "," & ia_Bot(ProximoBot).Pos.X & "," & ia_Bot(ProximoBot).Pos.Y & "," & .WeaponAnim & "," & .ShieldAnim & "," & .CascoAnim & "," & ia_Bot(ProximoBot).Tag & "," & tmp_Color & "," & 0)
+    Call SendData(SendTarget.ToMap, ia_Bot(ProximoBot).Char.CharIndex, ia_Bot(ProximoBot).Pos.Map, "CC" & .Body & "," & .Head & "," & eHeading.SOUTH & "," & .CharIndex & "," & ia_Bot(ProximoBot).Pos.X & "," & ia_Bot(ProximoBot).Pos.Y & "," & .WeaponAnim & "," & .ShieldAnim & " ," & 0 & "," & 0 & "," & .CascoAnim & "," & ia_Bot(ProximoBot).Tag & "," & tmp_Color & "," & 0)
 
    
 End With
@@ -459,17 +459,11 @@ ia_spell(3).DamageMax = 0
 ia_spell(3).DamageMin = 0
 ia_spell(3).spellIndex = 9
  
-ia_Chats(1) = "JASJSAJJSAKJA SOS MALASO"
-ia_Chats(2) = "NEGRO HIJO DE PUTA"
+ia_Chats(1) = "LKA JÑKKLJA KÑL JAÑLKÑLKAJ LK AJ"
+ia_Chats(2) = "NEGRO"
 ia_Chats(3) = "CHAU CHE"
-ia_Chats(4) = "NANANANA MALARDO"
+ia_Chats(4) = "NANANANA TE ISE PAPIYAA"
 ia_Chats(5) = "HIJO DE PUTA"
-ia_Chats(6) = "VALE PEGAR UN CLICK E"
-ia_Chats(7) = "ES MAS DIVERTIDO JUGAR CONTRA MI SOBRINA"
-ia_Chats(8) = "SOS UN CANCER"
-ia_Chats(9) = "CUANDO QUIERAS TE REGALO UNAS MANOS"
-ia_Chats(10) = "/DESINSTALAR PADRE"
-ia_Chats(11) = "SABES JUGAR?"
  
 End Sub
  
@@ -572,7 +566,10 @@ With MapData(ia_Bot(BotIndex).Pos.Map, X, Y)
      If .Blocked <> 0 Then Exit Function
    
      'Hay un usuario?
-     If .userindex > 0 Then Exit Function
+     If .userindex > 0 Then
+        'Si no es un adminInvisible entonces nos vamos.
+        If UserList(.userindex).flags.AdminInvisible <> 1 Then Exit Function
+    End If
  
     'Hay un NPC?
     If .NpcIndex <> 0 Then Exit Function
@@ -906,7 +903,7 @@ With ia_Bot(BotIndex)
         'Mapa válido?
         If MapaValido(MapData(.Pos.Map, .Pos.X, .Pos.Y).TileExit.Map) Then
             'Asignamos nuevas posiciones, borramos el char anterior.
-            Call EraseUserChar(.Char.CharIndex)
+            Call EraseUserChar(SendTarget.ToMap, 0, 0, .Char.CharIndex)
             'Pos del npc.
             .Pos.Map = MapData(.Pos.Map, .Pos.X, .Pos.Y).TileExit.Map
            
@@ -935,7 +932,7 @@ With ia_Bot(BotIndex)
                tmp_Color = 3
             End If
            
-            Call SendData(SendTarget.toMap, .Char.CharIndex, .Pos.Map, "CC" & .Char.Body & "," & .Char.Head & "," & .Char.Heading & "," & .Char.CharIndex & "," & .Pos.X & "," & .Pos.Y & "," & .Char.WeaponAnim & "," & .Char.ShieldAnim & "," & 0 & "," & 0 & "," & .Char.CascoAnim & "," & .Tag & "," & tmp_Color & "," & 0)
+            Call SendData(SendTarget.ToMap, .Char.CharIndex, .Pos.Map, "CC" & .Char.Body & "," & .Char.Head & "," & .Char.Heading & "," & .Char.CharIndex & "," & .Pos.X & "," & .Pos.Y & "," & .Char.WeaponAnim & "," & .Char.ShieldAnim & "," & 0 & "," & 0 & "," & .Char.CascoAnim & "," & .Tag & "," & tmp_Color & "," & 0)
         End If
      End If
      
@@ -975,7 +972,7 @@ Select Case supportAction
        Case eIASupportActions.SCurar        '<Cura un compañero
             'Lanza graves.
             'Crea fx.
-            Call SendData(SendTarget.toMap, ia_Bot(botIndexToSupport).Char.CharIndex, ia_Bot(botIndexToSupport).Pos.Map, "CFX" & ia_Bot(botIndexToSupport).Char.CharIndex & "," & Hechizos(5).FXgrh & "," & Hechizos(5).loops)
+            Call SendData(SendTarget.ToMap, ia_Bot(botIndexToSupport).Char.CharIndex, ia_Bot(botIndexToSupport).Pos.Map, "CFX" & ia_Bot(botIndexToSupport).Char.CharIndex & "," & Hechizos(5).FXgrh & "," & Hechizos(5).loops)
            
             'Cartel.
             Call SendData(SendTarget.ToPCArea, botIndexToSupport, ia_Bot(BotIndex).Pos.Map, "N|" & vbCyan & "°" & Hechizos(5).PalabrasMagicas & "°" & ia_Bot(botIndexToSupport).Char.CharIndex)
@@ -1112,7 +1109,7 @@ With ia_Bot(BotIndex)
        .Intervalos.ChatCount = (IA_TALKIN / 40)
        
        'Envia msj random
-       Call SendData(SendTarget.toMap, 0, .Pos.Map, "N|" & vbWhite & "°" & ia_Chats(RandomNumber(1, 11)) & "°" & .Char.CharIndex)
+       Call SendData(SendTarget.ToMap, .Char.CharIndex, 0, "N|" & vbRed & "°" & ia_Chats(RandomNumber(1, 5)) & "°" & .Char.CharIndex)
        .Intervalos.SpellCount = (IA_SINT / 100)
     End If
    
@@ -1127,7 +1124,6 @@ With ia_Bot(BotIndex)
        
         'Es clero?
         If Not .clase <> eIAClase.Clerigo Then
-        
            'Si tiene la vida llena lo persigue.
            If .Vida = .maxVida Then
               ia_MoveToHeading BotIndex, moveHeading, FoundErr
@@ -1177,61 +1173,9 @@ With ia_Bot(BotIndex)
    
    
     'STATS..
-       
-       'Si está paralizado AND el usuario no tiene poka vida prioriza removerse.
-       
-        If .Paralizado And .Vida > 60 Then
-            If .Mana < 300 Then
-                       'Checkeo el intervalo.
-                       If .Intervalos.UseItemCount = 0 Then
-                      
-                           Dim recuperoMana    As Long
-                          
-                           'Recupera un % de la mana.
-                           If .clase <> eIAClase.Mago Then
-                               recuperoMana = Porcentaje(.maxMana, 5)
-                           Else
-                               recuperoMana = Porcentaje(.maxMana, 3)
-                           End If
-                          
-                           'aumento el mana
-                           .Mana = .Mana + recuperoMana
-                      
-                           'controlo el limite
-                           If .Mana > .maxMana Then .Mana = .maxMana
-                      
-                       'seteo el int
-                       .Intervalos.UseItemCount = (IA_USEOBJ / 40)
-            
-                       End If
-                      
-                       'Hacer una constante después, con esto hacemos un random
-                       'Para que azulee y combee a la ves.
-                       If RandomNumber(1, 4) < 4 Then Exit Sub
-                End If
-           
-            'Intervalo de remo :@
-            If .Intervalos.ParalizisCount <> 0 Then Exit Sub
-           
-            'Palabras mágicas.
-            Call SendData(SendTarget.ToPCArea, BotIndex, ia_Bot(BotIndex).Pos.Map, "N|" & vbCyan & "°" & Hechizos(10).PalabrasMagicas & "°" & ia_Bot(BotIndex).Char.CharIndex)
-           
-            .Paralizado = False
-           
-            'Agrego esto por que si no tirarle inmo era al pedo
-            'Seguia caminando practicamente :PP
-           
-            .Intervalos.ParalizisCount = (IA_SREMO / 10)
-           
-            'Se removió entonces salimos del sub y seteamos el intervalo
-           
-            .Intervalos.SpellCount = (IA_SINT / 40)
-           
-            Exit Sub
-           
-        End If
    
         'Prioriza la vida ante todo
+       
         If .Vida < .maxVida Then
            
             'Checkeo el intervalo.
@@ -1249,11 +1193,14 @@ With ia_Bot(BotIndex)
         End If
        
         'Si tenia la vida llena usa azules.
+       
         If .Mana < .maxMana Then
        
             'Checkeo el intervalo.
            
             If .Intervalos.UseItemCount = 0 Then
+           
+                Dim recuperoMana    As Long
                
                 'Recupera un % de la mana.
                 If .clase <> eIAClase.Mago Then
@@ -1362,6 +1309,11 @@ With ia_Bot(BotIndex)
        If ia_PuedeMeele(.Pos, UserList(pIndex).Pos, newBotHeading) Then
             'Acierta el golpe?
             If ia_AciertaGolpe(pIndex) Then
+               'Antes que nada cambiamos el heading, si es válido.
+               If newBotHeading <> 0 And newBotHeading <> .Char.Heading Then
+                  'ia_SendToBotArea botIndex, mod_DunkanProtocol.Send_ChangeHeadingChar(.Char.CharIndex, newBotHeading)
+               End If
+               
                'Calcula el golpe
                Dim GolpeVal     As Integer
                GolpeVal = ia_CalcularGolpe(pIndex)
@@ -1399,6 +1351,35 @@ With ia_Bot(BotIndex)
    
        'Feo, aunque digamos que solo hace apoca desc remo
        'Así que va a andar bien.
+       
+       'Si la mana es < a 300 [gasto del remo] no hacemos nada.
+       
+       If .Mana < 300 Then Exit Sub
+       
+       'Si está paralizado AND el usuario no tiene poka vida prioriza removerse.
+       
+        If .Paralizado And tmpHP > 60 Then
+           
+            'Intervalo de remo :@
+            If .Intervalos.ParalizisCount <> 0 Then Exit Sub
+           
+            'Palabras mágicas.
+            Call SendData(SendTarget.ToPCArea, BotIndex, ia_Bot(BotIndex).Pos.Map, "N|" & vbCyan & "°" & Hechizos(10).PalabrasMagicas & "°" & ia_Bot(BotIndex).Char.CharIndex)
+           
+            .Paralizado = False
+           
+            'Agrego esto por que si no tirarle inmo era al pedo
+            'Seguia caminando practicamente :PP
+           
+            .Intervalos.ParalizisCount = (IA_SREMO / 10)
+           
+            'Se removió entonces salimos del sub y seteamos el intervalo
+           
+            .Intervalos.SpellCount = (IA_SINT / 40)
+           
+            Exit Sub
+           
+        End If
        
         'No está paralizado entonces castea un hechizo random.
        
@@ -1477,8 +1458,8 @@ With ia_Bot(BotIndex)
         .Intervalos.SpellCount = (IA_SINT / 20) 'Se chekea cada 40 ms.
        
         'Creamos el fx y le descontamos la vida al usuario.
-        Call SendData(SendTarget.toMap, BotIndex, ia_Bot(BotIndex).Pos.Map, "N|" & vbCyan & "°" & Hechizos(ia_spell(sRandom).spellIndex).PalabrasMagicas & "°" & ia_Bot(BotIndex).Char.CharIndex)
-        Call SendData(SendTarget.toMap, UserList(pIndex).Char.CharIndex, UserList(pIndex).Pos.Map, "CFX" & UserList(pIndex).Char.CharIndex & "," & Hechizos(ia_spell(sRandom).spellIndex).FXgrh & "," & Hechizos(ia_spell(sRandom).spellIndex).loops)
+        Call SendData(SendTarget.ToMap, BotIndex, ia_Bot(BotIndex).Pos.Map, "N|" & vbCyan & "°" & Hechizos(ia_spell(sRandom).spellIndex).PalabrasMagicas & "°" & ia_Bot(BotIndex).Char.CharIndex)
+        Call SendData(SendTarget.ToMap, UserList(pIndex).Char.CharIndex, UserList(pIndex).Pos.Map, "CFX" & UserList(pIndex).Char.CharIndex & "," & Hechizos(ia_spell(sRandom).spellIndex).FXgrh & "," & Hechizos(ia_spell(sRandom).spellIndex).loops)
        
         'Paralizar?
         If sRandom = 3 Then
@@ -1513,7 +1494,6 @@ With ia_Bot(BotIndex)
        
         'Check si muere.
         If UserList(pIndex).Stats.MinHP <= 0 Then
-             If UserList(pIndex).flags.EnDuelo Then Call SalirDueloBOT(pIndex, False, False)
              UserDie pIndex
              
             'Era viajante y mató el usuario?, resteo el ui
@@ -1550,7 +1530,7 @@ Sub ia_EnviarChar(ByVal userindex As Integer, ByVal BotIndex As Byte)
                tmp_Color = 3
             End If
            
-            Call SendData(SendTarget.toMap, ia_Bot(BotIndex).Char.CharIndex, ia_Bot(BotIndex).Pos.Map, "CC" & .Body & "," & .Head & "," & eHeading.SOUTH & "," & .CharIndex & "," & ia_Bot(BotIndex).Pos.X & "," & ia_Bot(BotIndex).Pos.Y & "," & .WeaponAnim & "," & .ShieldAnim & "," & .CascoAnim & "," & ia_Bot(BotIndex).Tag & "," & tmp_Color & "," & 0)
+            Call SendData(SendTarget.ToMap, ia_Bot(BotIndex).Char.CharIndex, ia_Bot(BotIndex).Pos.Map, "CC" & .Body & "," & .Head & "," & eHeading.SOUTH & "," & .CharIndex & "," & ia_Bot(BotIndex).Pos.X & "," & ia_Bot(BotIndex).Pos.Y & "," & .WeaponAnim & "," & .ShieldAnim & " ," & 0 & "," & 0 & "," & .CascoAnim & "," & ia_Bot(BotIndex).Tag & "," & tmp_Color & "," & 0)
     End With
  
 End Sub
@@ -1598,7 +1578,7 @@ With UserList(userindex)
         Call SendData(SendTarget.toindex, userindex, 0, "N|Has paralizado a " & ia_Bot(BotIndex).Tag & "~69~190~156")
        
         'Creo la animacion sobre el char.
-        Call SendData(SendTarget.toMap, ia_Bot(BotIndex).Char.CharIndex, ia_Bot(BotIndex).Pos.Map, "CFX" & ia_Bot(BotIndex).Char.CharIndex & "," & Hechizos(spell).FXgrh & "," & Hechizos(spell).loops)
+        Call SendData(SendTarget.ToMap, ia_Bot(BotIndex).Char.CharIndex, ia_Bot(BotIndex).Pos.Map, "CFX" & ia_Bot(BotIndex).Char.CharIndex & "," & Hechizos(spell).FXgrh & "," & Hechizos(spell).loops)
        
         'SpellWorlds.
         DecirPalabrasMagicas Hechizos(spell).PalabrasMagicas, userindex
@@ -1619,10 +1599,20 @@ With UserList(userindex)
    
     Damage = RandomNumber(Hechizos(spell).MinHP, Hechizos(spell).MaxHP)
     Damage = Damage + Porcentaje(Damage, 3 * .Stats.ELV)
-    
-    Damage = Damage * 0.67
-
+   
    If Not Damage <> 0 Then Exit Sub
+    'Quitamos vida
+    If Hechizos(spell).StaffAffected Then
+       If UCase$(UserList(userindex).clase) = "MAGO" Then
+          If UserList(userindex).Invent.WeaponEqpObjIndex > 0 Then
+             Damage = (Damage * (ObjData(UserList(userindex).Invent.WeaponEqpObjIndex).StaffDamageBonus + 70)) / 100
+          Else
+             Damage = Damage * 0.7 'Baja damage a 70% del original
+          End If
+        End If
+     End If
+   
+    Damage = Damage - RandomNumber(52, 60)
     ia_Bot(BotIndex).Vida = ia_Bot(BotIndex).Vida - Damage
    
     'No está paralizado.
@@ -1653,7 +1643,7 @@ With UserList(userindex)
     DecirPalabrasMagicas Hechizos(spell).PalabrasMagicas, userindex
    
     'Creo el fx.
-    Call SendData(SendTarget.toMap, ia_Bot(BotIndex).Char.CharIndex, ia_Bot(BotIndex).Pos.Map, "CFX" & ia_Bot(BotIndex).Char.CharIndex & "," & Hechizos(spell).FXgrh & "," & Hechizos(spell).loops)
+    Call SendData(SendTarget.ToMap, ia_Bot(BotIndex).Char.CharIndex, ia_Bot(BotIndex).Pos.Map, "CFX" & ia_Bot(BotIndex).Char.CharIndex & "," & Hechizos(spell).FXgrh & "," & Hechizos(spell).loops)
    
     'saco mana y energia y actualizo el cliente
     .Stats.MinMAN = .Stats.MinMAN - rMan
@@ -1663,7 +1653,6 @@ With UserList(userindex)
     If ia_Bot(BotIndex).Vida <= 0 Then
         'Murió?
         ia_EraseChar BotIndex, True
-        If UserList(userindex).flags.EnDuelo Then Call SalirDueloBOT(userindex, False, True)
         Call SendData(SendTarget.toindex, userindex, 0, "N|Has matado a " & ia_Bot(BotIndex).Tag & "~69~190~156")
     End If
    
@@ -1703,7 +1692,6 @@ If ia_Bot(BotIndex).Vida <= 0 Then
     End If
    
     ia_EraseChar BotIndex, True
-    If UserList(userindex).flags.EnDuelo Then Call SalirDueloBOT(userindex, False, True)
    
 End If
  
@@ -1747,7 +1735,7 @@ Sub ia_TirarInventario(ByVal BotIndex As Byte)
  
 Dim loopX   As Long
 Dim iObjs() As Integer
-Dim iObj    As obj
+Dim iObj    As Obj
 Dim tmpPos  As WorldPos
  
 'Arma array de objetos
@@ -1972,109 +1960,3 @@ Next loopX
 IA_GetNextSlot = 0
  
 End Function
-
-Public Sub dueloVSBot(ByVal userindex As Integer, ByVal clase As String)
-
-    If TieneItemDiosEquipado(userindex) = True Then
-        Call SendData(toindex, userindex, 0, "||404")
-        Exit Sub
-    End If
-    
-    If MapInfo(UserList(userindex).Pos.Map).Pk = True Then
-            Call SendData(SendTarget.toindex, userindex, 0, "||323")
-        Exit Sub
-    End If
-    
-    If MapaEspecial(userindex) Then
-        Call SendData(SendTarget.toindex, userindex, 0, "||291")
-      Exit Sub
-    End If
-   
-    If UserList(userindex).flags.Muerto Then
-       Call SendData(toindex, userindex, 0, "||3")
-        Exit Sub
-    End If
-    
-    If ArenaOcupada(1) = True And ArenaOcupada(2) = True And ArenaOcupada(3) = True And ArenaOcupada(4) = True Then
-       Call SendData(toindex, userindex, 0, "||545")
-        Exit Sub
-    End If
-    
-    Dim tmpBOTX, tmpBOTY As Byte
-    
-    UserList(userindex).flags.MapaAnterior = UserList(userindex).Pos.Map
-    UserList(userindex).flags.XAnterior = UserList(userindex).Pos.X
-    UserList(userindex).flags.YAnterior = UserList(userindex).Pos.Y
-
-    'Arenas
-    If ArenaOcupada(1) = False Then
-        SendData ToAll, userindex, 0, "||548@1@" & UserList(userindex).Name & "@BOT TSAO@0"
-    
-        UserList(userindex).flags.EnQueArena = 1
-        
-        NombreDueleando(1) = "BOT"
-        NombreDueleando(2) = UserList(userindex).Name
-        
-        tmpBOTX = 23
-        tmpBOTY = 28
-        
-        WarpUserChar userindex, 71, 44, 42, True
-        TiempoDuelo(1) = 7
-        ArenaOcupada(1) = True
-    ElseIf ArenaOcupada(2) = False Then
-        SendData ToAll, userindex, 0, "||548@2@" & UserList(userindex).Name & "@BOT TSAO@0"
-    
-        UserList(userindex).flags.EnQueArena = 2
-        
-        NombreDueleando(3) = "BOT"
-        NombreDueleando(4) = UserList(userindex).Name
-        
-        tmpBOTX = 23
-        tmpBOTY = 61
-        
-        WarpUserChar userindex, 71, 44, 76, True
-        TiempoDuelo(2) = 7
-        ArenaOcupada(2) = True
-    ElseIf ArenaOcupada(3) = False Then
-        SendData ToAll, userindex, 0, "||548@3@" & UserList(userindex).Name & "@BOT TSAO@0"
-    
-        UserList(userindex).flags.EnQueArena = 3
-        
-        NombreDueleando(5) = "BOT"
-        NombreDueleando(6) = UserList(userindex).Name
-        
-        tmpBOTX = 59
-        tmpBOTY = 28
-
-        WarpUserChar userindex, 71, 80, 42, True
-        TiempoDuelo(3) = 7
-        ArenaOcupada(3) = True
-    ElseIf ArenaOcupada(4) = False Then
-        SendData ToAll, userindex, 0, "||548@4@BOT TSAO@" & UserList(userindex).Name & "@0"
-    
-        UserList(userindex).flags.EnQueArena = 4
-
-        NombreDueleando(7) = "BOT"
-        NombreDueleando(8) = UserList(userindex).Name
-        
-        tmpBOTX = 59
-        tmpBOTY = 61
-
-        WarpUserChar userindex, 71, 80, 76, True
-        TiempoDuelo(4) = 7
-        ArenaOcupada(4) = True
-    End If
-    
-    UserList(userindex).flags.EnDuelo = True
-    UserList(userindex).flags.DueliandoContra = "BOT"
-    
-    Select Case UCase$(clase)
-        Case "MAGO"
-            UserList(userindex).flags.NroBOT = ia_Spawn(eIAClase.Mago, 71, tmpBOTX, tmpBOTY, "Mago <TSAO>", False, True, 0)
-            
-        Case "CLERIGO"
-            UserList(userindex).flags.NroBOT = ia_Spawn(eIAClase.Clerigo, 71, tmpBOTX, tmpBOTY, "Clerigo <TSAO>", False, True, 0)
-    End Select
-
-
-End Sub

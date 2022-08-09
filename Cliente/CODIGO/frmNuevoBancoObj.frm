@@ -6,14 +6,11 @@ Begin VB.Form frmNuevoBancoObj
    ClientHeight    =   7905
    ClientLeft      =   -30
    ClientTop       =   -375
-   ClientWidth     =   6750
-   ClipControls    =   0   'False
+   ClientWidth     =   6765
    ControlBox      =   0   'False
-   Icon            =   "frmNuevoBancoObj.frx":0000
    LinkTopic       =   "Form1"
-   ScaleHeight     =   527
-   ScaleMode       =   3  'Pixel
-   ScaleWidth      =   450
+   ScaleHeight     =   7905
+   ScaleWidth      =   6765
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.TextBox MiOro 
@@ -32,11 +29,11 @@ Begin VB.Form frmNuevoBancoObj
       EndProperty
       ForeColor       =   &H00C0FFFF&
       Height          =   225
-      Left            =   2925
+      Left            =   2880
       TabIndex        =   5
       Text            =   "999.999.999"
       Top             =   6690
-      Width           =   1785
+      Width           =   1830
    End
    Begin VB.TextBox OroBove 
       Alignment       =   2  'Center
@@ -54,26 +51,23 @@ Begin VB.Form frmNuevoBancoObj
       EndProperty
       ForeColor       =   &H00C0FFFF&
       Height          =   225
-      Left            =   2925
+      Left            =   2880
       TabIndex        =   4
       Text            =   "999.999.999"
       Top             =   6330
-      Width           =   1785
+      Width           =   1830
    End
    Begin VB.PictureBox Picture1 
-      Appearance      =   0  'Flat
       AutoRedraw      =   -1  'True
-      BackColor       =   &H80000001&
-      BorderStyle     =   0  'None
+      BackColor       =   &H00000000&
       FillStyle       =   0  'Solid
-      ForeColor       =   &H80000008&
-      Height          =   510
-      Left            =   555
-      ScaleHeight     =   510
-      ScaleWidth      =   510
+      Height          =   600
+      Left            =   550
+      ScaleHeight     =   540
+      ScaleWidth      =   495
       TabIndex        =   3
-      Top             =   600
-      Width           =   510
+      Top             =   550
+      Width           =   555
    End
    Begin VB.TextBox cantidad 
       Alignment       =   2  'Center
@@ -91,14 +85,13 @@ Begin VB.Form frmNuevoBancoObj
       EndProperty
       ForeColor       =   &H00C0FFFF&
       Height          =   225
-      Left            =   2940
+      Left            =   2900
       TabIndex        =   2
       Text            =   "1"
-      Top             =   5745
-      Width           =   915
+      Top             =   5750
+      Width           =   990
    End
    Begin VB.ListBox List1 
-      Appearance      =   0  'Flat
       BackColor       =   &H00000000&
       BeginProperty Font 
          Name            =   "Tahoma"
@@ -110,15 +103,14 @@ Begin VB.Form frmNuevoBancoObj
          Strikethrough   =   0   'False
       EndProperty
       ForeColor       =   &H00FFFFC0&
-      Height          =   3735
+      Height          =   3765
       Index           =   1
-      Left            =   3495
+      Left            =   3500
       TabIndex        =   1
       Top             =   1600
       Width           =   2730
    End
    Begin VB.ListBox List1 
-      Appearance      =   0  'Flat
       BackColor       =   &H00000000&
       BeginProperty Font 
          Name            =   "Tahoma"
@@ -130,54 +122,56 @@ Begin VB.Form frmNuevoBancoObj
          Strikethrough   =   0   'False
       EndProperty
       ForeColor       =   &H00FFFFC0&
-      Height          =   3735
+      Height          =   3765
       Index           =   0
       Left            =   540
       TabIndex        =   0
       Top             =   1600
-      Width           =   2715
+      Width           =   2730
    End
    Begin VB.Image Image2 
-      Height          =   210
-      Left            =   3390
-      Top             =   1005
-      Width           =   210
+      Height          =   300
+      Left            =   4440
+      Picture         =   "frmNuevoBancoObj.frx":0000
+      Top             =   840
+      Width           =   435
    End
    Begin VB.Image Image1 
-      Height          =   210
-      Left            =   3390
-      Top             =   720
-      Width           =   210
+      Height          =   315
+      Left            =   4440
+      Picture         =   "frmNuevoBancoObj.frx":49A8
+      Top             =   480
+      Width           =   450
    End
    Begin VB.Image Salir 
-      Height          =   360
-      Left            =   2640
-      Top             =   7215
-      Width           =   1470
+      Height          =   405
+      Left            =   480
+      Top             =   7200
+      Width           =   5805
    End
    Begin VB.Image RetirarOro 
-      Height          =   225
-      Left            =   4815
-      Top             =   6330
-      Width           =   1305
+      Height          =   285
+      Left            =   4800
+      Top             =   6300
+      Width           =   1365
    End
    Begin VB.Image DepositarOro 
-      Height          =   225
-      Left            =   4815
-      Top             =   6690
-      Width           =   1305
+      Height          =   285
+      Left            =   4800
+      Top             =   6650
+      Width           =   1365
    End
    Begin VB.Image Retirar 
-      Height          =   375
-      Left            =   810
-      Top             =   5610
-      Width           =   1695
+      Height          =   405
+      Left            =   800
+      Top             =   5600
+      Width           =   1725
    End
    Begin VB.Image Depositar 
-      Height          =   375
-      Left            =   4230
-      Top             =   5610
-      Width           =   1695
+      Height          =   405
+      Left            =   4215
+      Top             =   5600
+      Width           =   1725
    End
    Begin VB.Menu cmdMenu 
       Caption         =   "Permitidos"
@@ -223,22 +217,10 @@ End Sub
 Private Sub Form_Load()
 Me.Picture = LoadPicture(App.Path & "\Data\Graficos\Principal\BovedaClan_Main.jpg")
 Retirar.Picture = LoadPicture(App.Path & "\Data\Graficos\Principal\BovedaClan_Retirar_N.jpg")
-Depositar.Picture = LoadPicture(App.Path & "\Data\Graficos\Principal\BovedaClan_DepositarOBJ_N.jpg")
+Depositar.Picture = LoadPicture(App.Path & "\Data\Graficos\Principal\BovedaClan_Depositar_N.jpg")
 DepositarOro.Picture = LoadPicture(App.Path & "\Data\Graficos\Principal\BovedaClan_DepositarOro_N.jpg")
 RetirarOro.Picture = LoadPicture(App.Path & "\Data\Graficos\Principal\BovedaClan_RetirarOro_N.jpg")
 Salir.Picture = LoadPicture(App.Path & "\Data\Graficos\Principal\BovedaClan_Salir_N.jpg")
-
-List1(0).BackColor = RGB(19, 21, 22)
-List1(1).BackColor = RGB(19, 21, 22)
-cantidad.BackColor = RGB(19, 21, 22)
-OroBove.BackColor = RGB(19, 21, 22)
-MiOro.BackColor = RGB(19, 21, 22)
-
-List1(0).ForeColor = RGB(145, 123, 85)
-List1(1).ForeColor = RGB(145, 123, 85)
-cantidad.ForeColor = RGB(145, 123, 85)
-OroBove.ForeColor = RGB(145, 123, 85)
-MiOro.ForeColor = RGB(145, 123, 85)
 
 Set form_Moviment = New clsFormMovementManager
 form_Moviment.Initialize Me
@@ -246,24 +228,24 @@ form_Moviment.Initialize Me
 End Sub
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
 Retirar.Picture = LoadPicture(App.Path & "\Data\Graficos\Principal\BovedaClan_Retirar_N.jpg")
-Depositar.Picture = LoadPicture(App.Path & "\Data\Graficos\Principal\BovedaClan_DepositarOBJ_N.jpg")
+Depositar.Picture = LoadPicture(App.Path & "\Data\Graficos\Principal\BovedaClan_Depositar_N.jpg")
 DepositarOro.Picture = LoadPicture(App.Path & "\Data\Graficos\Principal\BovedaClan_DepositarOro_N.jpg")
 RetirarOro.Picture = LoadPicture(App.Path & "\Data\Graficos\Principal\BovedaClan_RetirarOro_N.jpg")
 Salir.Picture = LoadPicture(App.Path & "\Data\Graficos\Principal\BovedaClan_Salir_N.jpg")
 End Sub
 Private Sub List1_Click(Index As Integer)
 
-Dim SR As RECT, DR As RECT, GrhIndex As Long
+Dim SR As RECT, DR As RECT, GrhIndex As Integer
 
 SR.left = 0
 SR.top = 0
-SR.Right = 34
-SR.bottom = 34
+SR.Right = 32
+SR.bottom = 32
 
 DR.left = 0
 DR.top = 0
-DR.Right = 34
-DR.bottom = 34
+DR.Right = 32
+DR.bottom = 32
 
 
 Select Case Index
@@ -279,7 +261,7 @@ End Sub
 
 Private Sub Permitidos_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
 If Button = 2 Then
-    PopupMenu cmdMenu
+    PopUpMenu cmdMenu
 End If
 End Sub
 Private Sub Retirar_Click()
@@ -331,10 +313,10 @@ Private Sub Retirar_MouseDown(Button As Integer, Shift As Integer, X As Single, 
 Retirar.Picture = LoadPicture(App.Path & "\Data\Graficos\Principal\BovedaClan_Retirar_A.jpg")
 End Sub
 Private Sub Depositar_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-Depositar.Picture = LoadPicture(App.Path & "\Data\Graficos\Principal\BovedaClan_DepositarOBJ_I.jpg")
+Depositar.Picture = LoadPicture(App.Path & "\Data\Graficos\Principal\BovedaClan_Depositar_I.jpg")
 End Sub
 Private Sub Depositar_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
-Depositar.Picture = LoadPicture(App.Path & "\Data\Graficos\Principal\BovedaClan_DepositarOBJ_A.jpg")
+Depositar.Picture = LoadPicture(App.Path & "\Data\Graficos\Principal\BovedaClan_Depositar_A.jpg")
 End Sub
 Private Sub RetirarOro_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
 RetirarOro.Picture = LoadPicture(App.Path & "\Data\Graficos\Principal\BovedaClan_RetirarOro_I.jpg")

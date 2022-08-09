@@ -2,26 +2,16 @@ VERSION 5.00
 Begin VB.Form frmGmPanelSOS 
    BorderStyle     =   4  'Fixed ToolWindow
    Caption         =   "SOS/Panel GM"
-   ClientHeight    =   6735
+   ClientHeight    =   6600
    ClientLeft      =   45
    ClientTop       =   315
    ClientWidth     =   7710
-   Icon            =   "frmGmPanelSOS.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   6735
+   ScaleHeight     =   6600
    ScaleWidth      =   7710
    StartUpPosition =   2  'CenterScreen
-   Begin VB.CommandButton Command4 
-      Caption         =   "DEBUG ENGINE"
-      Height          =   255
-      Left            =   120
-      TabIndex        =   73
-      Top             =   6480
-      Visible         =   0   'False
-      Width           =   2055
-   End
    Begin VB.CommandButton Modo 
       Caption         =   "SOS"
       Height          =   495
@@ -77,9 +67,9 @@ Begin VB.Form frmGmPanelSOS
       Width           =   7455
       Begin VB.ListBox lstDenuncias 
          Height          =   4740
-         ItemData        =   "frmGmPanelSOS.frx":000C
+         ItemData        =   "frmGmPanelSOS.frx":0000
          Left            =   120
-         List            =   "frmGmPanelSOS.frx":0013
+         List            =   "frmGmPanelSOS.frx":0007
          TabIndex        =   51
          Top             =   480
          Width           =   2415
@@ -279,9 +269,9 @@ Begin VB.Form frmGmPanelSOS
       End
       Begin VB.ListBox UserSOSList 
          Height          =   4155
-         ItemData        =   "frmGmPanelSOS.frx":002E
+         ItemData        =   "frmGmPanelSOS.frx":0022
          Left            =   120
-         List            =   "frmGmPanelSOS.frx":0035
+         List            =   "frmGmPanelSOS.frx":0029
          TabIndex        =   14
          Top             =   240
          Width           =   2055
@@ -319,9 +309,9 @@ Begin VB.Form frmGmPanelSOS
                Strikethrough   =   0   'False
             EndProperty
             Height          =   255
-            ItemData        =   "frmGmPanelSOS.frx":0046
+            ItemData        =   "frmGmPanelSOS.frx":003A
             Left            =   120
-            List            =   "frmGmPanelSOS.frx":0059
+            List            =   "frmGmPanelSOS.frx":004D
             TabIndex        =   7
             Top             =   480
             Width           =   1575
@@ -336,9 +326,9 @@ Begin VB.Form frmGmPanelSOS
          End
          Begin VB.ComboBox Combo1 
             Height          =   315
-            ItemData        =   "frmGmPanelSOS.frx":0088
+            ItemData        =   "frmGmPanelSOS.frx":007C
             Left            =   3240
-            List            =   "frmGmPanelSOS.frx":009B
+            List            =   "frmGmPanelSOS.frx":008F
             TabIndex        =   5
             Text            =   "Mal SOS"
             Top             =   480
@@ -465,9 +455,9 @@ Begin VB.Form frmGmPanelSOS
       End
       Begin VB.ListBox lstTrabajo 
          Height          =   5130
-         ItemData        =   "frmGmPanelSOS.frx":00E1
+         ItemData        =   "frmGmPanelSOS.frx":00D5
          Left            =   120
-         List            =   "frmGmPanelSOS.frx":00E8
+         List            =   "frmGmPanelSOS.frx":00DC
          TabIndex        =   19
          Top             =   480
          Width           =   3735
@@ -552,27 +542,27 @@ Begin VB.Form frmGmPanelSOS
          Width           =   7215
          Begin VB.ListBox lstTorneoTipo 
             Height          =   450
-            ItemData        =   "frmGmPanelSOS.frx":0103
+            ItemData        =   "frmGmPanelSOS.frx":00F7
             Left            =   960
-            List            =   "frmGmPanelSOS.frx":010D
+            List            =   "frmGmPanelSOS.frx":0101
             TabIndex        =   69
             Top             =   240
             Width           =   1455
          End
          Begin VB.ListBox lstTorneoNum 
             Height          =   255
-            ItemData        =   "frmGmPanelSOS.frx":0121
+            ItemData        =   "frmGmPanelSOS.frx":0115
             Left            =   2929
-            List            =   "frmGmPanelSOS.frx":0134
+            List            =   "frmGmPanelSOS.frx":0128
             TabIndex        =   68
             Top             =   360
             Width           =   735
          End
          Begin VB.ListBox lstTorneoModo 
             Height          =   255
-            ItemData        =   "frmGmPanelSOS.frx":014C
+            ItemData        =   "frmGmPanelSOS.frx":0140
             Left            =   5880
-            List            =   "frmGmPanelSOS.frx":015C
+            List            =   "frmGmPanelSOS.frx":0150
             TabIndex        =   67
             Top             =   360
             Width           =   1215
@@ -790,22 +780,18 @@ UserNICK = ""
 Call SendData("CONSUL")
 End Sub
 
-Private Sub Command4_Click()
-    frmEngine.Show , frmMain
-End Sub
-
 Private Sub Command5_Click(Index As Integer)
 
 If Index = 0 Then
-    OpenBrowser "http://www.tierras-sagradas.com/", 4
+    OpenBrowser "http://www.tierras-perdidas.com/f/index.php?", 4
 ElseIf Index = 1 Then
-    OpenBrowser "http://www.tierras-sagradas.com/", 4
+    OpenBrowser "http://www.tierras-perdidas.com/f/forumdisplay.php?f=20", 4
 ElseIf Index = 2 Then
-    OpenBrowser "http://www.tierras-sagradas.com/", 4
+    OpenBrowser "http://www.tierras-perdidas.com/f/forumdisplay.php?f=10", 4
 ElseIf Index = 3 Then
-    OpenBrowser "http://www.tierras-sagradas.com/", 4
+    OpenBrowser "http://www.tierras-perdidas.com/f/showthread.php?t=23741", 4
 ElseIf Index = 4 Then
-    OpenBrowser "http://www.tierras-sagradas.com/", 4
+    OpenBrowser "http://www.tierras-perdidas.com/f/forumdisplay.php?f=7", 4
 End If
 
 End Sub
@@ -813,8 +799,6 @@ End Sub
 Private Sub Form_Load()
 If UserPrivilegios = 0 Then Unload Me
 'Punishment.ListIndex = 0
-
-If charlist(UserCharIndex).priv = 12 Then Command4.Visible = True
 
 UserSOSList.Clear
 Call SendData("CONSUL")
@@ -894,5 +878,5 @@ Else
 End If
 End Sub
 Private Sub UserSOSList_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
-If Button = vbRightButton Then PopupMenu menus
+If Button = vbRightButton Then PopUpMenu menus
 End Sub

@@ -7,7 +7,6 @@ Begin VB.Form frmMenuGM
    ClientLeft      =   0
    ClientTop       =   0
    ClientWidth     =   1710
-   Icon            =   "frmMenuGM.frx":0000
    LinkTopic       =   "Form1"
    ScaleHeight     =   3300
    ScaleWidth      =   1710

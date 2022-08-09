@@ -225,14 +225,14 @@ For headingloop = eHeading.NORTH To eHeading.WEST
                          If Not DelCaos Then
                             If Criminal(UI) Then
                                    If NpcAtacaUser(NpcIndex, UI) Then
-                                        Call ChangeNPCChar(SendTarget.toMap, 0, nPos.Map, NpcIndex, Npclist(NpcIndex).Char.Body, Npclist(NpcIndex).Char.Head, headingloop)
+                                        Call ChangeNPCChar(SendTarget.ToMap, 0, nPos.Map, NpcIndex, Npclist(NpcIndex).Char.Body, Npclist(NpcIndex).Char.Head, headingloop)
                                    End If
                                    Exit Sub
                             ElseIf Npclist(NpcIndex).flags.AttackedBy = UserList(UI).Name _
                                       And Not Npclist(NpcIndex).flags.Follow Then
                                   
                                   If NpcAtacaUser(NpcIndex, UI) Then
-                                        Call ChangeNPCChar(SendTarget.toMap, 0, nPos.Map, NpcIndex, Npclist(NpcIndex).Char.Body, Npclist(NpcIndex).Char.Head, headingloop)
+                                        Call ChangeNPCChar(SendTarget.ToMap, 0, nPos.Map, NpcIndex, Npclist(NpcIndex).Char.Body, Npclist(NpcIndex).Char.Head, headingloop)
                                   End If
                                   Exit Sub
                             End If
@@ -240,14 +240,14 @@ For headingloop = eHeading.NORTH To eHeading.WEST
                             If Not Criminal(UI) Then
                                    
                                    If NpcAtacaUser(NpcIndex, UI) Then
-                                        Call ChangeNPCChar(SendTarget.toMap, 0, nPos.Map, NpcIndex, Npclist(NpcIndex).Char.Body, Npclist(NpcIndex).Char.Head, headingloop)
+                                        Call ChangeNPCChar(SendTarget.ToMap, 0, nPos.Map, NpcIndex, Npclist(NpcIndex).Char.Body, Npclist(NpcIndex).Char.Head, headingloop)
                                    End If
                                    Exit Sub
                             ElseIf Npclist(NpcIndex).flags.AttackedBy = UserList(UI).Name _
                                       And Not Npclist(NpcIndex).flags.Follow Then
                                   
                                   If NpcAtacaUser(NpcIndex, UI) Then
-                                        Call ChangeNPCChar(SendTarget.toMap, 0, nPos.Map, NpcIndex, Npclist(NpcIndex).Char.Body, Npclist(NpcIndex).Char.Head, headingloop)
+                                        Call ChangeNPCChar(SendTarget.ToMap, 0, nPos.Map, NpcIndex, Npclist(NpcIndex).Char.Body, Npclist(NpcIndex).Char.Head, headingloop)
                                   End If
                                   Exit Sub
                             End If
@@ -288,13 +288,13 @@ For headingloop = eHeading.NORTH To eHeading.WEST
                         Call NpcLanzaUnSpell(NpcIndex, UI)
                     End If
                     If NpcAtacaUser(NpcIndex, MapData(nPos.Map, nPos.X, nPos.Y).userindex) Then
-                        Call ChangeNPCChar(SendTarget.toMap, 0, nPos.Map, NpcIndex, Npclist(NpcIndex).Char.Body, Npclist(NpcIndex).Char.Head, headingloop)
+                        Call ChangeNPCChar(SendTarget.ToMap, 0, nPos.Map, NpcIndex, Npclist(NpcIndex).Char.Body, Npclist(NpcIndex).Char.Head, headingloop)
                     End If
                     Exit Sub
                 End If
             ElseIf NPCI > 0 Then
                     If Npclist(NPCI).MaestroUser > 0 And Npclist(NPCI).flags.Paralizado = 0 Then
-                        Call ChangeNPCChar(SendTarget.toMap, 0, nPos.Map, NpcIndex, Npclist(NpcIndex).Char.Body, Npclist(NpcIndex).Char.Head, headingloop)
+                        Call ChangeNPCChar(SendTarget.ToMap, 0, nPos.Map, NpcIndex, Npclist(NpcIndex).Char.Body, Npclist(NpcIndex).Char.Head, headingloop)
                         Call SistemaCombate.NpcAtacaNpc(NpcIndex, NPCI, False)
                         Exit Sub
                     End If
@@ -328,7 +328,7 @@ For headingloop = eHeading.NORTH To eHeading.WEST
                               Call NpcLanzaUnSpell(NpcIndex, UI)
                             End If
                             If NpcAtacaUser(NpcIndex, UI) Then
-                                Call ChangeNPCChar(SendTarget.toMap, 0, nPos.Map, NpcIndex, Npclist(NpcIndex).Char.Body, Npclist(NpcIndex).Char.Head, headingloop)
+                                Call ChangeNPCChar(SendTarget.ToMap, 0, nPos.Map, NpcIndex, Npclist(NpcIndex).Char.Body, Npclist(NpcIndex).Char.Head, headingloop)
                             End If
                             Exit Sub
                     End If
@@ -439,7 +439,7 @@ If Npclist(NpcIndex).flags.Inmovilizado = 1 Then
             If X >= MinXBorder And X <= MaxXBorder And Y >= MinYBorder And Y <= MaxYBorder Then
                 UI = MapData(Npclist(NpcIndex).Pos.Map, X, Y).userindex
                 If UI > 0 Then
-                    If (UserList(UI).Name = Npclist(NpcIndex).flags.AttackedBy) And (Distancia(Npclist(NpcIndex).Pos, UserList(UI).Pos) < 15) Then
+                    If UserList(UI).Name = Npclist(NpcIndex).flags.AttackedBy Then
                         If UserList(UI).flags.Muerto = 0 And UserList(UI).flags.Invisible = 0 And UserList(UI).flags.Oculto = 0 Then
                              If Npclist(NpcIndex).flags.LanzaSpells > 0 Then
                                   Call NpcLanzaUnSpell(NpcIndex, UI)
@@ -457,7 +457,7 @@ Else
             If X >= MinXBorder And X <= MaxXBorder And Y >= MinYBorder And Y <= MaxYBorder Then
                 UI = MapData(Npclist(NpcIndex).Pos.Map, X, Y).userindex
                 If UI > 0 Then
-                    If (UserList(UI).Name = Npclist(NpcIndex).flags.AttackedBy) And (Distancia(Npclist(NpcIndex).Pos, UserList(UI).Pos) < 15) Then
+                    If UserList(UI).Name = Npclist(NpcIndex).flags.AttackedBy Then
                         If UserList(UI).flags.Muerto = 0 And UserList(UI).flags.Invisible = 0 And UserList(UI).flags.Oculto = 0 Then
                              If Npclist(NpcIndex).flags.LanzaSpells > 0 Then
                                   Call NpcLanzaUnSpell(NpcIndex, UI)
@@ -658,7 +658,7 @@ If Npclist(NpcIndex).flags.Inmovilizado = 1 Then
                If NI > 0 Then
                     If Npclist(NpcIndex).TargetNPC = NI Then
                          bNoEsta = True
-                         If Npclist(NpcIndex).Numero = ELEMENTALFUEGO Or Npclist(NpcIndex).Numero = ELEMENTALTIERRA Then
+                         If Npclist(NpcIndex).Numero = ELEMENTALFUEGO Then
                              Call NpcLanzaUnSpellSobreNpc(NpcIndex, NI)
                              If Npclist(NI).NPCtype = DRAGON Then
                                 Npclist(NI).CanAttack = 1
@@ -684,7 +684,7 @@ Else
                If NI > 0 Then
                     If Npclist(NpcIndex).TargetNPC = NI Then
                          bNoEsta = True
-                         If Npclist(NpcIndex).Numero = ELEMENTALFUEGO Or Npclist(NpcIndex).Numero = ELEMENTALTIERRA Then
+                         If Npclist(NpcIndex).Numero = ELEMENTALFUEGO Then
                              Call NpcLanzaUnSpellSobreNpc(NpcIndex, NI)
                              If Npclist(NI).NPCtype = DRAGON Then
                                 Npclist(NI).CanAttack = 1
@@ -950,7 +950,7 @@ End Sub
 
 Sub NpcLanzaUnSpellSobreNpc(ByVal NpcIndex As Integer, ByVal TargetNPC As Integer)
 
-If Npclist(TargetNPC).Numero = ELEMENTALFUEGO Or Npclist(TargetNPC).Numero = ELEMENTALAGUA Or Npclist(TargetNPC).Numero = ELEMENTALTIERRA Then Exit Sub
+If Npclist(TargetNPC).Numero = ELEMENTALFUEGO Or Npclist(TargetNPC).Numero = ELEMENTALAGUA Then Exit Sub
 
 Dim k As Integer
     k = RandomNumber(1, Npclist(NpcIndex).flags.LanzaSpells)

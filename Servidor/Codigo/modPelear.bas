@@ -36,12 +36,8 @@ If UsuarioPelea(2) > 0 Then
     
     If UserList(UsuarioPelea(1)).Pos.Map = 100 And UserList(UsuarioPelea(2)).Pos.Map = 100 Then
       MapadelTorneo = 100
-    ElseIf UserList(UsuarioPelea(1)).Pos.Map = 107 And UserList(UsuarioPelea(2)).Pos.Map = 107 Then
-      MapadelTorneo = 107
-    ElseIf UserList(UsuarioPelea(1)).Pos.Map = 118 And UserList(UsuarioPelea(2)).Pos.Map = 118 Then
-      MapadelTorneo = 118
-    ElseIf UserList(UsuarioPelea(1)).Pos.Map = 162 And UserList(UsuarioPelea(2)).Pos.Map = 162 Then
-      MapadelTorneo = 162
+    ElseIf UserList(UsuarioPelea(1)).Pos.Map = 99 And UserList(UsuarioPelea(2)).Pos.Map = 99 Then
+      MapadelTorneo = 99
     Else
       Call SendData(SendTarget.toindex, userindex, 0, "||41")
       Exit Sub
@@ -51,9 +47,9 @@ If UsuarioPelea(2) > 0 Then
     
     kekeke = 5
     MapaCont = MapadelTorneo
-    Call SendData(SendTarget.toMap, 0, MapaCont, "||455@" & kekeke)
-    SendData SendTarget.toMap, 0, MapaCont, "CU" & kekeke
-    cuentaRegresiva = kekeke
+    Call SendData(SendTarget.ToMap, 0, MapaCont, "||455@" & kekeke)
+    SendData SendTarget.ToMap, 0, MapaCont, "CU" & kekeke
+    CuentaRegresiva = kekeke
    
     Call WarpUserChar(UsuarioPelea(1), MapadelTorneo, 41, 41)
     Call WarpUserChar(UsuarioPelea(2), MapadelTorneo, 60, 58)
@@ -131,12 +127,8 @@ If UsuarioPelea(4) > 0 Then
     
     If UserList(UsuarioPelea(1)).Pos.Map = 100 And UserList(UsuarioPelea(2)).Pos.Map = 100 And UserList(UsuarioPelea(3)).Pos.Map = 100 And UserList(UsuarioPelea(4)).Pos.Map = 100 Then
       MapadelTorneo = 100
-    ElseIf UserList(UsuarioPelea(1)).Pos.Map = 107 And UserList(UsuarioPelea(2)).Pos.Map = 107 And UserList(UsuarioPelea(3)).Pos.Map = 107 And UserList(UsuarioPelea(4)).Pos.Map = 107 Then
-      MapadelTorneo = 107
-    ElseIf UserList(UsuarioPelea(1)).Pos.Map = 118 And UserList(UsuarioPelea(2)).Pos.Map = 118 And UserList(UsuarioPelea(3)).Pos.Map = 118 And UserList(UsuarioPelea(4)).Pos.Map = 118 Then
-      MapadelTorneo = 118
-    ElseIf UserList(UsuarioPelea(1)).Pos.Map = 162 And UserList(UsuarioPelea(2)).Pos.Map = 162 And UserList(UsuarioPelea(3)).Pos.Map = 162 And UserList(UsuarioPelea(4)).Pos.Map = 162 Then
-      MapadelTorneo = 162
+    ElseIf UserList(UsuarioPelea(1)).Pos.Map = 99 And UserList(UsuarioPelea(2)).Pos.Map = 99 And UserList(UsuarioPelea(3)).Pos.Map = 99 And UserList(UsuarioPelea(4)).Pos.Map = 99 Then
+      MapadelTorneo = 99
     Else
       Call SendData(SendTarget.toindex, userindex, 0, "||41")
       Exit Sub
@@ -146,9 +138,9 @@ If UsuarioPelea(4) > 0 Then
     
     kekeke = 5
     MapaCont = MapadelTorneo
-    Call SendData(SendTarget.toMap, 0, MapaCont, "||455@" & kekeke)
-    SendData SendTarget.toMap, 0, MapaCont, "CU" & kekeke
-    cuentaRegresiva = kekeke
+    Call SendData(SendTarget.ToMap, 0, MapaCont, "||455@" & kekeke)
+    SendData SendTarget.ToMap, 0, MapaCont, "CU" & kekeke
+    CuentaRegresiva = kekeke
    
     Call WarpUserChar(UsuarioPelea(1), MapadelTorneo, 41, 41)
     Call WarpUserChar(UsuarioPelea(2), MapadelTorneo, 42, 42)
@@ -258,12 +250,8 @@ If UsuarioPelea(6) > 0 Then
     
     If UserList(UsuarioPelea(1)).Pos.Map = 100 And UserList(UsuarioPelea(2)).Pos.Map = 100 And UserList(UsuarioPelea(3)).Pos.Map = 100 And UserList(UsuarioPelea(4)).Pos.Map = 100 And UserList(UsuarioPelea(5)).Pos.Map = 100 And UserList(UsuarioPelea(6)).Pos.Map = 100 Then
       MapadelTorneo = 100
-    ElseIf UserList(UsuarioPelea(1)).Pos.Map = 107 And UserList(UsuarioPelea(2)).Pos.Map = 107 And UserList(UsuarioPelea(3)).Pos.Map = 107 And UserList(UsuarioPelea(4)).Pos.Map = 107 And UserList(UsuarioPelea(5)).Pos.Map = 107 And UserList(UsuarioPelea(6)).Pos.Map = 107 Then
-      MapadelTorneo = 107
-    ElseIf UserList(UsuarioPelea(1)).Pos.Map = 118 And UserList(UsuarioPelea(2)).Pos.Map = 118 And UserList(UsuarioPelea(3)).Pos.Map = 118 And UserList(UsuarioPelea(4)).Pos.Map = 118 And UserList(UsuarioPelea(5)).Pos.Map = 118 And UserList(UsuarioPelea(6)).Pos.Map = 118 Then
-      MapadelTorneo = 118
-    ElseIf UserList(UsuarioPelea(1)).Pos.Map = 162 And UserList(UsuarioPelea(2)).Pos.Map = 162 And UserList(UsuarioPelea(3)).Pos.Map = 162 And UserList(UsuarioPelea(4)).Pos.Map = 162 And UserList(UsuarioPelea(5)).Pos.Map = 162 And UserList(UsuarioPelea(6)).Pos.Map = 162 Then
-      MapadelTorneo = 162
+    ElseIf UserList(UsuarioPelea(1)).Pos.Map = 99 And UserList(UsuarioPelea(2)).Pos.Map = 99 And UserList(UsuarioPelea(3)).Pos.Map = 99 And UserList(UsuarioPelea(4)).Pos.Map = 99 And UserList(UsuarioPelea(5)).Pos.Map = 99 And UserList(UsuarioPelea(6)).Pos.Map = 99 Then
+      MapadelTorneo = 99
     Else
       Call SendData(SendTarget.toindex, userindex, 0, "||41")
       Exit Sub
@@ -273,9 +261,9 @@ If UsuarioPelea(6) > 0 Then
     
     kekeke = 5
     MapaCont = MapadelTorneo
-    Call SendData(SendTarget.toMap, 0, MapaCont, "||455@" & kekeke)
-    SendData SendTarget.toMap, 0, MapaCont, "CU" & kekeke
-    cuentaRegresiva = kekeke
+    Call SendData(SendTarget.ToMap, 0, MapaCont, "||455@" & kekeke)
+    SendData SendTarget.ToMap, 0, MapaCont, "CU" & kekeke
+    CuentaRegresiva = kekeke
    
     Call WarpUserChar(UsuarioPelea(1), MapadelTorneo, 41, 41)
     Call WarpUserChar(UsuarioPelea(2), MapadelTorneo, 42, 42)
@@ -420,12 +408,8 @@ If UsuarioPelea(8) > 0 Then
     
     If UserList(UsuarioPelea(1)).Pos.Map = 100 And UserList(UsuarioPelea(2)).Pos.Map = 100 And UserList(UsuarioPelea(3)).Pos.Map = 100 And UserList(UsuarioPelea(4)).Pos.Map = 100 And UserList(UsuarioPelea(5)).Pos.Map = 100 And UserList(UsuarioPelea(6)).Pos.Map = 100 And UserList(UsuarioPelea(7)).Pos.Map = 100 And UserList(UsuarioPelea(8)).Pos.Map = 100 Then
       MapadelTorneo = 100
-    ElseIf UserList(UsuarioPelea(1)).Pos.Map = 107 And UserList(UsuarioPelea(2)).Pos.Map = 107 And UserList(UsuarioPelea(3)).Pos.Map = 107 And UserList(UsuarioPelea(4)).Pos.Map = 107 And UserList(UsuarioPelea(5)).Pos.Map = 107 And UserList(UsuarioPelea(6)).Pos.Map = 107 And UserList(UsuarioPelea(7)).Pos.Map = 107 And UserList(UsuarioPelea(8)).Pos.Map = 107 Then
-      MapadelTorneo = 107
-    ElseIf UserList(UsuarioPelea(1)).Pos.Map = 118 And UserList(UsuarioPelea(2)).Pos.Map = 118 And UserList(UsuarioPelea(3)).Pos.Map = 118 And UserList(UsuarioPelea(4)).Pos.Map = 118 And UserList(UsuarioPelea(5)).Pos.Map = 118 And UserList(UsuarioPelea(6)).Pos.Map = 118 And UserList(UsuarioPelea(7)).Pos.Map = 118 And UserList(UsuarioPelea(8)).Pos.Map = 118 Then
-      MapadelTorneo = 118
-    ElseIf UserList(UsuarioPelea(1)).Pos.Map = 162 And UserList(UsuarioPelea(2)).Pos.Map = 162 And UserList(UsuarioPelea(3)).Pos.Map = 162 And UserList(UsuarioPelea(4)).Pos.Map = 162 And UserList(UsuarioPelea(5)).Pos.Map = 162 And UserList(UsuarioPelea(6)).Pos.Map = 162 And UserList(UsuarioPelea(7)).Pos.Map = 162 And UserList(UsuarioPelea(8)).Pos.Map = 162 Then
-      MapadelTorneo = 162
+    ElseIf UserList(UsuarioPelea(1)).Pos.Map = 99 And UserList(UsuarioPelea(2)).Pos.Map = 99 And UserList(UsuarioPelea(3)).Pos.Map = 99 And UserList(UsuarioPelea(4)).Pos.Map = 99 And UserList(UsuarioPelea(5)).Pos.Map = 99 And UserList(UsuarioPelea(6)).Pos.Map = 99 And UserList(UsuarioPelea(7)).Pos.Map = 99 And UserList(UsuarioPelea(8)).Pos.Map = 99 Then
+      MapadelTorneo = 99
     Else
       Call SendData(SendTarget.toindex, userindex, 0, "||41")
       Exit Sub
@@ -435,9 +419,9 @@ If UsuarioPelea(8) > 0 Then
    
     kekeke = 5
     MapaCont = MapadelTorneo
-    Call SendData(SendTarget.toMap, 0, MapaCont, "||455@" & kekeke)
-    SendData SendTarget.toMap, 0, MapaCont, "CU" & kekeke
-    cuentaRegresiva = kekeke
+    Call SendData(SendTarget.ToMap, 0, MapaCont, "||455@" & kekeke)
+    SendData SendTarget.ToMap, 0, MapaCont, "CU" & kekeke
+    CuentaRegresiva = kekeke
    
     Call WarpUserChar(UsuarioPelea(1), MapadelTorneo, 41, 41)
     Call WarpUserChar(UsuarioPelea(2), MapadelTorneo, 42, 42)

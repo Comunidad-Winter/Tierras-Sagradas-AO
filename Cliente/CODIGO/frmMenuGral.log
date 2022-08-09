@@ -1,7 +1,0 @@
-Línea 236: la clase MSComctlLib.ListView del control GuildList no era una clase de control cargada.
-Línea 278: la clase MSComctlLib.ListView del control lstSolicitudes no era una clase de control cargada.
-Línea 327: la clase MSComctlLib.ListView del control Members no era una clase de control cargada.
-Línea 375: la clase MSComctlLib.ListView del control lstGuildList no era una clase de control cargada.
-Línea 417: la clase MSComctlLib.ListView del control GuildUser_lstMembers no era una clase de control cargada.
-Línea 459: la clase MSComctlLib.ListView del control GuildUser_lstGuildList no era una clase de control cargada.
-Línea 501: la clase RichTextLib.RichTextBox del control creditos_Desc no era una clase de control cargada.

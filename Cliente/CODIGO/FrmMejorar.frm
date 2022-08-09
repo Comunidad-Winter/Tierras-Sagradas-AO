@@ -6,11 +6,10 @@ Begin VB.Form FrmMejorar
    ClientLeft      =   0
    ClientTop       =   0
    ClientWidth     =   7590
-   Icon            =   "FrmMejorar.frx":0000
    LinkTopic       =   "Form1"
-   ScaleHeight     =   271
-   ScaleMode       =   3  'Pixel
-   ScaleWidth      =   506
+   Picture         =   "FrmMejorar.frx":0000
+   ScaleHeight     =   4065
+   ScaleWidth      =   7590
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.ListBox ListaMejorados 
@@ -26,14 +25,14 @@ Begin VB.Form FrmMejorar
          Strikethrough   =   0   'False
       EndProperty
       ForeColor       =   &H00C0FFFF&
-      Height          =   2925
+      Height          =   2870
       IntegralHeight  =   0   'False
-      ItemData        =   "FrmMejorar.frx":000C
-      Left            =   135
-      List            =   "FrmMejorar.frx":000E
+      ItemData        =   "FrmMejorar.frx":12256
+      Left            =   160
+      List            =   "FrmMejorar.frx":12258
       TabIndex        =   3
-      Top             =   1020
-      Width           =   2820
+      Top             =   1050
+      Width           =   2760
    End
    Begin VB.PictureBox Item 
       Appearance      =   0  'Flat
@@ -73,18 +72,20 @@ Begin VB.Form FrmMejorar
       ScrollBars      =   2  'Vertical
       TabIndex        =   0
       Top             =   1620
-      Width           =   3375
+      Width           =   3340
    End
-   Begin VB.Image Image2 
-      Height          =   375
-      Left            =   7200
-      Top             =   0
-      Width           =   375
+   Begin VB.Label Label1 
+      BackStyle       =   0  'Transparent
+      Height          =   495
+      Left            =   6960
+      TabIndex        =   8
+      Top             =   120
+      Width           =   495
    End
    Begin VB.Image Image1 
       Height          =   405
       Left            =   4080
-      Top             =   3495
+      Top             =   3480
       Width           =   3360
    End
    Begin VB.Label AtaqueMagico 
@@ -155,11 +156,12 @@ SendData "SPÑ" & ListaMejorados.text
 Unload Me
 End Sub
 
-Private Sub Image2_Click()
-    Unload Me
-End Sub
 Private Sub Label1_Click()
 Unload Me
+End Sub
+
+Private Sub Label2_Click()
+
 End Sub
 
 Private Sub ListaMejorados_Click()

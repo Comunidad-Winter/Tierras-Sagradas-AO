@@ -42,16 +42,16 @@ Option Explicit
 '?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿
 '?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿
 '?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿
-Public Function TirarItemAlPiso(Pos As WorldPos, obj As obj) As WorldPos
+Public Function TirarItemAlPiso(Pos As WorldPos, Obj As Obj) As WorldPos
 On Error GoTo Errhandler
 
     Dim NuevaPos As WorldPos
     NuevaPos.X = 0
     NuevaPos.Y = 0
-    Call Tilelibre(Pos, NuevaPos, obj)
+    Call Tilelibre(Pos, NuevaPos, Obj)
     If NuevaPos.X <> 0 And NuevaPos.Y <> 0 Then
-          Call MakeObj(SendTarget.toMap, 0, Pos.Map, _
-                obj, Pos.Map, NuevaPos.X, NuevaPos.Y)
+          Call MakeObj(SendTarget.ToMap, 0, Pos.Map, _
+                Obj, Pos.Map, NuevaPos.X, NuevaPos.Y)
           TirarItemAlPiso = NuevaPos
     End If
 
@@ -61,20 +61,19 @@ Errhandler:
 End Function
 Public Sub NPC_TIRAR_CRISTALES(ByRef npc As npc, ByVal userindex As Integer)
 
-On Error Resume Next
+On Error GoTo Errhandler
 
-If UserList(userindex).Stats.ELV >= 60 Then
+If UserList(userindex).Stats.ELV >= 55 Then
 
 
 If npc.CristalesPequesMin > 0 Then
-Dim NuevaPos As WorldPos, MiObj As obj
+Dim NuevaPos As WorldPos, MiObj As Obj
 
 Dim i As Integer
 
 Dim RandomCristales As Integer
 
 RandomCristales = RandomNumber(npc.CristalesPequesMin, npc.CristalesPequesMax)
-If (UserList(userindex).flags.activoScroll(4)) Then RandomCristales = RandomCristales * (UserList(userindex).Scrolls(4).multScroll)
 
 For i = 1 To RandomCristales
 
@@ -89,7 +88,7 @@ NuevaPos.Y = 0
 TilelibreCristales npc.Pos, NuevaPos, MiObj
 
 If NuevaPos.X <> 0 And NuevaPos.Y <> 0 Then
-    Call MakeObj(SendTarget.toMap, 0, UserList(userindex).Pos.Map, MiObj, UserList(userindex).Pos.Map, NuevaPos.X, NuevaPos.Y)
+    Call MakeObj(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, MiObj, UserList(userindex).Pos.Map, NuevaPos.X, NuevaPos.Y)
 End If
 Next i
 End If
@@ -97,7 +96,6 @@ End If
 If npc.CristalesMedianosMin > 0 Then
 
 RandomCristales = RandomNumber(npc.CristalesMedianosMin, npc.CristalesMedianosMax)
-If (UserList(userindex).flags.activoScroll(4)) Then RandomCristales = RandomCristales * (UserList(userindex).Scrolls(4).multScroll)
 
 For i = 1 To RandomCristales
 
@@ -111,13 +109,12 @@ NuevaPos.X = 0
 NuevaPos.Y = 0
 TilelibreCristales npc.Pos, NuevaPos, MiObj
 If NuevaPos.X <> 0 And NuevaPos.Y <> 0 Then
-Call MakeObj(SendTarget.toMap, 0, UserList(userindex).Pos.Map, MiObj, UserList(userindex).Pos.Map, NuevaPos.X, NuevaPos.Y)
+Call MakeObj(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, MiObj, UserList(userindex).Pos.Map, NuevaPos.X, NuevaPos.Y)
 End If
 Next i
 End If
 
 RandomCristales = RandomNumber(npc.CristalesGrandesMin, npc.CristalesGrandesMax)
-If (UserList(userindex).flags.activoScroll(4)) Then RandomCristales = RandomCristales * (UserList(userindex).Scrolls(4).multScroll)
 
 If npc.CristalesGrandesMin > 0 Then
 
@@ -133,7 +130,7 @@ NuevaPos.X = 0
 NuevaPos.Y = 0
 TilelibreCristales npc.Pos, NuevaPos, MiObj
 If NuevaPos.X <> 0 And NuevaPos.Y <> 0 Then
-Call MakeObj(SendTarget.toMap, 0, UserList(userindex).Pos.Map, MiObj, UserList(userindex).Pos.Map, NuevaPos.X, NuevaPos.Y)
+Call MakeObj(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, MiObj, UserList(userindex).Pos.Map, NuevaPos.X, NuevaPos.Y)
 End If
 Next i
 End If
@@ -142,7 +139,6 @@ End If
 If npc.CristalesEpicosMin > 0 Then
 
 RandomCristales = RandomNumber(npc.CristalesEpicosMin, npc.CristalesEpicosMax)
-If (UserList(userindex).flags.activoScroll(4)) Then RandomCristales = RandomCristales * (UserList(userindex).Scrolls(4).multScroll)
 
 For i = 1 To RandomCristales
 
@@ -156,22 +152,24 @@ NuevaPos.X = 0
 NuevaPos.Y = 0
 TilelibreCristales npc.Pos, NuevaPos, MiObj
 If NuevaPos.X <> 0 And NuevaPos.Y <> 0 Then
-Call MakeObj(SendTarget.toMap, 0, UserList(userindex).Pos.Map, MiObj, UserList(userindex).Pos.Map, NuevaPos.X, NuevaPos.Y)
+Call MakeObj(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, MiObj, UserList(userindex).Pos.Map, NuevaPos.X, NuevaPos.Y)
 End If
 Next i
 End If
 End If
 
+Errhandler:
+    Call LogError("Error en Sub NPC_TIRAR_CRISTALES #(fer)")
 
 End Sub
 Public Sub NPC_TIRAR_ITEMS(ByRef npc As npc, ByVal userindex As Integer)
 'TIRA TODOS LOS ITEMS DEL NPC
-On Error Resume Next
+On Error GoTo Errhandler
 
 If npc.Invent.NroItems > 0 Then
     Dim i As Long
     Dim loopX As Long
-    Dim MiObj As obj
+    Dim MiObj As Obj
     Dim NumerosUsados As Integer
    
     For i = 1 To npc.Invent.NroItems
@@ -181,10 +179,6 @@ If npc.Invent.NroItems > 0 Then
         
                 'Probabilidad del npc
                 NumerosUsados = (npc.Invent.Object(i).ProbTirar * 2)
-                
-                If (UserList(userindex).flags.activoScroll(3)) Then
-                    NumerosUsados = NumerosUsados * UserList(userindex).Scrolls(3).multScroll
-                End If
                 
                 If NumerosUsados + (npc.Invent.Object(i).ProbTirar * MultiplicadorDrop) > 200 Then
                     NumerosUsados = 200
@@ -209,36 +203,42 @@ If npc.Invent.NroItems > 0 Then
                     End If
                 End If
                 
-                'Tunica de la suerte/maestria/riqueza
-                If UserList(userindex).Invent.ArmourEqpObjIndex = 917 Or UserList(userindex).Invent.ArmourEqpObjIndex = 918 Or UserList(userindex).Invent.ArmourEqpObjIndex = 1456 Or UserList(userindex).Invent.ArmourEqpObjIndex = 1497 Or UserList(userindex).Invent.ArmourEqpObjIndex = 1455 Or UserList(userindex).Invent.ArmourEqpObjIndex = 1496 Then
-                    If NumerosUsados < 200 Then NumerosUsados = NumerosUsados + 3
+                'Gema lila
+                If UserList(userindex).flags.GemaActivada = "Lila" Then
+                    If NumerosUsados < 200 Then NumerosUsados = NumerosUsados + 1
                 End If
                 
+                'Tunica de la suerte/maestria/riqueza
+                If UserList(userindex).Invent.ArmourEqpObjIndex = 917 Or UserList(userindex).Invent.ArmourEqpObjIndex = 918 Or UserList(userindex).Invent.ArmourEqpObjIndex = 1456 Or UserList(userindex).Invent.ArmourEqpObjIndex = 1497 Or UserList(userindex).Invent.ArmourEqpObjIndex = 1455 Or UserList(userindex).Invent.ArmourEqpObjIndex = 1496 Then
+                    If NumerosUsados < 200 Then NumerosUsados = NumerosUsados + 1
+                End If
                 
             Dim NumeroRandom As Byte
-            Dim Ret() As Variant
-            Dim DropNuevo As Long
+            'Dim Ret() As Variant
             NumeroRandom = RandomNumber(1, 200)
             
             ' indicar el valor máximo, el minimo y la cantidad de números que se van a generar
-            Ret = Generar(200, 1, NumerosUsados)
+            'Ret = Generar(200, 1, NumerosUsados)
             
             ' Recorre el array y agrega los números
-                For loopX = LBound(Ret) To UBound(Ret)
-                    UserList(userindex).flags.Probabilidades(loopX) = Ret(loopX)
-                Next loopX
+                'For loopX = LBound(Ret) + 1 To UBound(Ret)
+                '    UserList(userindex).flags.Probabilidades(loopX) = Ret(loopX)
+                'Next loopX
                 
-            For loopX = 1 To NumerosUsados
-                If NumeroRandom = UserList(userindex).flags.Probabilidades(loopX) Then
+            'For loopX = 1 To NumerosUsados
+                If NumeroRandom <= NumerosUsados Then
                     MiObj.Amount = npc.Invent.Object(i).Amount
                     MiObj.ObjIndex = npc.Invent.Object(i).ObjIndex
-                    Call LogDrops("Drop: " & UserList(userindex).Name & " dropeo el item " & ObjData(npc.Invent.Object(i).ObjIndex).Name & " a las " & time & " " & Date & "")
+                    Call LogDrops("Drop: " & UserList(userindex).Name & " dropeo el item " & ObjData(npc.Invent.Object(i).ObjIndex).Name & " a las " & Time & " " & Date & "")
                     Call TirarItemAlPiso(npc.Pos, MiObj)
                 End If
-            Next loopX
+            'Next loopX
         End If
     Next i
 End If
+
+Errhandler:
+    'Call LogError("Error en Sub NPC_TIRAR_ITEMS #(fer)")
 End Sub
 
 Function QuedanItems(ByVal NpcIndex As Integer, ByVal ObjIndex As Integer) As Boolean
@@ -298,44 +298,40 @@ Npclist(NpcIndex).InvReSpawn = 0
 
 End Sub
 
-Sub QuitarNpcInvItem(ByVal NpcIndex As Integer, ByVal slot As Byte, ByVal Cantidad As Integer)
+Sub QuitarNpcInvItem(ByVal NpcIndex As Integer, ByVal Slot As Byte, ByVal Cantidad As Integer)
 
 
 
 Dim ObjIndex As Integer
-ObjIndex = Npclist(NpcIndex).Invent.Object(slot).ObjIndex
+ObjIndex = Npclist(NpcIndex).Invent.Object(Slot).ObjIndex
 
     'Quita un Obj
-    If ObjData(Npclist(NpcIndex).Invent.Object(slot).ObjIndex).Crucial = 0 Then
-        Npclist(NpcIndex).Invent.Object(slot).Amount = Npclist(NpcIndex).Invent.Object(slot).Amount - Cantidad
+    If ObjData(Npclist(NpcIndex).Invent.Object(Slot).ObjIndex).Crucial = 0 Then
+        Npclist(NpcIndex).Invent.Object(Slot).Amount = Npclist(NpcIndex).Invent.Object(Slot).Amount - Cantidad
         
-        If Npclist(NpcIndex).Invent.Object(slot).Amount <= 0 Then
+        If Npclist(NpcIndex).Invent.Object(Slot).Amount <= 0 Then
             Npclist(NpcIndex).Invent.NroItems = Npclist(NpcIndex).Invent.NroItems - 1
-            Npclist(NpcIndex).Invent.Object(slot).ObjIndex = 0
-            Npclist(NpcIndex).Invent.Object(slot).Amount = 0
+            Npclist(NpcIndex).Invent.Object(Slot).ObjIndex = 0
+            Npclist(NpcIndex).Invent.Object(Slot).Amount = 0
             If Npclist(NpcIndex).Invent.NroItems = 0 And Npclist(NpcIndex).InvReSpawn <> 1 Then
                Call CargarInvent(NpcIndex) 'Reponemos el inventario
             End If
-            
-            Call updateNPCInventory(slot, NpcIndex)
         End If
     Else
-        Npclist(NpcIndex).Invent.Object(slot).Amount = Npclist(NpcIndex).Invent.Object(slot).Amount - Cantidad
+        Npclist(NpcIndex).Invent.Object(Slot).Amount = Npclist(NpcIndex).Invent.Object(Slot).Amount - Cantidad
         
-        If Npclist(NpcIndex).Invent.Object(slot).Amount <= 0 Then
+        If Npclist(NpcIndex).Invent.Object(Slot).Amount <= 0 Then
             Npclist(NpcIndex).Invent.NroItems = Npclist(NpcIndex).Invent.NroItems - 1
-            Npclist(NpcIndex).Invent.Object(slot).ObjIndex = 0
-            Npclist(NpcIndex).Invent.Object(slot).Amount = 0
+            Npclist(NpcIndex).Invent.Object(Slot).ObjIndex = 0
+            Npclist(NpcIndex).Invent.Object(Slot).Amount = 0
             
             If Not QuedanItems(NpcIndex, ObjIndex) Then
                    
-                   Npclist(NpcIndex).Invent.Object(slot).ObjIndex = ObjIndex
-                   Npclist(NpcIndex).Invent.Object(slot).Amount = EncontrarCant(NpcIndex, ObjIndex)
+                   Npclist(NpcIndex).Invent.Object(Slot).ObjIndex = ObjIndex
+                   Npclist(NpcIndex).Invent.Object(Slot).Amount = EncontrarCant(NpcIndex, ObjIndex)
                    Npclist(NpcIndex).Invent.NroItems = Npclist(NpcIndex).Invent.NroItems + 1
             
             End If
-            
-            Call updateNPCInventory(slot, NpcIndex)
         End If
             
             If Npclist(NpcIndex).InvReSpawn <> 1 Then
@@ -350,7 +346,7 @@ End Sub
 Sub CargarInvent(ByVal NpcIndex As Integer)
 
 'Vuelve a cargar el inventario del npc NpcIndex
-Dim loopC As Integer
+Dim LoopC As Integer
 Dim ln As String
 Dim npcfile As String
 
@@ -362,14 +358,13 @@ End If
 
 Npclist(NpcIndex).Invent.NroItems = val(GetVar(npcfile, "NPC" & Npclist(NpcIndex).Numero, "NROITEMS"))
 
-For loopC = 1 To Npclist(NpcIndex).Invent.NroItems
-    ln = GetVar(npcfile, "NPC" & Npclist(NpcIndex).Numero, "Obj" & loopC)
-    Npclist(NpcIndex).Invent.Object(loopC).ObjIndex = val(ReadField(1, ln, 45))
-    Npclist(NpcIndex).Invent.Object(loopC).Amount = val(ReadField(2, ln, 45))
+For LoopC = 1 To Npclist(NpcIndex).Invent.NroItems
+    ln = GetVar(npcfile, "NPC" & Npclist(NpcIndex).Numero, "Obj" & LoopC)
+    Npclist(NpcIndex).Invent.Object(LoopC).ObjIndex = val(ReadField(1, ln, 45))
+    Npclist(NpcIndex).Invent.Object(LoopC).Amount = val(ReadField(2, ln, 45))
     
-Next loopC
+Next LoopC
 
 End Sub
-
 
 

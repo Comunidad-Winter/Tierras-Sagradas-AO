@@ -39,11 +39,9 @@ Option Explicit
 Public bK As Long
 Public bRK As Long
 
-Public iplst As String
-Public banners As String
-
 Public bFogata As Boolean
-Public sHKeys() As String
+
+Public lFrameTimer As Long
 Public Function DirPath(ByVal Path As String) As String
 '•Parra: Nuevo Engine v2.0
     Select Case Path
@@ -68,6 +66,7 @@ End Function
 Public Function DirGraficos() As String
     DirGraficos = App.Path & "\Data\" & "GRAFICOS" & "\"
 End Function
+
 Public Function DirSound() As String
     DirSound = App.Path & "\Data\SOUNDS\" & "WAV" & "\"
 End Function
@@ -140,22 +139,44 @@ On Error Resume Next
         InitGrh WeaponAnimData(loopc).WeaponWalk(4), Val(GetVar(Arch, "ARMA" & loopc, "Dir4")), 0
     Next loopc
 End Sub
+Public Sub CargarQuests()
+        Dim p As Integer, loopc As Integer, LoopD
+        Dim l_file As clsIniReader
 
-Sub CargarVersiones()
-On Error GoTo errorh:
+        Set l_file = New clsIniReader
+    
+    '@ load file
+    l_file.Initialize App.Path & "\Data\INIT\QUESTS.dat"
+        
+        
+        p = l_file.GetValue("INIT", "Num")
+   
+        ReDim InfoQuests(p) As tQuests
+       
+           
+        For loopc = 1 To p
+            InfoQuests(loopc).Nombre = l_file.GetValue("Quest" & loopc, "Nombre")
+            InfoQuests(loopc).Tipo = l_file.GetValue("Quest" & loopc, "Tipo")
+            InfoQuests(loopc).Info = l_file.GetValue("Quest" & loopc, "Info")
+            InfoQuests(loopc).puntos = l_file.GetValue("Quest" & loopc, "Puntos")
+            InfoQuests(loopc).Oro = l_file.GetValue("Quest" & loopc, "Oro")
+            
+            InfoQuests(loopc).Dificultad = l_file.GetValue("Quest" & loopc, "Dificultad")
+            InfoQuests(loopc).NivelMinimo = l_file.GetValue("Quest" & loopc, "NivelMinimo")
+            InfoQuests(loopc).Mapas = l_file.GetValue("Quest" & loopc, "Mapas")
+            InfoQuests(loopc).PosiblesDrops = l_file.GetValue("Quest" & loopc, "PosiblesDrops")
 
-    Versiones(1) = Val(GetVar(App.Path & "\Data\INIT\" & "versiones.ini", "Graficos", "Val"))
-    Versiones(2) = Val(GetVar(App.Path & "\Data\INIT\" & "versiones.ini", "Wavs", "Val"))
-    Versiones(3) = Val(GetVar(App.Path & "\Data\INIT\" & "versiones.ini", "Midis", "Val"))
-    Versiones(4) = Val(GetVar(App.Path & "\Data\INIT\" & "versiones.ini", "Init", "Val"))
-    Versiones(5) = Val(GetVar(App.Path & "\Data\INIT\" & "versiones.ini", "Mapas", "Val"))
-    Versiones(6) = Val(GetVar(App.Path & "\Data\INIT\" & "versiones.ini", "E", "Val"))
-    Versiones(7) = Val(GetVar(App.Path & "\Data\INIT\" & "versiones.ini", "O", "Val"))
-    VersionC = GetVar(App.Path & "\Data\INIT\" & "versiones.ini", "VERSION", "V")
-Exit Sub
-
-errorh:
-    Call MsgBox("Error cargando versiones")
+                InfoQuests(loopc).NPCs = l_file.GetValue("Quest" & loopc, "NPCs")
+                    
+                    For LoopD = 1 To InfoQuests(loopc).NPCs
+                        InfoQuests(loopc).NumNPC(LoopD) = ReadField(1, l_file.GetValue("Quest" & loopc, "Npc" & LoopD), Asc("-"))
+                        InfoQuests(loopc).CantNPC(LoopD) = ReadField(2, l_file.GetValue("Quest" & loopc, "Npc" & LoopD), Asc("-"))
+                    Next LoopD
+            
+            InfoQuests(loopc).IndexOBJ = ReadField(1, l_file.GetValue("Quest" & loopc, "OBJ"), Asc("-"))
+            InfoQuests(loopc).CantOBJ = ReadField(2, l_file.GetValue("Quest" & loopc, "OBJ"), Asc("-"))
+                
+        Next loopc
 End Sub
 Sub CargarColores()
     Dim archivoC As String
@@ -224,23 +245,25 @@ ColoresPJ(52).g = 13
 ColoresPJ(52).b = 14
 End Sub
 Sub CargarAuras()
-    Dim archivoC As String
-    
+    Dim archivoC As String, CantAuras As Integer
     archivoC = App.Path & "\Data\INIT\Auras.dat"
+    CantAuras = GetVar(App.Path & "\Data\INIT\Auras.dat", "INIT", "NumAuras")
     
     If Not FileExist(archivoC, vbArchive) Then
         Call MsgBox("ERROR: no se ha podido cargar las auras. Falta el archivo auras.dat, reinstale el juego", vbCritical + vbOKOnly)
         Exit Sub
     End If
     
+    ReDim AurasPJ(CantAuras) As tAuras
+    
 
     Dim XX As Long
-    For XX = 1 To GetVar(App.Path & "\Data\INIT\Auras.dat", "INIT", "NumAuras")
+    For XX = 1 To CantAuras
         AurasPJ(XX).GrhIndex = GetVar(App.Path & "\Data\INIT\Auras.dat", "AURA" & XX, "GrhIndex")
         AurasPJ(XX).r = GetVar(App.Path & "\Data\INIT\Auras.dat", "AURA" & XX, "Rojo")
         AurasPJ(XX).g = GetVar(App.Path & "\Data\INIT\Auras.dat", "AURA" & XX, "Verde")
         AurasPJ(XX).b = GetVar(App.Path & "\Data\INIT\Auras.dat", "AURA" & XX, "Azul")
-        AurasPJ(XX).offset = GetVar(App.Path & "\Data\INIT\Auras.dat", "AURA" & XX, "Offset")
+        AurasPJ(XX).Offset = GetVar(App.Path & "\Data\INIT\Auras.dat", "AURA" & XX, "Offset")
         AurasPJ(XX).Giratoria = GetVar(App.Path & "\Data\INIT\Auras.dat", "AURA" & XX, "Giratoria")
         AurasPJ(XX).RojoF = GetVar(App.Path & "\Data\INIT\Auras.dat", "AURA" & XX, "RojoF")
         AurasPJ(XX).AzulF = GetVar(App.Path & "\Data\INIT\Auras.dat", "AURA" & XX, "AzulF")
@@ -268,7 +291,7 @@ On Error Resume Next
     Next loopc
 End Sub
 
-Sub AddtoRichTextBox(ByRef RichTextBox As RichTextBox, ByVal text As String, Optional ByVal red As Integer = -1, Optional ByVal Green As Integer, Optional ByVal Blue As Integer, Optional ByVal bold As Boolean = False, Optional ByVal italic As Boolean = False, Optional ByVal bCrLf As Boolean = False)
+Sub AddtoRichTextBox(ByRef RichTextBox As RichTextBox, ByVal Text As String, Optional ByVal red As Integer = -1, Optional ByVal Green As Integer, Optional ByVal Blue As Integer, Optional ByVal bold As Boolean = False, Optional ByVal italic As Boolean = False, Optional ByVal bCrLf As Boolean = False)
 '******************************************
 'Adds text to a Richtext box at the bottom.
 'Automatically scrolls to new text.
@@ -278,9 +301,9 @@ Sub AddtoRichTextBox(ByRef RichTextBox As RichTextBox, ByVal text As String, Opt
 
 If UserConsola = 0 Then
     With RichTextBox
-        If (Len(.text)) > 10000 Then .text = ""
+        If (Len(.Text)) > 10000 Then .Text = ""
         
-        .SelStart = Len(RichTextBox.text)
+        .SelStart = Len(RichTextBox.Text)
         .SelLength = 0
         
         .SelBold = bold
@@ -288,12 +311,13 @@ If UserConsola = 0 Then
         
         If Not red = -1 Then .SelColor = RGB(red, Green, Blue)
         
-        .SelText = IIf(bCrLf, text, text & vbCrLf)
+        .SelText = IIf(bCrLf, Text, Text & vbCrLf)
     
         'RichTextBox.Refresh
     End With
     End If
 End Sub
+
 'TODO : Never was sure this is really necessary....
 'TODO : 08/03/2006 - (AlejoLp) Esto hay que volarlo...
 Public Sub RefreshAllChars()
@@ -308,15 +332,6 @@ Public Sub RefreshAllChars()
             MapData(charlist(loopc).Pos.X, charlist(loopc).Pos.Y).charindex = loopc
         End If
     Next loopc
-End Sub
-
-Sub SaveGameini()
-    'Grabamos los datos del usuario en el Game.ini
-    Config_Inicio.Name = "BetaTester"
-    Config_Inicio.Password = "DammLamers"
-    Config_Inicio.Puerto = UserPort
-    
-    Call EscribirGameIni(Config_Inicio)
 End Sub
 
 Function AsciiValidos(ByVal cad As String) As Boolean
@@ -423,61 +438,27 @@ Sub SetConnected()
 '*****************************************************************
  'Set Connected
     Connected = True
-    Unload frmAccount
+    
+     Unload frmConnect
      
-    If UserLvl > 50 Then
-        frmMain.LvlLbl.ForeColor = vbYellow
-    Else
-        frmMain.LvlLbl.ForeColor = vbRed
-    End If
-    
-    modoHabla = ";"
-    dKeys(1) = 0
-    dKeys(2) = 0
-    dKeys(3) = 0
-    dKeys(4) = 0
+If UserLvl > 50 Then
+    frmMain.LvlLbl.ForeColor = vbYellow
+Else
+    frmMain.LvlLbl.ForeColor = vbRed
+End If
 
-    frmMain.ExpBar.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Principal_expBar.jpg")
-    
-    Call SetWindowLong(frmMain.RecTxt.hWnd, GWL_EXSTYLE, WS_EX_TRANSPARENT)
-    Call SetWindowLong(frmMain.PrivatesConsole.hWnd, GWL_EXSTYLE, WS_EX_TRANSPARENT)
-    Call SetWindowLong(frmMain.GlobalConsole.hWnd, GWL_EXSTYLE, WS_EX_TRANSPARENT)
-    Call SetWindowLong(frmMain.ClanConsole.hWnd, GWL_EXSTYLE, WS_EX_TRANSPARENT)
-    
-    frmMain.hlst.Clear
-    Dim i As Long
-    For i = 1 To MAXUSERHECHIZOS
-        frmMain.hlst.AddItem "(Nada)"
-    Next i
-    
-    frmMain.hlst.BackColor = RGB(22, 23, 25)
-    frmMain.SendTxt.BackColor = RGB(22, 23, 25)
-    frmMain.SendCMSTXT.BackColor = RGB(22, 23, 25)
-    
-    frmMain.ItemName.ForeColor = RGB(186, 179, 169)
-    
-    frmMain.rep.ForeColor = RGB(186, 179, 169)
-    frmMain.Exp.ForeColor = RGB(186, 179, 169)
-    
-    frmMain.Visible = True
-    Call DibujarPuntoMinimap
-    Call DibujarMinimap
-    Call SaveGameini
-    
-    frmMain.DyD.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\D&D_N.jpg")
-    
-    For i = 1 To MAX_INVENTORY_SLOTS
-        Call Inventario.SetItem(i, 0, 0, 0, 0, 0, 0, 0, 0, 0, "(Nada)")
-    Next i
-    
-    Call AgregarParticulasyLuces(UserMap)
+frmMain.Visible = True
+Call DibujarPuntoMinimap
+Call DibujarMinimap
 
-    If TieneColorMapa = False Then
-        day_r_old = 215
-        day_g_old = 215
-        day_b_old = 215
-        base_light = ARGB(day_r_old, day_g_old, day_b_old, 255)
-    End If
+Call AgregarParticulasyLuces(UserMap)
+
+If TieneColorMapa = False Then
+    day_r_old = 215
+    day_g_old = 215
+    day_b_old = 215
+    base_light = ARGB(day_r_old, day_g_old, day_b_old, 255)
+End If
     
 End Sub
 Sub MoveTo(ByVal Direccion As E_Heading)
@@ -494,20 +475,28 @@ Sub MoveTo(ByVal Direccion As E_Heading)
     Select Case Direccion
         Case E_Heading.NORTH
             LegalOk = LegalPos(UserPos.X, UserPos.Y - 1)
+            If UserNavegando = False And HayAgua(UserPos.X, UserPos.Y - 1) = True Then LegalOk = False
+            If UserNavegando = True And HayAgua(UserPos.X, UserPos.Y - 1) = False Then LegalOk = False
         Case E_Heading.EAST
             LegalOk = LegalPos(UserPos.X + 1, UserPos.Y)
+            If UserNavegando = False And HayAgua(UserPos.X + 1, UserPos.Y) = True Then LegalOk = False
+            If UserNavegando = True And HayAgua(UserPos.X + 1, UserPos.Y) = False Then LegalOk = False
         Case E_Heading.SOUTH
             LegalOk = LegalPos(UserPos.X, UserPos.Y + 1)
+            If UserNavegando = False And HayAgua(UserPos.X, UserPos.Y + 1) = True Then LegalOk = False
+            If UserNavegando = True And HayAgua(UserPos.X, UserPos.Y + 1) = False Then LegalOk = False
         Case E_Heading.WEST
             LegalOk = LegalPos(UserPos.X - 1, UserPos.Y)
+            If UserNavegando = False And HayAgua(UserPos.X - 1, UserPos.Y) = True Then LegalOk = False
+            If UserNavegando = True And HayAgua(UserPos.X - 1, UserPos.Y) = False Then LegalOk = False
     End Select
     
    If LegalOk Then
-        Call SendData("M" & Direccion)
-        engine.Char_Move_by_Head UserCharIndex, Direccion
-        engine.Engine_MoveScreen Direccion
-        UserMeditar = False
-        RefreshAllChars
+            Call SendData("M" & Direccion)
+            DibujarPuntoMinimap
+            engine.Char_Move_by_Head UserCharIndex, Direccion
+            MoveScreen Direccion
+            UserMeditar = False
     Else
         If charlist(UserCharIndex).Heading <> Direccion Then
             charlist(UserCharIndex).Heading = Direccion
@@ -535,13 +524,14 @@ Static LastMovement As Long
 On Error Resume Next
         
     If UserParalizado Then
-        If GetTickCount() - LastMovement > 96 Then
+    
+        If GetTickCount() - LastMovement > 135 Then
                 LastMovement = GetTickCount()
         Else
                 Exit Sub
         End If
     
-            If GetKeyState(BindKeys(14).KeyCode) < 0 And (dKeys(1) = BindKeys(14).KeyCode) Then
+            If GetKeyState(BindKeys(14).KeyCode) < 0 Then
                 If BindKeys(14).KeyCode <> 38 And frmMain.SendTxt.Visible = True Then Exit Sub
                 
                     If charlist(UserCharIndex).Heading <> 1 Then
@@ -552,7 +542,7 @@ On Error Resume Next
             End If
        
             'Move Right
-            If GetKeyState(BindKeys(17).KeyCode) < 0 And GetKeyState(vbKeyShift) >= 0 And (dKeys(1) = BindKeys(17).KeyCode) Then
+            If GetKeyState(BindKeys(17).KeyCode) < 0 And GetKeyState(vbKeyShift) >= 0 Then
                 If BindKeys(17).KeyCode <> 39 And frmMain.SendTxt.Visible = True Then Exit Sub
                 
                     If charlist(UserCharIndex).Heading <> 2 Then
@@ -563,7 +553,7 @@ On Error Resume Next
             End If
        
             'Move down
-            If GetKeyState(BindKeys(15).KeyCode) < 0 And (dKeys(1) = BindKeys(15).KeyCode) Then
+            If GetKeyState(BindKeys(15).KeyCode) < 0 Then
                 If BindKeys(15).KeyCode <> 40 And frmMain.SendTxt.Visible = True Then Exit Sub
                 
                     If charlist(UserCharIndex).Heading <> 3 Then
@@ -574,7 +564,7 @@ On Error Resume Next
             End If
        
             'Move left
-            If GetKeyState(BindKeys(16).KeyCode) < 0 And GetKeyState(vbKeyShift) >= 0 And (dKeys(1) = BindKeys(16).KeyCode) Then
+            If GetKeyState(BindKeys(16).KeyCode) < 0 And GetKeyState(vbKeyShift) >= 0 Then
                 If BindKeys(16).KeyCode <> 37 And frmMain.SendTxt.Visible = True Then Exit Sub
                 
                     If charlist(UserCharIndex).Heading <> 4 Then
@@ -586,39 +576,77 @@ On Error Resume Next
             
         Exit Sub
     End If
-
+    
+        If GetTickCount() - LastMovement > 56 Then
+                LastMovement = GetTickCount()
+        Else
+                Exit Sub
+        End If
    
     'Don't allow any these keys during movement..
     If UserMoving = 0 Then
-            'Move U
-            If GetKeyState(BindKeys(14).KeyCode) < 0 And GetKeyState(vbKeyShift) >= 0 And (dKeys(1) = BindKeys(14).KeyCode) Then
+            'Move Up
+            If GetKeyState(BindKeys(14).KeyCode) < 0 Then
+                
                 If BindKeys(14).KeyCode <> 38 And frmMain.SendTxt.Visible = True Then Exit Sub
-            
+                
+                If frmMain.TrainingMacro.Enabled Then frmMain.DesactivarMacroHechizos
+                If frmMain.WorkMacro.Enabled Then
+                    frmMain.WorkMacro.Enabled = False
+                    AddtoRichTextBox frmMain.RecTxt, "Macro de Trabajo Desactivado.", 255, 255, 255
+                End If
+                
                 Call MoveTo(NORTH)
+                Call DibujarPuntoMinimap
+                frmMain.Coord.Caption = Nombredelmapaxx & " (" & UserMap & "," & UserPos.X & "," & UserPos.Y & ")"
                 Exit Sub
             End If
        
             'Move Right
-            If GetKeyState(BindKeys(17).KeyCode) < 0 And GetKeyState(vbKeyShift) >= 0 And (dKeys(1) = BindKeys(17).KeyCode) Then
+            If GetKeyState(BindKeys(17).KeyCode) < 0 And GetKeyState(vbKeyShift) >= 0 Then
                 If BindKeys(17).KeyCode <> 39 And frmMain.SendTxt.Visible = True Then Exit Sub
                 
+                If frmMain.TrainingMacro.Enabled Then frmMain.DesactivarMacroHechizos
+                If frmMain.WorkMacro.Enabled Then
+                    frmMain.WorkMacro.Enabled = False
+                    AddtoRichTextBox frmMain.RecTxt, "Macro de Trabajo Desactivado.", 255, 255, 255
+                End If
+                
                 Call MoveTo(EAST)
+                Call DibujarPuntoMinimap
+                frmMain.Coord.Caption = Nombredelmapaxx & " (" & UserMap & "," & UserPos.X & "," & UserPos.Y & ")"
                 Exit Sub
             End If
        
             'Move down
-            If GetKeyState(BindKeys(15).KeyCode) < 0 And GetKeyState(vbKeyShift) >= 0 And (dKeys(1) = BindKeys(15).KeyCode) Then
+            If GetKeyState(BindKeys(15).KeyCode) < 0 Then
                 If BindKeys(15).KeyCode <> 40 And frmMain.SendTxt.Visible = True Then Exit Sub
                 
+                If frmMain.TrainingMacro.Enabled Then frmMain.DesactivarMacroHechizos
+                If frmMain.WorkMacro.Enabled Then
+                    frmMain.WorkMacro.Enabled = False
+                    AddtoRichTextBox frmMain.RecTxt, "Macro de Trabajo Desactivado.", 255, 255, 255
+                End If
+                
                 Call MoveTo(SOUTH)
+                Call DibujarPuntoMinimap
+                frmMain.Coord.Caption = Nombredelmapaxx & " (" & UserMap & "," & UserPos.X & "," & UserPos.Y & ")"
                 Exit Sub
             End If
        
             'Move left
-            If GetKeyState(BindKeys(16).KeyCode) < 0 And GetKeyState(vbKeyShift) >= 0 And (dKeys(1) = BindKeys(16).KeyCode) Then
+            If GetKeyState(BindKeys(16).KeyCode) < 0 And GetKeyState(vbKeyShift) >= 0 Then
                 If BindKeys(16).KeyCode <> 37 And frmMain.SendTxt.Visible = True Then Exit Sub
-
+                
+                If frmMain.TrainingMacro.Enabled Then frmMain.DesactivarMacroHechizos
+                If frmMain.WorkMacro.Enabled Then
+                    frmMain.WorkMacro.Enabled = False
+                    AddtoRichTextBox frmMain.RecTxt, "Macro de Trabajo Desactivado.", 255, 255, 255
+                End If
+                
                 Call MoveTo(WEST)
+                Call DibujarPuntoMinimap
+                frmMain.Coord.Caption = Nombredelmapaxx & " (" & UserMap & "," & UserPos.X & "," & UserPos.Y & ")"
                 Exit Sub
             End If
     End If
@@ -762,6 +790,7 @@ Sub SwitchMap(ByVal Map As Integer)
             
             If ByFlags And 32 Then
                Get handle, , tempint
+                'By Lorwik - www.rincondelao.com.ar
                 MapData(X, Y).particle_group_index = General_Particle_Create(tempint, X, Y, -1)
             End If
             
@@ -772,34 +801,53 @@ Sub SwitchMap(ByVal Map As Integer)
             
             'Erase OBJs
             MapData(X, Y).ObjGrh.GrhIndex = 0
-            
         Next X
     Next Y
     
     Close handle
     
-    Dim pX As Byte
-    Dim pY As Byte
+    If Map = 999 And frmConnect.Visible = True Then
+        'Call General_Particle_Create(6, 50, 49, -1)
+        'Call General_Particle_Create(6, 41, 42, -1)
+        'Call General_Particle_Create(6, 59, 42, -1)
+        'Call General_Particle_Create(6, 41, 56, -1)
+        'Call General_Particle_Create(6, 59, 56, -1)
+    End If
     
-    For pX = 1 To 100
-        For pY = 1 To 100
-            If (MapData(pX, pY).charindex > 0) Then ResetCharInfo (MapData(pX, pY).charindex)
-            MapData(pX, pY).charindex = 0
-            MapData(pX, pY).ObjGrh.GrhIndex = 0
-        Next pY
-    Next pX
-    
-    RefreshAllChars
-    
-    If Map = 999 And frmAccount.Visible = True Then
-        Call General_Particle_Create(6, 50, 49, -1)
-        Call General_Particle_Create(6, 41, 42, -1)
-        Call General_Particle_Create(6, 59, 42, -1)
-        Call General_Particle_Create(6, 41, 56, -1)
-        Call General_Particle_Create(6, 59, 56, -1)
+    If Map = 998 And frmConnect.Visible = True Then
+        'Call General_Particle_Create(6, 46, 61, -1)
+        'Call General_Particle_Create(6, 54, 61, -1)
+        'Call General_Particle_Create(6, 46, 50, -1)
+        'Call General_Particle_Create(6, 54, 50, -1)
+        Call General_Particle_Create(3, 38, 41, -1)
+        Call General_Particle_Create(3, 62, 41, -1)
+        
+        Call General_Particle_Create(76, 56, 27)
+        'Call General_Particle_Create(61, 48, 27)
+        'Call General_Particle_Create(61, 51, 27)
+        'Call General_Particle_Create(61, 54, 27)
+        
+        'Call General_Particle_Create(6, 46, 34, -1)
+        'Call General_Particle_Create(6, 47, 25, -1)
+        'Call General_Particle_Create(6, 53, 25, -1)
+        'Call General_Particle_Create(6, 42, 25, -1)
+        'Call General_Particle_Create(6, 36, 16, -1)
+        'Call General_Particle_Create(6, 43, 16, -1)
+        'Call General_Particle_Create(6, 58, 25, -1)
+        'Call General_Particle_Create(6, 57, 16, -1)
+        'Call General_Particle_Create(6, 64, 16, -1)
+        'Light.Create_Light_To_Map 46, 35, 3, 255, 255, 255
+        'Light.Create_Light_To_Map 54, 35, 3, 255, 255, 255
+        'Light.Create_Light_To_Map 54, 43, 3, 255, 255, 255
+        'Light.Create_Light_To_Map 46, 43, 3, 255, 255, 255
+        'Light.Create_Light_To_Map 53, 26, 3, 100, 100, 100
+        'Light.Create_Light_To_Map 47, 26, 3, 100, 100, 100
+        'Light.Create_Light_To_Map 58, 26, 3, 100, 100, 100
+        'Light.Create_Light_To_Map 42, 26, 3, 100, 100, 100
+      Exit Sub
     End If
 
-    If frmAccount.Visible = True Then Exit Sub
+    If frmConnect.Visible = True Then Exit Sub
     
     Call AgregarParticulasyLuces(Map)
     
@@ -813,7 +861,7 @@ Sub SwitchMap(ByVal Map As Integer)
                 
 End Sub
 'TODO : Reemplazar por la nueva versión, esta apesta!!!
-Public Function ReadField(ByVal Pos As Integer, ByVal text As String, ByVal SepASCII As Integer) As String
+Public Function ReadField(ByVal Pos As Integer, ByVal Text As String, ByVal SepASCII As Integer) As String
 '*****************************************************************
 'Gets a field from a string
 '*****************************************************************
@@ -827,12 +875,12 @@ Public Function ReadField(ByVal Pos As Integer, ByVal text As String, ByVal SepA
     LastPos = 0
     FieldNum = 0
     
-    For i = 1 To Len(text)
-        CurChar = mid$(text, i, 1)
+    For i = 1 To Len(Text)
+        CurChar = mid$(Text, i, 1)
         If CurChar = Seperator Then
             FieldNum = FieldNum + 1
             If FieldNum = Pos Then
-                ReadField = mid$(text, LastPos + 1, (InStr(LastPos + 1, text, Seperator, vbTextCompare) - 1) - (LastPos))
+                ReadField = mid$(Text, LastPos + 1, (InStr(LastPos + 1, Text, Seperator, vbTextCompare) - 1) - (LastPos))
                 Exit Function
             End If
             LastPos = i
@@ -841,7 +889,7 @@ Public Function ReadField(ByVal Pos As Integer, ByVal text As String, ByVal SepA
     FieldNum = FieldNum + 1
     
     If FieldNum = Pos Then
-        ReadField = mid$(text, LastPos + 1)
+        ReadField = mid$(Text, LastPos + 1)
     End If
 End Function
 
@@ -877,7 +925,7 @@ Public Function IsIp(ByVal Ip As String) As Boolean
 End Function
 
 Public Sub CargarServidores()
-On Error GoTo errorh
+On Error GoTo errorH
     Dim f As String
     Dim c As Integer
     Dim i As Long
@@ -895,19 +943,19 @@ On Error GoTo errorh
     CurServer = 1
 Exit Sub
 
-errorh:
+errorH:
     Call MsgBox("Error cargando los servidores, actualicelos de la web", vbCritical + vbOKOnly, "Argentum Online")
     End
 End Sub
 Public Function CurServerIp() As String
 
-  CurServerIp = "177.54.153.240"
-  'CurServerIp = "127.0.0.1"
+ CurServerIp = "45.235.98.111"
+ 'CurServerIp = "127.0.0.1"
 
 End Function
 Public Function CurServerPort() As Integer
 
-    CurServerPort = "5028"
+        CurServerPort = "7200"
 
 End Function
 Sub Main()
@@ -915,44 +963,17 @@ Sub Main()
 On Error Resume Next
 
 Dim strIconPath As String
+Call frmCargando.ProgresoBarra(0)
 
-LastTime = GetTickCount()
+strIconPath = App.Path & "\Data\icono.ico"
+frmCargando.Icon = LoadPicture(strIconPath)
+frmConnect.Icon = LoadPicture(strIconPath)
+frmMain.Icon = LoadPicture(strIconPath)
 
 HDSerial = GetDriveSerialNumber
-AoDefAntiShInitialize
-AoDefOriginalClientName = "Tierras Sagradas"
-AoDefClientName = App.EXEName
-AoDefDetectName = App.EXEName
-Set AodefConv = New AoDefenderConverter
-
-Call GenCM("quierovalecuatro") 'clave grh.
 
 
-    Dim i As Integer, iX As Integer, tX As Integer, DifX As Integer, dNum As String
-    
-    
-    'iX = frmCargando.Inet1.OpenURL("http://www.tierras-sagradas.net/AU/Actualizaciones.txt")
-    'tX = LeerInt(App.Path & "\Data\INIT\Update.tsao")
-    
-    'DifX = iX - tX
-    
-    'If Not (DifX = 0) Then
-    '    If MsgBox("Tu versión no es la actual. ¿Desea ejecutar el actualizador automatico?", vbYesNo, "Tierras Sagradas AO") = vbYes Then
-    '        ShellExecute frmCargando.hWnd, "runas", App.Path & "\Launcher TSAO.exe", "", App.Path, vbNormalFocus
-    '        End
-    '    End If
-    'End If
-        
-
-'If AoDefChangeName Then
-'  Call AoDefClientOn
-' End
-'End If
-
-If AoDefDebugger Then
-    Call AoDefAntiDebugger
-   End
-End If
+    Dim i As Integer
 
     Call WriteClientVer
 
@@ -969,14 +990,13 @@ End If
     
     'Por default usamos el dinámico
     Set SurfaceDB = New clsSurfaceManDynDX8
-    
-    'cargamos la config del user
-    Call frmMenuGral.LoadOptions
         
     frmCargando.Show
-    Call frmCargando.establecerProgreso(0)
      
-    frmResolucion.Show vbModal, frmCargando
+    If MsgBox("¿Desea ejecutar el juego en modo ventana?", vbYesNo, "Tierras Sagradas AO") = vbNo Then
+        Call Resolucion.SetResolucion
+        PantallaCompleta = True
+    End If
     
     Dim lc As Integer
     Dim LACONCHA As String
@@ -986,57 +1006,53 @@ End If
         BindKeys(lc).KeyCode = Val(ReadField(1, LACONCHA, 44))
         BindKeys(lc).Name = ReadField(2, LACONCHA, 44)
     Next lc
-    frmCargando.establecerProgreso (10)
     
+    ClickeoTextCuenta = True
+    TextBoxCuenta = ""
+    TextBoxPassw = ""
+    TextBoxPasswR = ""
+    VersionC = GetVar(App.Path & "\Data\INIT\versiones.ini", "VERSION", "V")
     
-    Call CargarColores
-    Call CargarAuras
-    Call General_Load_Interfaces
-    frmConnect.limpiarConectar
     frmCargando.Refresh
+    
     frmMain.Socket1.Startup
-    frmCargando.establecerProgreso (20)
     Call InicializarNombres
+    Call frmCargando.ProgresoBarra(10)
     UserMap = 1
     LoadGrhData
     CargarParticulas
-    frmCargando.establecerProgreso (50)
-    
-    Call CargarParticulas
-    Call CargarAnimArmas
-    Call CargarAnimEscudos
-    Call CargarVersiones
-    frmCargando.establecerProgreso (70)
-    
     CargarCabezas
     CargarCascos
     CargarCuerpos
-    CargarFxs
+    Call frmCargando.ProgresoBarra(30)
     
-    frmCargando.establecerProgreso (80)
+    Call CargarParticulas
+    CargarFxs
+    Call engine.Engine_Init
+    Call frmCargando.ProgresoBarra(50)
+    
+
+    Call CargarAnimArmas
+    Call CargarAnimEscudos
+    Call frmCargando.ProgresoBarra(70)
     
     modTextos.InitFonts
     modTextos.LoadText
+    Call frmCargando.ProgresoBarra(80)
     
-    Call engine.Engine_Init
-    frmCargando.establecerProgreso (90)
-    
-    'Inicializamos el sonido
-    Call Audio.Initialize(frmMain.hWnd, App.Path & "\Data\SOUNDS\" & "WAV" & "\", App.Path & "\Data\SOUNDS\" & "MIDI" & "\")
-    
-    'Inicializamos el inventario gráfico
-    Call Inventario.Initialize(frmMain.picInv)
-    
-    frmCargando.establecerProgreso (100)
-    
-    For i = 1 To 8
-        RangoPRIV(i) = "<Game Master>"
-    Next i
-        
-    RangoPRIV(9) = "<Director de GMs>"
-    RangoPRIV(10) = "<Developer>"
-    RangoPRIV(11) = "<Sub Administrador>"
-    RangoPRIV(12) = "<Administrador>"
+    Call CargarColores
+    Call CargarQuests
+    Call CargarAuras
+    Call General_Load_Interfaces
+    Call OpcionesNew.LoadOptions
+    Call frmCargando.ProgresoBarra(90)
+
+    RangoPRIV(1) = "<Staff TSAO>"
+    RangoPRIV(2) = "<Staff TSAO>"
+    RangoPRIV(3) = "<Staff TSAO>"
+    RangoPRIV(4) = "<Coordination>"
+    RangoPRIV(5) = "<Development>"
+    RangoPRIV(6) = "<Administrator>"
     
     EsStatusCOLOR(0) = D3DColorXRGB(ColoresPJ(48).r, ColoresPJ(48).g, ColoresPJ(48).b)
     EsStatusCOLOR(1) = D3DColorXRGB(ColoresPJ(46).r, ColoresPJ(46).g, ColoresPJ(46).b)
@@ -1047,20 +1063,24 @@ End If
     EsStatusCOLOR(6) = D3DColorXRGB(ColoresPJ(52).r, ColoresPJ(52).g, ColoresPJ(52).b)
     EsStatusCOLOR(8) = D3DColorXRGB(ColoresPJ(22).r, ColoresPJ(22).g, ColoresPJ(22).b)
     
+    Call frmCargando.ProgresoBarra(100)
+    
     Unload frmCargando
     
-    AoDefResult = 0
-    frmPres.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Pres1.jpg")
+    'Inicializamos el sonido
+    Call Audio.Initialize(frmMain.hWnd, App.Path & "\Data\SOUNDS\" & "WAV" & "\", App.Path & "\Data\SOUNDS\" & "MIDI" & "\")
+    
+    'Inicializamos el inventario gráfico
+    Call Inventario.Initialize(frmMain.picInv)
+
+
+    frmPres.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Pres" & RandomNumber(1, 4) & ".jpg")
     frmPres.Timer1.Enabled = True
     frmPres.Show vbModal    'Es modal, así que se detiene la ejecución de Main hasta que se desaparece
-    Call frmConnect.mostrarConectar(True, True)
+    Call CambiarConectar("CONECTAR")
 
     frmMain.InvEqu.Picture = General_Load_Interface_Picture("Centronuevoinventario.jpg")
     frmMain.Picture = General_Load_Interface_Picture("Principal.jpg")
-
-    'Inicialización de variables globales
-    prgRun = True
-    pausa = False
     
     Sound = Configuracion.Sound
     Musica = Configuracion.Music
@@ -1074,12 +1094,15 @@ End If
     Else
         Audio.MP3_Play "140"
     End If
+
+    'Inicialización de variables globales
+    prgRun = True
+    pausa = False
     
     Dialogos.font = frmMain.font
     
+Engine_Set_TileBuffer 9
 engine.Start
-
-
     
 Exit Sub
 ManejadorErrores:
@@ -1087,7 +1110,7 @@ ManejadorErrores:
     Debug.Print "Contexto:" & err.HelpContext & " Desc:" & err.Description & " Fuente:" & err.Source
     End
 End Sub
-Function FieldCount(ByRef text As String, ByVal SepASCII As Byte) As Long
+Function FieldCount(ByRef Text As String, ByVal SepASCII As Byte) As Long
 '*****************************************************************
 'Gets the number of fields in a delimited string
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
@@ -1097,14 +1120,14 @@ Function FieldCount(ByRef text As String, ByVal SepASCII As Byte) As Long
     Dim curPos As Long
     Dim delimiter As String * 1
     
-    If LenB(text) = 0 Then Exit Function
+    If LenB(Text) = 0 Then Exit Function
     
     delimiter = Chr$(SepASCII)
     
     curPos = 0
     
     Do
-        curPos = InStr(curPos + 1, text, delimiter)
+        curPos = InStr(curPos + 1, Text, delimiter)
         Count = Count + 1
     Loop While curPos <> 0
     
@@ -1187,34 +1210,26 @@ Public Sub ShowSendTxt()
         frmMain.SendTxt.SetFocus
     End If
 End Sub
-
-Private Sub LoadClientSetup()
-'**************************************************************
-'Author: Juan Martín Sotuyo Dodero (Maraxus)
-'Last Modify Date: 11/27/2005
-'
-'**************************************************************
-    Dim fHandle As Integer
+Public Sub LeerLineaComandos()
+    Dim T() As String
+    Dim i As Long
     
-    fHandle = FreeFile
-    Open App.Path & "\Data\INIT\ao.dat" For Binary Access Read Lock Write As fHandle
-        Get fHandle, , ClientSetup
-    Close fHandle
+    'Parseo los comandos
+    T = Split(Command, " ")
+    
+    For i = LBound(T) To UBound(T)
+        Select Case UCase$(T(i))
+            Case "/NORES" 'no cambiar la resolucion
+                NoRes = True
+        End Select
+    Next i
 End Sub
-
 Private Sub InicializarNombres()
 '**************************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
 'Last Modify Date: 11/27/2005
 'Inicializa los nombres de razas, ciudades, clases, skills, atributos, etc.
 '**************************************************************
-    Ciudades(1) = "Ullathorpe"
-    Ciudades(2) = "Nix"
-    Ciudades(3) = "Banderbill"
-
-    CityDesc(1) = "Ullathorpe está establecida en el medio de los grandes bosques de Argentum, es principalmente un pueblo de campesinos y leñadores. Su ubicación hace de Ullathorpe un punto de paso obligado para todos los aventureros ya que se encuentra cerca de los lugares más legendarios de este mundo."
-    CityDesc(2) = "Nix es una gran ciudad. Edificada sobre la costa oeste del principal continente de Argentum."
-    CityDesc(3) = "Banderbill se encuentra al norte de Ullathorpe y Nix, es una de las ciudades más importantes de todo el imperio."
 
     ListaRazas(1) = "Humano"
     ListaRazas(2) = "Elfo"
@@ -1226,10 +1241,14 @@ Private Sub InicializarNombres()
     ListaClases(2) = "Clerigo"
     ListaClases(3) = "Guerrero"
     ListaClases(4) = "Asesino"
-    ListaClases(5) = "Bardo"
-    ListaClases(6) = "Druida"
-    ListaClases(7) = "Paladin"
-    ListaClases(8) = "Cazador"
+    ListaClases(5) = "Ladron"
+    ListaClases(6) = "Bardo"
+    ListaClases(7) = "Druida"
+    ListaClases(8) = "Pirata"
+    ListaClases(9) = "Paladin"
+    ListaClases(10) = "Cazador"
+    ListaClases(11) = "Recolector"
+    ListaClases(12) = "Artesano"
 
     SkillsNames(Skills.Suerte) = "Suerte"
     SkillsNames(Skills.Magia) = "Magia"
@@ -1278,52 +1297,94 @@ Open App.Path & "\Data\custom.log" For Append As #nfile
 Print #nfile, Now & " " & Desc
 Close #nfile
 End Sub
-Public Sub DrawGrhtoHdc(desthDC As Long, ByVal grh_index As Long, ByVal screen_x As Integer, ByVal screen_y As Integer)
+Sub DameOpciones()
  
-On Error Resume Next
+Select Case frmCrearPersonaje.lstGenero.List(frmCrearPersonaje.lstGenero.ListIndex)
+
+Case "Hombre"
+
+Select Case frmCrearPersonaje.lstRaza.List(frmCrearPersonaje.lstRaza.ListIndex)
+
+Case "Humano"
+Actualea = 1
+MaxEleccion = 30
+MinEleccion = 1
+
+Case "Elfo"
+Actualea = 101
+MaxEleccion = 113
+MinEleccion = 101
+                
+Case "Elfo Oscuro"
+Actualea = 202
+MaxEleccion = 209
+MinEleccion = 202
+                
+Case "Enano"
+Actualea = 301
+MaxEleccion = 305
+MinEleccion = 301
+                
+Case "Gnomo"
+Actualea = 401
+MaxEleccion = 406
+MinEleccion = 401
+                
+Case Else
+Actualea = 30
+MaxEleccion = 30
+MinEleccion = 30
+                
+End Select
+        
+Case "Mujer"
    
-Dim file_path As String, src_x As Integer, src_y As Integer, src_width As Integer, src_height As Integer, hdcsrc As Long, PrevObj As Long
+Select Case frmCrearPersonaje.lstRaza.List(frmCrearPersonaje.lstRaza.ListIndex)
+
+Case "Humano"
+Actualea = 70
+MaxEleccion = 76
+MinEleccion = 70
+                
+Case "Elfo"
+Actualea = 170
+MaxEleccion = 176
+MinEleccion = 170
+                
+Case "Elfo Oscuro"
+Actualea = 270
+MaxEleccion = 280
+MinEleccion = 270
+                
+Case "Gnomo"
+Actualea = 470
+MaxEleccion = 474
+MinEleccion = 470
+                
+Case "Enano"
+Actualea = 370
+MaxEleccion = 373
+MinEleccion = 370
+            
+Case Else
+Actualea = 70
+MaxEleccion = 70
+MinEleccion = 70
+                
+End Select
+
+End Select
+
+Dim SR As RECT
+SR.bottom = 32
+SR.Right = 32
+SR.left = 0
+SR.top = 0
  
-If grh_index <= 0 Then Exit Sub
- 
-If GrhData(grh_index).NumFrames <> 1 Then
-    
-grh_index = GrhData(grh_index).Frames(1)
-    
-End If
- 
-        If Extract_File(Graphics, App.Path & "\Data\GRAFICOS\", GrhData(grh_index).FileNum & ".bmp", App.Path & "\Data\GRAFICOS\") Then
-            file_path = App.Path & "\Data\GRAFICOS\" & GrhData(grh_index).FileNum & ".bmp"
-        End If
-       
-src_x = GrhData(grh_index).sX
-src_y = GrhData(grh_index).sY
-src_width = GrhData(grh_index).pixelWidth
-src_height = GrhData(grh_index).pixelHeight
-                    
-hdcsrc = CreateCompatibleDC(desthDC)
-         
-PrevObj = SelectObject(hdcsrc, LoadPicture(file_path))
- 
-BitBlt desthDC, screen_x, screen_y, src_width, src_height, hdcsrc, src_x, src_y, vbSrcCopy
- 
-DeleteDC hdcsrc
+frmCrearPersonaje.headview.Cls
+Call engine.DrawGrhtoHdc(HeadData(Actualea).Head(3).GrhIndex, SR, frmCrearPersonaje.headview, 8, 5)
  
 End Sub
-Public Function SuficientePC() As Boolean
-Dim MS As MEMORYSTATUS
-
-MS.dwLength = Len(MS)
-GlobalMemoryStatus MS
-
-'si es menor a 0.3 el NW tiene una makina de MIERDA
-If ((MS.dwTotalPhys / (1000 ^ 3)) > 0.3) Then
-    SuficientePC = True
-Else
-    SuficientePC = False
-End If
-
-End Function
 Public Sub DibujarPuntoMinimap()
     
 With frmMain
@@ -1334,11 +1395,14 @@ End With
 End Sub
 Public Sub DibujarMinimap()
 
+If Configuracion.VerMiniMapa = 1 Then
     If FileExist(App.Path & "\Data\GRAFICOS\MiniMap\Mapa" & UserMap & ".bmp", vbNormal) Then
         frmMain.Minimap.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\MiniMap\Mapa" & UserMap & ".bmp")
+        frmMain.Minimap.Refresh
     Else
         frmMain.Minimap.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\MiniMap\Nada.bmp")
     End If
+End If
 
 End Sub
 
@@ -1467,22 +1531,99 @@ If (Inventario.SelectedItem > 0 And Inventario.SelectedItem < MAX_INVENTORY_SLOT
 End If
 
 End Sub
-Public Sub mostrarCuenta()
+Public Sub CambiarConectar(Tuvieja As String)
 
-        frmAccount.Show
+frmConnect.Visible = True
 
-          With frmAccount
+If UCase$(Tuvieja) = "CONECTAR" Then
+          With frmConnect
+                .imgName.Visible = True
+                .imgPass.Visible = True
+                .imgConectar.Visible = True
+                .imgAnti.Visible = True
+                .imgCrearCuenta.Visible = True
+                .imgRecuperarCuenta.Visible = True
+                .imgWeb.Visible = True
+                
+                .imgCambiarPass.Visible = False
+                .imgCrearPersonaje.Visible = False
+                .imgSalir4.Visible = False
+            
+                Dim i As Long
+                For i = 0 To 8
+                .PJ(i).Visible = False
+                Next i
+          End With
+          
+        For i = 0 To 8
+                CargarPJ(i).Nombre = 0
+                CargarPJ(i).Body = 0
+                CargarPJ(i).Head = 0
+                CargarPJ(i).Casco = 0
+                CargarPJ(i).Shield = 0
+                CargarPJ(i).Weapon = 0
+                CargarPJ(i).Level = 0
+                CargarPJ(i).Existe = False
+                CargarPJ(i).Raza = 0
+                CargarPJ(i).Muerto = 0
+        Next i
+          
+          RenderAccount = False
+          RenderConnect = True
+
+     If FileExist(App.Path & "\Data\MAPAS\" & "Mapa" & MapConnect & ".map", vbNormal) Then
+        Call SwitchMap(MapConnect)
+         day_r_old = 210
+         day_g_old = 100
+         day_b_old = 100
+         base_light = ARGB(day_r_old, day_g_old, day_b_old, 220)
+    Else
+        MsgBox "Error en los mapas, algún archivo ha sido modificado o esta dañado."
+        Call UnloadAllForms
+    End If
+    
+ElseIf UCase$(Tuvieja) = "CUENTA" Then
+
+          With frmConnect
+                .imgName.Visible = False
+                .imgPass.Visible = False
+                .imgConectar.Visible = False
+                .imgAnti.Visible = False
+                .imgCrearCuenta.Visible = False
+                .imgRecuperarCuenta.Visible = False
+                .imgWeb.Visible = False
+                
                 .imgCambiarPass.Visible = True
                 .imgCrearPersonaje.Visible = True
                 .imgSalir4.Visible = True
-                
-                Dim i As Long
-                For i = 0 To CantidadDePersonajes - 1
-                    .PJ(i).Visible = True
+            
+                For i = 0 To 8
+                .PJ(i).Visible = True
                 Next i
           End With
+          
+            RenderConnect = False
+            RenderAccount = True
             
-        Audio.StopWave
+            Audio.StopWave
+            
+             If FileExist(App.Path & "\Data\MAPAS\" & "Mapa" & MapCuent & ".map", vbNormal) Then
+                    day_r_old = 220
+                    day_g_old = 220
+                    day_b_old = 220
+                    base_light = ARGB(day_r_old, day_g_old, day_b_old, 255)
+                            
+                    Call InitGrh(AurixPJ, 27601)
+                    
+                    Call SwitchMap(MapCuent)
+            Else
+                MsgBox "Error en los mapas, algún archivo ha sido modificado o esta dañado."
+                Call UnloadAllForms
+            End If
+End If
+
+
+
 End Sub
 Public Function GetDriveSerialNumber(Optional ByVal DriveLetter As String) As Long
 '***************************************************
@@ -1751,45 +1892,3 @@ Dim f As Integer
     LeerInt = Input$(LOF(f), #f)
     Close #f
 End Function
-Public Sub enviarMacro(text As String)
-
-    Dim primerLetra As String
-    primerLetra = left(text, 1)
-    If (primerLetra = "/") Then
-        Call SendData(text)
-    Else
-        Call SendData(";" & text)
-    End If
-
-End Sub
-Public Sub actualizarAL(ByVal charindex As Integer)
-
-                If frmMain.TrainingMacro.Enabled Then frmMain.DesactivarMacroHechizos
-                Call DibujarPuntoMinimap
-                frmMain.Coord.Caption = Nombredelmapaxx & " (" & UserMap & "," & charlist(charindex).Pos.X & "," & charlist(charindex).Pos.Y & ")"
-
-End Sub
-
-Public Sub resetNPCInventory()
-
-    Dim i As Long
-    For i = 1 To MAX_NPC_INVENTORY_SLOTS
-        NPCInventory(i).GrhIndex = 0
-        NPCInventory(i).Amount = 0
-        NPCInventory(i).OBJType = 0
-        NPCInventory(i).OBJIndex = 0
-        NPCInventory(i).Valor = 0
-        NPCInventory(i).Name = ""
-        NPCInventory(i).MinHit = 0
-        NPCInventory(i).MaxHit = 0
-        NPCInventory(i).itemSlot = 0
-        NPCInventory(i).C1 = 0
-        NPCInventory(i).C2 = 0
-        NPCInventory(i).C3 = 0
-        NPCInventory(i).C4 = 0
-        NPCInventory(i).C5 = 0
-        NPCInventory(i).C6 = 0
-        NPCInventory(i).C7 = 0
-    Next i
-    
-End Sub

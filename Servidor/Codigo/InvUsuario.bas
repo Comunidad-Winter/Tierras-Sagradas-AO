@@ -88,29 +88,26 @@ manejador:
 End Function
 Sub QuitarNewbieObj(ByVal userindex As Integer)
 
-Dim j As Integer
-For j = 1 To MAX_INVENTORY_SLOTS
-        If UserList(userindex).Invent.Object(j).ObjIndex > 0 Then
-             
-             If ObjData(UserList(userindex).Invent.Object(j).ObjIndex).Newbie = 1 Then _
-                    Call QuitarUserInvItem(userindex, j, MAX_INVENTORY_OBJS)
-                    Call UpdateUserInv(False, userindex, j)
+    If UserList(userindex).Stats.ELV = 10 Then
+        UserList(userindex).StatusMith.EsStatus = 0
+        UserList(userindex).StatusMith.EligioStatus = 0
+        Call WarpUserChar(userindex, 1, 58, 48, True)
+        Call SendData(SendTarget.toindex, userindex, 0, "SUNX")
+        Call LimpiarInventario(userindex)
+        Call DarCuerpoDesnudo(userindex)
         
-        End If
-Next
-
-'[Barrin 17-12-03] Si el usuario dejó de ser Newbie, y estaba en el Newbie Dungeon
-'es transportado a su hogar de origen ;)
-If UserList(userindex).Pos.Map = 37 Then
-    
-    Dim DeDonde As WorldPos
-    DeDonde = Tanaris
-       
-    Call WarpUserChar(userindex, DeDonde.Map, DeDonde.X, DeDonde.Y, True)
-
-End If
-'[/Barrin]
-
+        UserList(userindex).Invent.ArmourEqpSlot = 0
+        UserList(userindex).Invent.ArmourEqpObjIndex = 0
+        
+        UserList(userindex).Invent.WeaponEqpObjIndex = 0
+        UserList(userindex).Invent.WeaponEqpSlot = 0
+        UserList(userindex).Char.CascoAnim = 0
+        UserList(userindex).Char.WeaponAnim = 0
+        UserList(userindex).Char.ShieldAnim = 0
+        
+        Call ChangeUserChar(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, val(userindex), UserList(userindex).Char.Body, UserList(userindex).Char.Head, UserList(userindex).Char.Heading, NingunArma, NingunEscudo, NingunCasco)
+        Call UpdateUserInv(True, userindex, 0)
+    End If
 End Sub
 
 Sub LimpiarInventario(ByVal userindex As Integer)
@@ -147,8 +144,6 @@ UserList(userindex).Invent.MunicionEqpSlot = 0
 UserList(userindex).Invent.BarcoObjIndex = 0
 UserList(userindex).Invent.BarcoSlot = 0
 
-Call UpdateUserInv(True, userindex, 0, True)
-
 End Sub
 
 Sub TirarOro(ByVal Cantidad As Long, ByVal userindex As Integer)
@@ -159,7 +154,7 @@ If Cantidad > 100000 Then Exit Sub
 'SI EL NPC TIENE ORO LO TIRAMOS
 If (Cantidad > 0) And (Cantidad <= UserList(userindex).Stats.GLD) Then
         Dim i As Byte
-        Dim MiObj As obj
+        Dim MiObj As Obj
         'info debug
         Dim loops As Integer
         
@@ -218,27 +213,26 @@ Errhandler:
 
 End Sub
 
-Sub QuitarUserInvItem(ByVal userindex As Integer, ByVal slot As Byte, ByVal Cantidad As Integer)
+Sub QuitarUserInvItem(ByVal userindex As Integer, ByVal Slot As Byte, ByVal Cantidad As Integer)
 
-Dim MiObj As obj
+Dim MiObj As Obj
 'Desequipa
-If slot < 1 Or slot > MAX_INVENTORY_SLOTS Then Exit Sub
+If Slot < 1 Or Slot > MAX_INVENTORY_SLOTS Then Exit Sub
 
-If UserList(userindex).Invent.Object(slot).Equipped = 1 Then Call Desequipar(userindex, slot)
+If UserList(userindex).Invent.Object(Slot).Equipped = 1 Then Call Desequipar(userindex, Slot)
 
 'Quita un objeto
-UserList(userindex).Invent.Object(slot).Amount = UserList(userindex).Invent.Object(slot).Amount - Cantidad
+UserList(userindex).Invent.Object(Slot).Amount = UserList(userindex).Invent.Object(Slot).Amount - Cantidad
 '¿Quedan mas?
-If UserList(userindex).Invent.Object(slot).Amount <= 0 Then
+If UserList(userindex).Invent.Object(Slot).Amount <= 0 Then
     UserList(userindex).Invent.NroItems = UserList(userindex).Invent.NroItems - 1
-    UserList(userindex).Invent.Object(slot).ObjIndex = 0
-    UserList(userindex).Invent.Object(slot).Amount = 0
+    UserList(userindex).Invent.Object(Slot).ObjIndex = 0
+    UserList(userindex).Invent.Object(Slot).Amount = 0
 End If
     
-    
-    Call UpdateUserInv(False, userindex, slot)
 End Sub
-Sub UpdateUserInv(ByVal UpdateAll As Boolean, ByVal userindex As Integer, ByVal slot As Byte, Optional mandoVacios As Boolean = False)
+
+Sub UpdateUserInv(ByVal UpdateAll As Boolean, ByVal userindex As Integer, ByVal Slot As Byte)
 
 Dim NullObj As UserOBJ
 Dim loopC As Byte
@@ -247,10 +241,10 @@ Dim loopC As Byte
 If Not UpdateAll Then
 
     'Actualiza el inventario
-    If UserList(userindex).Invent.Object(slot).ObjIndex > 0 Then
-        Call ChangeUserInv(userindex, slot, UserList(userindex).Invent.Object(slot))
+    If UserList(userindex).Invent.Object(Slot).ObjIndex > 0 Then
+        Call ChangeUserInv(userindex, Slot, UserList(userindex).Invent.Object(Slot))
     Else
-        Call ChangeUserInv(userindex, slot, NullObj)
+        Call ChangeUserInv(userindex, Slot, NullObj)
     End If
 
 Else
@@ -262,7 +256,9 @@ Else
         If UserList(userindex).Invent.Object(loopC).ObjIndex > 0 Then
             Call ChangeUserInv(userindex, loopC, UserList(userindex).Invent.Object(loopC))
         Else
-            If (mandoVacios) Then Call ChangeUserInv(userindex, loopC, NullObj)
+            
+            Call ChangeUserInv(userindex, loopC, NullObj)
+            
         End If
 
     Next loopC
@@ -270,13 +266,14 @@ Else
 End If
 
 End Sub
-Sub DropObj(ByVal userindex As Integer, ByVal slot As Byte, ByVal num As Integer, ByVal Map As Integer, ByVal X As Integer, ByVal Y As Integer)
 
-Dim obj As obj
+Sub DropObj(ByVal userindex As Integer, ByVal Slot As Byte, ByVal num As Integer, ByVal Map As Integer, ByVal X As Integer, ByVal Y As Integer)
 
-If UserList(userindex).flags.Privilegios > PlayerType.User And UserList(userindex).flags.Privilegios < PlayerType.Director Then Exit Sub
+Dim Obj As Obj
 
-If ObjData(UserList(userindex).Invent.Object(slot).ObjIndex).Intransferible = 1 And UserList(userindex).flags.Privilegios <= PlayerType.Consejero Then
+If UserList(userindex).flags.Privilegios > PlayerType.User And UserList(userindex).flags.Privilegios < PlayerType.Coordination Then Exit Sub
+
+If ObjData(UserList(userindex).Invent.Object(Slot).ObjIndex).Intransferible = 1 And UserList(userindex).flags.Privilegios <= PlayerType.UserSupport Then
     Call SendData(SendTarget.toindex, userindex, 0, "||152")
  Exit Sub
 End If
@@ -288,29 +285,27 @@ End If
 
 If num > 0 Then
   
-  If num > UserList(userindex).Invent.Object(slot).Amount Then num = UserList(userindex).Invent.Object(slot).Amount
+  If num > UserList(userindex).Invent.Object(Slot).Amount Then num = UserList(userindex).Invent.Object(Slot).Amount
   
   'Check objeto en el suelo
-  If MapData(UserList(userindex).Pos.Map, X, Y).OBJInfo.ObjIndex = 0 Or MapData(UserList(userindex).Pos.Map, X, Y).OBJInfo.ObjIndex = UserList(userindex).Invent.Object(slot).ObjIndex Then
-        If UserList(userindex).Invent.Object(slot).Equipped = 1 Then Call Desequipar(userindex, slot)
-        obj.ObjIndex = UserList(userindex).Invent.Object(slot).ObjIndex
+  If MapData(UserList(userindex).Pos.Map, X, Y).OBJInfo.ObjIndex = 0 Or MapData(UserList(userindex).Pos.Map, X, Y).OBJInfo.ObjIndex = UserList(userindex).Invent.Object(Slot).ObjIndex Then
+        If UserList(userindex).Invent.Object(Slot).Equipped = 1 Then Call Desequipar(userindex, Slot)
+        Obj.ObjIndex = UserList(userindex).Invent.Object(Slot).ObjIndex
         
         If num + MapData(UserList(userindex).Pos.Map, X, Y).OBJInfo.Amount > MAX_INVENTORY_OBJS Then
             num = MAX_INVENTORY_OBJS - MapData(UserList(userindex).Pos.Map, X, Y).OBJInfo.Amount
         End If
         
-        obj.Amount = num
+        Obj.Amount = num
         
-        If ObjData(obj.ObjIndex).OBJType = eOBJType.otMontura And UserList(userindex).flags.Montando = 1 Then Call Desmontar(userindex)
+        Call MakeObj(SendTarget.ToMap, 0, Map, Obj, Map, X, Y)
+        Call QuitarUserInvItem(userindex, Slot, num)
+        Call UpdateUserInv(False, userindex, Slot)
         
-        Call MakeObj(SendTarget.toMap, 0, Map, obj, Map, X, Y)
-        Call QuitarUserInvItem(userindex, slot, num)
-        Call UpdateUserInv(False, userindex, slot)
+        Call LogTirarItems("" & UserList(userindex).Name & " Tiro cantidad:" & num & " Objeto:" & ObjData(Obj.ObjIndex).Name & "")
         
-        Call LogTirarItems("" & UserList(userindex).Name & " Tiro cantidad:" & num & " Objeto:" & ObjData(obj.ObjIndex).Name & "")
-        
-        If UserList(userindex).flags.Privilegios > PlayerType.User Then Call LogGM(UserList(userindex).Name, "Tiro cantidad:" & num & " Objeto:" & ObjData(obj.ObjIndex).Name, False)
-        If UserList(userindex).flags.Privilegios > PlayerType.User Then Call LogGMss(UserList(userindex).Name, "Tiro cantidad:" & num & " Objeto:" & ObjData(obj.ObjIndex).Name, False)
+        If UserList(userindex).flags.Privilegios > PlayerType.User Then Call LogGM(UserList(userindex).Name, "Tiro cantidad:" & num & " Objeto:" & ObjData(Obj.ObjIndex).Name, False)
+        If UserList(userindex).flags.Privilegios > PlayerType.User Then Call LogGMss(UserList(userindex).Name, "Tiro cantidad:" & num & " Objeto:" & ObjData(Obj.ObjIndex).Name, False)
   Else
     Call SendData(SendTarget.toindex, userindex, 0, "||107")
   End If
@@ -327,7 +322,7 @@ If MapData(Map, X, Y).OBJInfo.Amount <= 0 Then
     MapData(Map, X, Y).OBJInfo.ObjIndex = 0
     MapData(Map, X, Y).OBJInfo.Amount = 0
     
-    If sndRoute = SendTarget.toMap Then
+    If sndRoute = SendTarget.ToMap Then
         Call SendToAreaByPos(Map, X, Y, "BO" & X & "," & Y)
    Else
         Call SendData(sndRoute, sndIndex, sndMap, "BO" & X & "," & Y)
@@ -336,65 +331,71 @@ End If
 
 End Sub
 
-Sub MakeObj(ByVal sndRoute As Byte, ByVal sndIndex As Integer, ByVal sndMap As Integer, obj As obj, Map As Integer, ByVal X As Integer, ByVal Y As Integer)
+Sub MakeObj(ByVal sndRoute As Byte, ByVal sndIndex As Integer, ByVal sndMap As Integer, Obj As Obj, Map As Integer, ByVal X As Integer, ByVal Y As Integer)
 On Error Resume Next
 
-If obj.ObjIndex > 0 And obj.ObjIndex <= UBound(ObjData) Then
+If Obj.ObjIndex > 0 And Obj.ObjIndex <= UBound(ObjData) Then
 
-    If MapData(Map, X, Y).OBJInfo.ObjIndex = obj.ObjIndex Then
-        MapData(Map, X, Y).OBJInfo.Amount = MapData(Map, X, Y).OBJInfo.Amount + obj.Amount
+    If MapData(Map, X, Y).OBJInfo.ObjIndex = Obj.ObjIndex Then
+        MapData(Map, X, Y).OBJInfo.Amount = MapData(Map, X, Y).OBJInfo.Amount + Obj.Amount
     Else
-        MapData(Map, X, Y).OBJInfo = obj
+        MapData(Map, X, Y).OBJInfo = Obj
         
-        If sndRoute = SendTarget.toMap Then
-            'If (Obj.ObjIndex = 378) Then
-            '    Call ModAreas.SendToAreaByPos(Map, X, Y, "PCF" & 101 & "," & X & "," & Y & "-1")
-            'Else
-                Call ModAreas.SendToAreaByPos(Map, X, Y, "HO" & ObjData(obj.ObjIndex).GrhIndex & "," & X & "," & Y)
-            'End If
+        If sndRoute = SendTarget.ToMap Then
+            Call ModAreas.SendToAreaByPos(Map, X, Y, "HO" & ObjData(Obj.ObjIndex).GrhIndex & "," & X & "," & Y)
         Else
-           ' If (Obj.ObjIndex = 378) Then
-            '    Call SendData(sndRoute, sndIndex, sndMap, "PCF" & 101 & "," & X & "," & Y & "-1")
-            'Else
-                Call SendData(sndRoute, sndIndex, sndMap, "HO" & ObjData(obj.ObjIndex).GrhIndex & "," & X & "," & Y)
-            'End If
+            Call SendData(sndRoute, sndIndex, sndMap, "HO" & ObjData(Obj.ObjIndex).GrhIndex & "," & X & "," & Y)
         End If
         
         If MapData(Map, X, Y).Blocked = 0 Then
-            If ObjData(obj.ObjIndex).AntiLimpieza = 1 Then Exit Sub
-            If ItemNoEsDeMapa(obj.ObjIndex) Then CleanWorld_AddItem Map, X, Y, 10, obj.ObjIndex
+            If ObjData(Obj.ObjIndex).AntiLimpieza = 1 Then Exit Sub
+            If ItemNoEsDeMapa(Obj.ObjIndex) Then CleanWorld_AddItem Map, X, Y, 10, Obj.ObjIndex
         End If
         
     End If
 End If
 
 End Sub
-
-Function MeterItemEnInventario(ByVal userindex As Integer, ByRef MiObj As obj) As Boolean
+Function MeterItemEnInventario(ByVal userindex As Integer, ByRef MiObj As Obj, Optional uSlot As Byte = 0) As Boolean
 On Error GoTo Errhandler
 
 'Call LogTarea("MeterItemEnInventario")
  
 Dim X As Integer
 Dim Y As Integer
-Dim slot As Byte
+Dim Slot As Byte
+
+If uSlot > 0 Then
+        'Mete el objeto
+        If MiObj.Amount <= MAX_INVENTORY_OBJS Then
+           UserList(userindex).Invent.Object(uSlot).ObjIndex = MiObj.ObjIndex
+           UserList(userindex).Invent.Object(uSlot).Amount = MiObj.Amount
+        Else
+           UserList(userindex).Invent.Object(uSlot).Amount = MAX_INVENTORY_OBJS
+        End If
+            
+        MeterItemEnInventario = True
+               
+        Call UpdateUserInv(False, userindex, uSlot)
+    Exit Function
+End If
 
 '¿el user ya tiene un objeto del mismo tipo?
-slot = 1
-Do Until UserList(userindex).Invent.Object(slot).ObjIndex = MiObj.ObjIndex And _
-         UserList(userindex).Invent.Object(slot).Amount + MiObj.Amount <= MAX_INVENTORY_OBJS
-   slot = slot + 1
-   If slot > MAX_INVENTORY_SLOTS Then
+Slot = 1
+Do Until UserList(userindex).Invent.Object(Slot).ObjIndex = MiObj.ObjIndex And _
+         UserList(userindex).Invent.Object(Slot).Amount + MiObj.Amount <= MAX_INVENTORY_OBJS
+   Slot = Slot + 1
+   If Slot > UserList(userindex).InventorySlots Then
          Exit Do
    End If
 Loop
     
 'Sino busca un slot vacio
-If slot > MAX_INVENTORY_SLOTS Then
-   slot = 1
-   Do Until UserList(userindex).Invent.Object(slot).ObjIndex = 0
-       slot = slot + 1
-       If slot > MAX_INVENTORY_SLOTS Then
+If Slot > UserList(userindex).InventorySlots Then
+   Slot = 1
+   Do Until UserList(userindex).Invent.Object(Slot).ObjIndex = 0
+       Slot = Slot + 1
+       If Slot > UserList(userindex).InventorySlots Then
            Call SendData(SendTarget.toindex, userindex, 0, "||108")
            MeterItemEnInventario = False
            Exit Function
@@ -404,17 +405,17 @@ If slot > MAX_INVENTORY_SLOTS Then
 End If
     
 'Mete el objeto
-If UserList(userindex).Invent.Object(slot).Amount + MiObj.Amount <= MAX_INVENTORY_OBJS Then
+If UserList(userindex).Invent.Object(Slot).Amount + MiObj.Amount <= MAX_INVENTORY_OBJS Then
    'Menor que MAX_INV_OBJS
-   UserList(userindex).Invent.Object(slot).ObjIndex = MiObj.ObjIndex
-   UserList(userindex).Invent.Object(slot).Amount = UserList(userindex).Invent.Object(slot).Amount + MiObj.Amount
+   UserList(userindex).Invent.Object(Slot).ObjIndex = MiObj.ObjIndex
+   UserList(userindex).Invent.Object(Slot).Amount = UserList(userindex).Invent.Object(Slot).Amount + MiObj.Amount
 Else
-   UserList(userindex).Invent.Object(slot).Amount = MAX_INVENTORY_OBJS
+   UserList(userindex).Invent.Object(Slot).Amount = MAX_INVENTORY_OBJS
 End If
     
 MeterItemEnInventario = True
        
-Call UpdateUserInv(False, userindex, slot)
+Call UpdateUserInv(False, userindex, Slot)
 
 
 Exit Function
@@ -425,8 +426,8 @@ End Function
 
 Sub GetObj(ByVal userindex As Integer)
 
-Dim obj As ObjData
-Dim MiObj As obj
+Dim Obj As ObjData
+Dim MiObj As Obj
 
 '¿Hay algun obj?
 If MapData(UserList(userindex).Pos.Map, UserList(userindex).Pos.X, UserList(userindex).Pos.Y).OBJInfo.ObjIndex > 0 Then
@@ -434,15 +435,15 @@ If MapData(UserList(userindex).Pos.Map, UserList(userindex).Pos.X, UserList(user
     If ObjData(MapData(UserList(userindex).Pos.Map, UserList(userindex).Pos.X, UserList(userindex).Pos.Y).OBJInfo.ObjIndex).Agarrable <> 1 Then
         Dim X As Integer
         Dim Y As Integer
-        Dim slot As Byte
+        Dim Slot As Byte
         
         X = UserList(userindex).Pos.X
         Y = UserList(userindex).Pos.Y
-        obj = ObjData(MapData(UserList(userindex).Pos.Map, UserList(userindex).Pos.X, UserList(userindex).Pos.Y).OBJInfo.ObjIndex)
+        Obj = ObjData(MapData(UserList(userindex).Pos.Map, UserList(userindex).Pos.X, UserList(userindex).Pos.Y).OBJInfo.ObjIndex)
         MiObj.Amount = MapData(UserList(userindex).Pos.Map, X, Y).OBJInfo.Amount
         MiObj.ObjIndex = MapData(UserList(userindex).Pos.Map, X, Y).OBJInfo.ObjIndex
         
-If (UserList(userindex).flags.Invisible = 1 Or UserList(userindex).flags.Oculto = 1) And UserList(userindex).flags.Privilegios <= PlayerType.Consejero Then
+If (UserList(userindex).flags.Invisible = 1 Or UserList(userindex).flags.Oculto = 1) And UserList(userindex).flags.Privilegios <= PlayerType.UserSupport Then
     Call SendData(SendTarget.toindex, userindex, 0, "||109")
 Exit Sub
 End If
@@ -451,7 +452,7 @@ End If
             Call SendData(SendTarget.toindex, userindex, 0, "||108")
         Else
             'Quitamos el objeto
-            Call EraseObj(SendTarget.toMap, 0, UserList(userindex).Pos.Map, MapData(UserList(userindex).Pos.Map, X, Y).OBJInfo.Amount, UserList(userindex).Pos.Map, UserList(userindex).Pos.X, UserList(userindex).Pos.Y)
+            Call EraseObj(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, MapData(UserList(userindex).Pos.Map, X, Y).OBJInfo.Amount, UserList(userindex).Pos.Map, UserList(userindex).Pos.X, UserList(userindex).Pos.Y)
             If UserList(userindex).flags.Privilegios > PlayerType.User Then Call LogGM(UserList(userindex).Name, "Agarro:" & MiObj.Amount & " Objeto:" & ObjData(MiObj.ObjIndex).Name, False)
             If UserList(userindex).flags.Privilegios > PlayerType.User Then Call LogGMss(UserList(userindex).Name, "Agarro:" & MiObj.Amount & " Objeto:" & ObjData(MiObj.ObjIndex).Name, False)
             Call LogAgarrarItems("" & UserList(userindex).Name & " Agarro:" & MiObj.Amount & " Objeto:" & ObjData(MiObj.ObjIndex).Name & "")
@@ -462,85 +463,85 @@ End If
 
 End Sub
 
-Sub Desequipar(ByVal userindex As Integer, ByVal slot As Byte)
+Sub Desequipar(ByVal userindex As Integer, ByVal Slot As Byte)
 'Desequipa el item slot del inventario
-Dim obj As ObjData
+Dim Obj As ObjData
 
 
-If (slot < LBound(UserList(userindex).Invent.Object)) Or (slot > UBound(UserList(userindex).Invent.Object)) Then
+If (Slot < LBound(UserList(userindex).Invent.Object)) Or (Slot > UBound(UserList(userindex).Invent.Object)) Then
     Exit Sub
-ElseIf UserList(userindex).Invent.Object(slot).ObjIndex = 0 Then
+ElseIf UserList(userindex).Invent.Object(Slot).ObjIndex = 0 Then
     Exit Sub
 End If
 
-obj = ObjData(UserList(userindex).Invent.Object(slot).ObjIndex)
+Obj = ObjData(UserList(userindex).Invent.Object(Slot).ObjIndex)
 
-Select Case obj.OBJType
+Select Case Obj.OBJType
     Case eOBJType.otWeapon
-        UserList(userindex).Invent.Object(slot).Equipped = 0
+        UserList(userindex).Invent.Object(Slot).Equipped = 0
         UserList(userindex).Invent.WeaponEqpObjIndex = 0
         UserList(userindex).Invent.WeaponEqpSlot = 0
         If Not UserList(userindex).flags.Mimetizado = 1 Then
             UserList(userindex).Char.WeaponAnim = NingunArma
-            Call ChangeUserArma(SendTarget.toMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.WeaponAnim)
+            Call ChangeUserChar(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.Body, UserList(userindex).Char.Head, UserList(userindex).Char.Heading, UserList(userindex).Char.WeaponAnim, UserList(userindex).Char.ShieldAnim, UserList(userindex).Char.CascoAnim)
         End If
         
-        If obj.Aura = UserList(userindex).Char.AuraW Then
+        If Obj.Aura = UserList(userindex).Char.AuraW Then
             UserList(userindex).Char.AuraW = 0
             SendUserAura (userindex)
         End If
         
     Case eOBJType.otFlechas
-        UserList(userindex).Invent.Object(slot).Equipped = 0
+        UserList(userindex).Invent.Object(Slot).Equipped = 0
         UserList(userindex).Invent.MunicionEqpObjIndex = 0
         UserList(userindex).Invent.MunicionEqpSlot = 0
     
     Case eOBJType.otHerramientas
-        UserList(userindex).Invent.Object(slot).Equipped = 0
+        UserList(userindex).Invent.Object(Slot).Equipped = 0
         UserList(userindex).Invent.HerramientaEqpObjIndex = 0
         UserList(userindex).Invent.HerramientaEqpSlot = 0
         
-        If obj.Aura = UserList(userindex).Char.AuraR Then
+        If Obj.Aura = UserList(userindex).Char.AuraR Then
             UserList(userindex).Char.AuraR = 0
             SendUserAura (userindex)
         End If
     
     Case eOBJType.otArmadura
-        UserList(userindex).Invent.Object(slot).Equipped = 0
+        UserList(userindex).Invent.Object(Slot).Equipped = 0
         UserList(userindex).Invent.ArmourEqpObjIndex = 0
         UserList(userindex).Invent.ArmourEqpSlot = 0
         Call DarCuerpoDesnudo(userindex, UserList(userindex).flags.Mimetizado = 1)
-        Call ChangeUserBody(SendTarget.toMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.Body)
+        Call ChangeUserBody(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.Body)
         
-        If obj.Aura = UserList(userindex).Char.AuraA Then
+        If Obj.Aura = UserList(userindex).Char.AuraA Then
             UserList(userindex).Char.AuraA = 0
             SendUserAura (userindex)
         End If
             
     Case eOBJType.otcASCO
-        UserList(userindex).Invent.Object(slot).Equipped = 0
+        UserList(userindex).Invent.Object(Slot).Equipped = 0
         UserList(userindex).Invent.CascoEqpObjIndex = 0
         UserList(userindex).Invent.CascoEqpSlot = 0
         If Not UserList(userindex).flags.Mimetizado = 1 Then
             UserList(userindex).Char.CascoAnim = NingunCasco
-            Call ChangeUserCasco(SendTarget.toMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.CascoAnim)
+            Call ChangeUserCasco(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.CascoAnim)
         End If
         
-        If obj.Aura = UserList(userindex).Char.AuraC Then
+        If Obj.Aura = UserList(userindex).Char.AuraC Then
             UserList(userindex).Char.AuraC = 0
             SendUserAura (userindex)
         End If
     
     Case eOBJType.otESCUDO
-        UserList(userindex).Invent.Object(slot).Equipped = 0
+        UserList(userindex).Invent.Object(Slot).Equipped = 0
         UserList(userindex).Invent.EscudoEqpObjIndex = 0
         UserList(userindex).Invent.EscudoEqpSlot = 0
         If Not UserList(userindex).flags.Mimetizado = 1 Then
             UserList(userindex).Char.ShieldAnim = NingunEscudo
-            Call ChangeUserEscudo(SendTarget.toMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.ShieldAnim)
+            Call ChangeUserEscudo(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.ShieldAnim)
         End If
         
-        If obj.Aura = UserList(userindex).Char.AuraE Then
+        If Obj.Aura = UserList(userindex).Char.AuraE Then
             UserList(userindex).Char.AuraE = 0
             SendUserAura (userindex)
         End If
@@ -549,7 +550,7 @@ End Select
 
 
 Call SendUserHitBox(userindex)
-Call ActualizarSlotEquipped(userindex, slot)
+Call ActualizarSlotEquipped(userindex, Slot)
 
 End Sub
 
@@ -589,63 +590,46 @@ Else
 End If
 
 End Function
-Public Function tengoSkin(ByVal userindex As Integer, ByVal numObj As Integer) As Byte
-    
-    Dim i As Long, tmpB As Byte
-        
-    tmpB = 0
-    With UserList(userindex)
-        For i = 1 To .cantSkins
-            If .Skin(i).numObj = numObj Then
-                tmpB = i
-                Exit For
-            End If
-        Next i
-    End With
-    
-    tengoSkin = tmpB
-    
-End Function
-Sub EquiparInvItem(ByVal userindex As Integer, ByVal slot As Byte)
+
+Sub EquiparInvItem(ByVal userindex As Integer, ByVal Slot As Byte)
 On Error GoTo Errhandler
 
 'Equipa un item del inventario
-Dim obj As ObjData
+Dim Obj As ObjData
 Dim ObjIndex As Integer
 
-ObjIndex = UserList(userindex).Invent.Object(slot).ObjIndex
-obj = ObjData(ObjIndex)
+ObjIndex = UserList(userindex).Invent.Object(Slot).ObjIndex
+Obj = ObjData(ObjIndex)
 
-If obj.ItemDios = 1 Then
-    If MapaEspecial(userindex) Then
+If Obj.ItemDios = 1 Then
+    If UserList(userindex).Pos.Map = 100 Or UserList(userindex).Pos.Map = 99 Or UserList(userindex).Pos.Map = 118 Or UserList(userindex).Pos.Map = 54 Or UserList(userindex).Pos.Map = 72 Or UserList(userindex).Pos.Map = 110 Or UserList(userindex).Pos.Map = 8 Or UserList(userindex).Pos.Map = 120 Or UserList(userindex).Pos.Map = 101 Then
         Call SendData(SendTarget.toindex, userindex, 0, "||110")
         Exit Sub
     End If
 End If
 
-If obj.Newbie = 1 And Not EsNewbie(userindex) Then
+If Obj.Newbie = 1 And Not EsNewbie(userindex) Then
      Call SendData(SendTarget.toindex, userindex, 0, "||111")
      Exit Sub
 End If
 
-If UserList(userindex).flags.Montando = 1 Then Exit Sub
 If UserList(userindex).flags.Transformado = 1 Then Exit Sub
        
-If obj.lvl > 0 Then
-    If (UserList(userindex).Stats.ELV < obj.lvl) And (Not UserList(userindex).flags.EnJDH) Then
+If Obj.lvl > 0 Then
+    If UserList(userindex).Stats.ELV < Obj.lvl Then
         If UserList(userindex).flags.Privilegios = PlayerType.User Then
-               Call SendData(SendTarget.toindex, userindex, 0, "||112@" & obj.lvl)
+               Call SendData(SendTarget.toindex, userindex, 0, "||112@" & Obj.lvl)
         Exit Sub
         End If
     End If
 End If
 
-Select Case obj.OBJType
+Select Case Obj.OBJType
     Case eOBJType.otWeapon
        If ClasePuedeUsarItem(userindex, ObjIndex) And _
-          FaccionPuedeUsarItem(userindex, ObjIndex) Or UserList(userindex).flags.Privilegios >= PlayerType.Semidios Then
+          FaccionPuedeUsarItem(userindex, ObjIndex) Or UserList(userindex).flags.Privilegios >= PlayerType.EventManager Then
                 'Si esta equipado lo quita
-                If UserList(userindex).Invent.Object(slot).Equipped Then
+                If UserList(userindex).Invent.Object(Slot).Equipped Then
                     'Animacion por defecto
                     If UserList(userindex).flags.Mimetizado = 1 Then
                         UserList(userindex).CharMimetizado.WeaponAnim = NingunArma
@@ -654,12 +638,12 @@ Select Case obj.OBJType
                     End If
                     
                     'Quitamos del inv el item
-                    Call Desequipar(userindex, slot)
+                    Call Desequipar(userindex, Slot)
                     Exit Sub
                 End If
                 
                 If UserList(userindex).Invent.EscudoEqpObjIndex > 0 Then
-                    If ObjData(UserList(userindex).Invent.Object(slot).ObjIndex).proyectil = 1 And ((ObjData(UserList(userindex).Invent.Object(slot).ObjIndex).ItemDios = 0) Or (ObjData(UserList(userindex).Invent.Object(slot).ObjIndex).ItemDios = 1 And ObjData(UserList(userindex).Invent.EscudoEqpObjIndex).ItemDios = 0)) Then
+                    If ObjData(UserList(userindex).Invent.Object(Slot).ObjIndex).proyectil = 1 And ((ObjData(UserList(userindex).Invent.Object(Slot).ObjIndex).ItemDios = 0) Or (ObjData(UserList(userindex).Invent.Object(Slot).ObjIndex).ItemDios = 1 And ObjData(UserList(userindex).Invent.EscudoEqpObjIndex).ItemDios = 0)) Then
                         Call Desequipar(userindex, UserList(userindex).Invent.EscudoEqpSlot)
                     End If
                 End If
@@ -669,12 +653,12 @@ Select Case obj.OBJType
                     Call Desequipar(userindex, UserList(userindex).Invent.WeaponEqpSlot)
                 End If
         
-                UserList(userindex).Invent.Object(slot).Equipped = 1
-                UserList(userindex).Invent.WeaponEqpObjIndex = UserList(userindex).Invent.Object(slot).ObjIndex
-                UserList(userindex).Invent.WeaponEqpSlot = slot
+                UserList(userindex).Invent.Object(Slot).Equipped = 1
+                UserList(userindex).Invent.WeaponEqpObjIndex = UserList(userindex).Invent.Object(Slot).ObjIndex
+                UserList(userindex).Invent.WeaponEqpSlot = Slot
                 
                 'dosmanos
-                If ObjData(UserList(userindex).Invent.Object(slot).ObjIndex).DosManos = 1 Then
+                If ObjData(UserList(userindex).Invent.Object(Slot).ObjIndex).DosManos = 1 Then
                     Call Desequipar(userindex, UserList(userindex).Invent.EscudoEqpSlot)
                 End If
                 
@@ -682,14 +666,14 @@ Select Case obj.OBJType
                 Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "TW" & SND_SACARARMA)
                 
                 If UserList(userindex).flags.Mimetizado = 1 Then
-                    UserList(userindex).CharMimetizado.WeaponAnim = obj.WeaponAnim
+                    UserList(userindex).CharMimetizado.WeaponAnim = Obj.WeaponAnim
                 Else
-                    UserList(userindex).Char.WeaponAnim = obj.WeaponAnim
-                    Call ChangeUserArma(SendTarget.toMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.WeaponAnim)
+                    UserList(userindex).Char.WeaponAnim = Obj.WeaponAnim
+                    Call ChangeUserChar(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.Body, UserList(userindex).Char.Head, UserList(userindex).Char.Heading, UserList(userindex).Char.WeaponAnim, UserList(userindex).Char.ShieldAnim, UserList(userindex).Char.CascoAnim)
                 End If
                 
-            If obj.Aura > 0 Then
-                UserList(userindex).Char.AuraW = obj.Aura
+            If Obj.Aura > 0 Then
+                UserList(userindex).Char.AuraW = Obj.Aura
                 SendUserAura (userindex)
             End If
                 
@@ -699,11 +683,11 @@ Select Case obj.OBJType
     
     Case eOBJType.otHerramientas
        If ClasePuedeUsarItem(userindex, ObjIndex) And _
-          FaccionPuedeUsarItem(userindex, ObjIndex) Or UserList(userindex).flags.Privilegios >= PlayerType.Semidios Then
+          FaccionPuedeUsarItem(userindex, ObjIndex) Or UserList(userindex).flags.Privilegios >= PlayerType.EventManager Then
                 'Si esta equipado lo quita
-                If UserList(userindex).Invent.Object(slot).Equipped Then
+                If UserList(userindex).Invent.Object(Slot).Equipped Then
                     'Quitamos del inv el item
-                    Call Desequipar(userindex, slot)
+                    Call Desequipar(userindex, Slot)
                     Exit Sub
                 End If
                 
@@ -712,12 +696,12 @@ Select Case obj.OBJType
                     Call Desequipar(userindex, UserList(userindex).Invent.HerramientaEqpSlot)
                 End If
         
-                UserList(userindex).Invent.Object(slot).Equipped = 1
+                UserList(userindex).Invent.Object(Slot).Equipped = 1
                 UserList(userindex).Invent.HerramientaEqpObjIndex = ObjIndex
-                UserList(userindex).Invent.HerramientaEqpSlot = slot
+                UserList(userindex).Invent.HerramientaEqpSlot = Slot
                 
-            If obj.Aura > 0 Then
-                UserList(userindex).Char.AuraR = obj.Aura
+            If Obj.Aura > 0 Then
+                UserList(userindex).Char.AuraR = Obj.Aura
                 SendUserAura (userindex)
             End If
                 
@@ -726,13 +710,13 @@ Select Case obj.OBJType
        End If
     
     Case eOBJType.otFlechas
-       If ClasePuedeUsarItem(userindex, UserList(userindex).Invent.Object(slot).ObjIndex) And _
-          FaccionPuedeUsarItem(userindex, UserList(userindex).Invent.Object(slot).ObjIndex) Or UserList(userindex).flags.Privilegios >= PlayerType.Semidios Then
+       If ClasePuedeUsarItem(userindex, UserList(userindex).Invent.Object(Slot).ObjIndex) And _
+          FaccionPuedeUsarItem(userindex, UserList(userindex).Invent.Object(Slot).ObjIndex) Or UserList(userindex).flags.Privilegios >= PlayerType.EventManager Then
                 
                 'Si esta equipado lo quita
-                If UserList(userindex).Invent.Object(slot).Equipped Then
+                If UserList(userindex).Invent.Object(Slot).Equipped Then
                     'Quitamos del inv el item
-                    Call Desequipar(userindex, slot)
+                    Call Desequipar(userindex, Slot)
                     Exit Sub
                 End If
                 
@@ -741,9 +725,9 @@ Select Case obj.OBJType
                     Call Desequipar(userindex, UserList(userindex).Invent.MunicionEqpSlot)
                 End If
         
-                UserList(userindex).Invent.Object(slot).Equipped = 1
-                UserList(userindex).Invent.MunicionEqpObjIndex = UserList(userindex).Invent.Object(slot).ObjIndex
-                UserList(userindex).Invent.MunicionEqpSlot = slot
+                UserList(userindex).Invent.Object(Slot).Equipped = 1
+                UserList(userindex).Invent.MunicionEqpObjIndex = UserList(userindex).Invent.Object(Slot).ObjIndex
+                UserList(userindex).Invent.MunicionEqpSlot = Slot
                 
        Else
             Call SendData(SendTarget.toindex, userindex, 0, "||113")
@@ -752,14 +736,14 @@ Select Case obj.OBJType
     Case eOBJType.otArmadura
         If UserList(userindex).flags.Navegando = 1 Then Exit Sub
         'Nos aseguramos que puede usarla
-        If ClasePuedeUsarItem(userindex, UserList(userindex).Invent.Object(slot).ObjIndex) And _
-           SexoPuedeUsarItem(userindex, UserList(userindex).Invent.Object(slot).ObjIndex) And _
-           CheckRazaUsaRopa(userindex, UserList(userindex).Invent.Object(slot).ObjIndex) And _
-           FaccionPuedeUsarItem(userindex, UserList(userindex).Invent.Object(slot).ObjIndex) Or UserList(userindex).flags.Privilegios >= PlayerType.Semidios Then
+        If ClasePuedeUsarItem(userindex, UserList(userindex).Invent.Object(Slot).ObjIndex) And _
+           SexoPuedeUsarItem(userindex, UserList(userindex).Invent.Object(Slot).ObjIndex) And _
+           CheckRazaUsaRopa(userindex, UserList(userindex).Invent.Object(Slot).ObjIndex) And _
+           FaccionPuedeUsarItem(userindex, UserList(userindex).Invent.Object(Slot).ObjIndex) Or UserList(userindex).flags.Privilegios >= PlayerType.EventManager Then
            
            'Si esta equipado lo quita
-            If UserList(userindex).Invent.Object(slot).Equipped Then
-                Call Desequipar(userindex, slot)
+            If UserList(userindex).Invent.Object(Slot).Equipped Then
+                Call Desequipar(userindex, Slot)
                 Call DarCuerpoDesnudo(userindex, UserList(userindex).flags.Mimetizado = 1)
                 Exit Sub
             End If
@@ -770,21 +754,21 @@ Select Case obj.OBJType
             End If
     
             'Lo equipa
-            UserList(userindex).Invent.Object(slot).Equipped = 1
-            UserList(userindex).Invent.ArmourEqpObjIndex = UserList(userindex).Invent.Object(slot).ObjIndex
-            UserList(userindex).Invent.ArmourEqpSlot = slot
+            UserList(userindex).Invent.Object(Slot).Equipped = 1
+            UserList(userindex).Invent.ArmourEqpObjIndex = UserList(userindex).Invent.Object(Slot).ObjIndex
+            UserList(userindex).Invent.ArmourEqpSlot = Slot
                 
             If UserList(userindex).flags.Mimetizado = 1 Then
-                UserList(userindex).CharMimetizado.Body = equiparRopaje(userindex)
+                UserList(userindex).CharMimetizado.Body = Obj.Ropaje
             Else
-                UserList(userindex).Char.Body = equiparRopaje(userindex)
-                Call ChangeUserBody(SendTarget.toMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.Body)
+                UserList(userindex).Char.Body = Obj.Ropaje
+                Call ChangeUserBody(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.Body)
             End If
             
             UserList(userindex).flags.Desnudo = 0
             
-            If obj.Aura > 0 Then
-                UserList(userindex).Char.AuraA = obj.Aura
+            If Obj.Aura > 0 Then
+                UserList(userindex).Char.AuraA = Obj.Aura
                 SendUserAura (userindex)
             End If
             
@@ -795,16 +779,16 @@ Select Case obj.OBJType
     
     Case eOBJType.otcASCO
         If UserList(userindex).flags.Navegando = 1 Then Exit Sub
-        If ClasePuedeUsarItem(userindex, UserList(userindex).Invent.Object(slot).ObjIndex) Or UserList(userindex).flags.Privilegios >= PlayerType.Semidios Then
+        If ClasePuedeUsarItem(userindex, UserList(userindex).Invent.Object(Slot).ObjIndex) Or UserList(userindex).flags.Privilegios >= PlayerType.EventManager Then
             'Si esta equipado lo quita
-            If UserList(userindex).Invent.Object(slot).Equipped Then
+            If UserList(userindex).Invent.Object(Slot).Equipped Then
                 If UserList(userindex).flags.Mimetizado = 1 Then
                     UserList(userindex).CharMimetizado.CascoAnim = NingunCasco
                 Else
                     UserList(userindex).Char.CascoAnim = NingunCasco
                 End If
                 
-                Call Desequipar(userindex, slot)
+                Call Desequipar(userindex, Slot)
                 Exit Sub
             End If
     
@@ -815,19 +799,18 @@ Select Case obj.OBJType
     
             'Lo equipa
             
-            UserList(userindex).Invent.Object(slot).Equipped = 1
-            UserList(userindex).Invent.CascoEqpObjIndex = UserList(userindex).Invent.Object(slot).ObjIndex
-            UserList(userindex).Invent.CascoEqpSlot = slot
-            
+            UserList(userindex).Invent.Object(Slot).Equipped = 1
+            UserList(userindex).Invent.CascoEqpObjIndex = UserList(userindex).Invent.Object(Slot).ObjIndex
+            UserList(userindex).Invent.CascoEqpSlot = Slot
             If UserList(userindex).flags.Mimetizado = 1 Then
-                UserList(userindex).CharMimetizado.CascoAnim = obj.CascoAnim
+                UserList(userindex).CharMimetizado.CascoAnim = Obj.CascoAnim
             Else
-                UserList(userindex).Char.CascoAnim = obj.CascoAnim
-                Call ChangeUserCasco(SendTarget.toMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.CascoAnim)
+                UserList(userindex).Char.CascoAnim = Obj.CascoAnim
+                Call ChangeUserCasco(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.CascoAnim)
             End If
             
-            If obj.Aura > 0 Then
-                UserList(userindex).Char.AuraC = obj.Aura
+            If Obj.Aura > 0 Then
+                UserList(userindex).Char.AuraC = Obj.Aura
                 SendUserAura (userindex)
             End If
             
@@ -837,23 +820,23 @@ Select Case obj.OBJType
     
     Case eOBJType.otESCUDO
         If UserList(userindex).flags.Navegando = 1 Then Exit Sub
-         If ClasePuedeUsarItem(userindex, UserList(userindex).Invent.Object(slot).ObjIndex) And _
-             FaccionPuedeUsarItem(userindex, UserList(userindex).Invent.Object(slot).ObjIndex) Or UserList(userindex).flags.Privilegios >= PlayerType.Semidios Then
+         If ClasePuedeUsarItem(userindex, UserList(userindex).Invent.Object(Slot).ObjIndex) And _
+             FaccionPuedeUsarItem(userindex, UserList(userindex).Invent.Object(Slot).ObjIndex) Or UserList(userindex).flags.Privilegios >= PlayerType.EventManager Then
 
              'Si esta equipado lo quita
-             If UserList(userindex).Invent.Object(slot).Equipped Then
+             If UserList(userindex).Invent.Object(Slot).Equipped Then
                 If UserList(userindex).flags.Mimetizado = 1 Then
                      UserList(userindex).CharMimetizado.ShieldAnim = NingunEscudo
                  Else
                      UserList(userindex).Char.ShieldAnim = NingunEscudo
                  End If
                  
-                 Call Desequipar(userindex, slot)
+                 Call Desequipar(userindex, Slot)
                  Exit Sub
              End If
              
             If UserList(userindex).Invent.WeaponEqpObjIndex > 0 Then
-                If ObjData(UserList(userindex).Invent.WeaponEqpObjIndex).proyectil = 1 And ((ObjData(UserList(userindex).Invent.WeaponEqpObjIndex).ItemDios = 0) Or (ObjData(UserList(userindex).Invent.WeaponEqpObjIndex).ItemDios = 1 And ObjData(UserList(userindex).Invent.Object(slot).ObjIndex).ItemDios = 0)) Then
+                If ObjData(UserList(userindex).Invent.WeaponEqpObjIndex).proyectil = 1 And ((ObjData(UserList(userindex).Invent.WeaponEqpObjIndex).ItemDios = 0) Or (ObjData(UserList(userindex).Invent.WeaponEqpObjIndex).ItemDios = 1 And ObjData(UserList(userindex).Invent.Object(Slot).ObjIndex).ItemDios = 0)) Then
                     Call Desequipar(userindex, UserList(userindex).Invent.WeaponEqpSlot)
                 End If
             End If
@@ -871,20 +854,20 @@ Select Case obj.OBJType
                     
              'Lo equipa
              
-             UserList(userindex).Invent.Object(slot).Equipped = 1
-             UserList(userindex).Invent.EscudoEqpObjIndex = UserList(userindex).Invent.Object(slot).ObjIndex
-             UserList(userindex).Invent.EscudoEqpSlot = slot
+             UserList(userindex).Invent.Object(Slot).Equipped = 1
+             UserList(userindex).Invent.EscudoEqpObjIndex = UserList(userindex).Invent.Object(Slot).ObjIndex
+             UserList(userindex).Invent.EscudoEqpSlot = Slot
              
              If UserList(userindex).flags.Mimetizado = 1 Then
-                 UserList(userindex).CharMimetizado.ShieldAnim = obj.ShieldAnim
+                 UserList(userindex).CharMimetizado.ShieldAnim = Obj.ShieldAnim
              Else
-                 UserList(userindex).Char.ShieldAnim = obj.ShieldAnim
+                 UserList(userindex).Char.ShieldAnim = Obj.ShieldAnim
                  
-                 Call ChangeUserEscudo(SendTarget.toMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.ShieldAnim)
+                 Call ChangeUserEscudo(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.ShieldAnim)
              End If
              
-            If obj.Aura > 0 Then
-                UserList(userindex).Char.AuraE = obj.Aura
+            If Obj.Aura > 0 Then
+                UserList(userindex).Char.AuraE = Obj.Aura
                 SendUserAura (userindex)
             End If
              
@@ -895,19 +878,17 @@ End Select
 
 'Actualiza
 Call SendUserHitBox(userindex)
-Call ActualizarSlotEquipped(userindex, slot)
+Call ActualizarSlotEquipped(userindex, Slot)
 
 Exit Sub
 Errhandler:
-Call LogError("EquiparInvItem Slot:" & slot)
+Call LogError("EquiparInvItem Slot:" & Slot)
 End Sub
 
 Private Function CheckRazaUsaRopa(ByVal userindex As Integer, ItemIndex As Integer) As Boolean
 On Error GoTo Errhandler
 
 'Verifica si la raza puede usar la ropa
-If ObjData(ItemIndex).razaDoble = 1 Then CheckRazaUsaRopa = True: Exit Function
-
 If UserList(userindex).Raza = "Humano" Or _
    UserList(userindex).Raza = "Elfo" Or _
    UserList(userindex).Raza = "Elfo Oscuro" Then
@@ -923,28 +904,28 @@ Errhandler:
 
 End Function
 
-Sub UseInvItem(ByVal userindex As Integer, ByVal slot As Byte)
+Sub UseInvItem(ByVal userindex As Integer, ByVal Slot As Byte)
 
 'Usa un item del inventario
-Dim obj As ObjData
+Dim Obj As ObjData
 Dim ObjIndex As Integer
 Dim TargObj As ObjData
-Dim MiObj As obj
+Dim MiObj As Obj
 
-If UserList(userindex).Invent.Object(slot).Amount = 0 Then Exit Sub
+If UserList(userindex).Invent.Object(Slot).Amount = 0 Then Exit Sub
 
-obj = ObjData(UserList(userindex).Invent.Object(slot).ObjIndex)
+Obj = ObjData(UserList(userindex).Invent.Object(Slot).ObjIndex)
 
-If obj.Newbie = 1 And Not EsNewbie(userindex) Then
+If Obj.Newbie = 1 And Not EsNewbie(userindex) Then
     Call SendData(SendTarget.toindex, userindex, 0, "||111")
     Exit Sub
 End If
 
-ObjIndex = UserList(userindex).Invent.Object(slot).ObjIndex
+ObjIndex = UserList(userindex).Invent.Object(Slot).ObjIndex
 UserList(userindex).flags.TargetObjInvIndex = ObjIndex
-UserList(userindex).flags.TargetObjInvSlot = slot
+UserList(userindex).flags.TargetObjInvSlot = Slot
 
-Select Case obj.OBJType
+Select Case Obj.OBJType
     Case eOBJType.otUseOnce
         If UserList(userindex).flags.Muerto = 1 Then
             Call SendData(SendTarget.toindex, userindex, 0, "||5")
@@ -952,7 +933,7 @@ Select Case obj.OBJType
         End If
 
         'Usa el item
-        UserList(userindex).Stats.MinHam = UserList(userindex).Stats.MinHam + obj.MinHam
+        UserList(userindex).Stats.MinHam = UserList(userindex).Stats.MinHam + Obj.MinHam
         If UserList(userindex).Stats.MinHam > UserList(userindex).Stats.MaxHam Then _
             UserList(userindex).Stats.MinHam = UserList(userindex).Stats.MaxHam
         UserList(userindex).flags.Hambre = 0
@@ -966,9 +947,9 @@ Select Case obj.OBJType
         End If
         
         'Quitamos del inv el item
-        Call QuitarUserInvItem(userindex, slot, 1)
+        Call QuitarUserInvItem(userindex, Slot, 1)
         
-        Call UpdateUserInv(False, userindex, slot)
+        Call UpdateUserInv(False, userindex, Slot)
 
     Case eOBJType.otGuita
         If UserList(userindex).flags.Muerto = 1 Then
@@ -976,12 +957,12 @@ Select Case obj.OBJType
             Exit Sub
         End If
         
-        UserList(userindex).Stats.GLD = UserList(userindex).Stats.GLD + UserList(userindex).Invent.Object(slot).Amount
-        UserList(userindex).Invent.Object(slot).Amount = 0
-        UserList(userindex).Invent.Object(slot).ObjIndex = 0
+        UserList(userindex).Stats.GLD = UserList(userindex).Stats.GLD + UserList(userindex).Invent.Object(Slot).Amount
+        UserList(userindex).Invent.Object(Slot).Amount = 0
+        UserList(userindex).Invent.Object(Slot).ObjIndex = 0
         UserList(userindex).Invent.NroItems = UserList(userindex).Invent.NroItems - 1
         
-        Call UpdateUserInv(False, userindex, slot)
+        Call UpdateUserInv(False, userindex, Slot)
         Call SendUserGLD(userindex)
         
     Case eOBJType.otWeapon
@@ -997,7 +978,7 @@ Select Case obj.OBJType
             
             '¿El target-objeto es leña?
             If UserList(userindex).flags.TargetObj = Leña Then
-                If UserList(userindex).Invent.Object(slot).ObjIndex = DAGA Then
+                If UserList(userindex).Invent.Object(Slot).ObjIndex = DAGA Then
                     Call TratarDeHacerFogata(UserList(userindex).flags.TargetObjMap, _
                          UserList(userindex).flags.TargetObjX, UserList(userindex).flags.TargetObjY, userindex)
                 End If
@@ -1011,45 +992,45 @@ Select Case obj.OBJType
         End If
         
         UserList(userindex).flags.TomoPocion = True
-        UserList(userindex).flags.TipoPocion = obj.TipoPocion
+        UserList(userindex).flags.TipoPocion = Obj.TipoPocion
                 
         Select Case UserList(userindex).flags.TipoPocion
         
             Case 1 'Modif la agilidad
-                UserList(userindex).flags.DuracionEfecto = obj.DuracionEfecto
+                UserList(userindex).flags.DuracionEfecto = Obj.DuracionEfecto
         
                 'Usa el item
-                UserList(userindex).Stats.UserAtributos(eAtributos.Agilidad) = UserList(userindex).Stats.UserAtributos(eAtributos.Agilidad) + RandomNumber(obj.MinModificador, obj.MaxModificador)
+                UserList(userindex).Stats.UserAtributos(eAtributos.Agilidad) = UserList(userindex).Stats.UserAtributos(eAtributos.Agilidad) + RandomNumber(Obj.MinModificador, Obj.MaxModificador)
                 If UserList(userindex).Stats.UserAtributos(eAtributos.Agilidad) > 35 Then _
                     UserList(userindex).Stats.UserAtributos(eAtributos.Agilidad) = 35
                 
                 'Quitamos del inv el item
-                Call QuitarUserInvItem(userindex, slot, 1)
+                Call QuitarUserInvItem(userindex, Slot, 1)
                 Call SendUserAgilidad(userindex)
                 Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "TW" & SND_BEBER)
                 
             Case 2 'Modif la fuerza
-                UserList(userindex).flags.DuracionEfecto = obj.DuracionEfecto
+                UserList(userindex).flags.DuracionEfecto = Obj.DuracionEfecto
         
                 'Usa el item
-                UserList(userindex).Stats.UserAtributos(eAtributos.Fuerza) = UserList(userindex).Stats.UserAtributos(eAtributos.Fuerza) + RandomNumber(obj.MinModificador, obj.MaxModificador)
+                UserList(userindex).Stats.UserAtributos(eAtributos.Fuerza) = UserList(userindex).Stats.UserAtributos(eAtributos.Fuerza) + RandomNumber(Obj.MinModificador, Obj.MaxModificador)
                 If UserList(userindex).Stats.UserAtributos(eAtributos.Fuerza) > 35 Then _
                     UserList(userindex).Stats.UserAtributos(eAtributos.Fuerza) = 35
                 
                 
                 'Quitamos del inv el item
-                Call QuitarUserInvItem(userindex, slot, 1)
+                Call QuitarUserInvItem(userindex, Slot, 1)
                 Call SendUserFuerza(userindex)
                 Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "TW" & SND_BEBER)
                 
             Case 3 'Pocion roja, restaura HP
                 'Usa el item
-                UserList(userindex).Stats.MinHP = UserList(userindex).Stats.MinHP + RandomNumber(obj.MinModificador, obj.MaxModificador)
+                UserList(userindex).Stats.MinHP = UserList(userindex).Stats.MinHP + RandomNumber(Obj.MinModificador, Obj.MaxModificador)
                 If UserList(userindex).Stats.MinHP > UserList(userindex).Stats.MaxHP Then _
                     UserList(userindex).Stats.MinHP = UserList(userindex).Stats.MaxHP
                 
                 'Quitamos del inv el item
-                Call QuitarUserInvItem(userindex, slot, 1)
+                Call QuitarUserInvItem(userindex, Slot, 1)
                 Call SendUserHP(userindex)
                 Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "TW" & SND_BEBER)
             
@@ -1060,7 +1041,7 @@ Select Case obj.OBJType
                     UserList(userindex).Stats.MinMAN = UserList(userindex).Stats.MaxMAN
                 
                 'Quitamos del inv el item
-                Call QuitarUserInvItem(userindex, slot, 1)
+                Call QuitarUserInvItem(userindex, Slot, 1)
                 Call SendUserMP(userindex)
                 Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "TW" & SND_BEBER)
                 
@@ -1070,108 +1051,36 @@ Select Case obj.OBJType
                     Call SendData(SendTarget.toindex, userindex, 0, "||114")
                 End If
                 'Quitamos del inv el item
-                Call QuitarUserInvItem(userindex, slot, 1)
+                Call QuitarUserInvItem(userindex, Slot, 1)
                 Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "TW" & SND_BEBER)
-                
-            Case 6 ' pocion de remo
-            
-                If UserList(userindex).flags.Paralizado = 1 Then
-        
-                    If (UCase$(UserList(userindex).clase) <> "GUERRERO" And UCase$(UserList(userindex).clase) <> "CAZADOR") And (UserList(userindex).Counters.usoPotaRemo > 0) Then Call SendData(SendTarget.toindex, userindex, 0, "||940"): Exit Sub
-                    If UserList(userindex).Counters.InmoManopla > 0 Then Call SendData(SendTarget.toindex, userindex, 0, "||940"): Exit Sub
-                 
-                    If (UserList(userindex).Stats.MinHP > 60) Then
-                        UserList(userindex).flags.Paralizado = 0
-                        Call SendData(SendTarget.toindex, userindex, 0, "PARADOK")
-                        Call SendData(SendTarget.toindex, userindex, 0, "||939")
-                        UserList(userindex).Counters.usoPotaRemo = 3
-                        UserList(userindex).Stats.MinHP = UserList(userindex).Stats.MinHP - 60
-                        SendUserHP userindex
-                        Call QuitarUserInvItem(userindex, slot, 1)
-                    Else
-                        Call SendData(SendTarget.toindex, userindex, 0, "||941")
-                    End If
-                Else
-                    Call SendData(SendTarget.toindex, userindex, 0, "||940")
-                End If
-                
        End Select
        
-       Call ActualizarSlot(userindex, slot)
+       Call ActualizarSlot(userindex, Slot)
        
     Case eOBJType.otCofreAzar
             Dim NumCofre As Integer
             Dim NumeritoX As Long
             
-            If obj.cofreLlave > 0 Then
-                If Not TieneObjetos(obj.cofreLlave, 1, userindex) Then
-                    Call SendData(SendTarget.toindex, userindex, 0, "||958@" & ObjData(obj.cofreLlave).Name)
-                    Exit Sub
-                Else
-                    Call QuitarObjetos(obj.cofreLlave, 1, userindex)
-                End If
-            End If
-            
-            Call QuitarObjetos(UserList(userindex).Invent.Object(slot).ObjIndex, 1, userindex)
-            
-            If (CofresAzar(obj.TipoCofre).Random = 1) Then
                 'Recorre los objetos y va descartando
-                NumCofre = RandomNumber(1, CofresAzar(obj.TipoCofre).CantObjs)
+                NumCofre = RandomNumber(1, CofresAzar(Obj.TipoCofre).CantObjs)
                 NumeritoX = RandomNumber(1, 100)
-                Do While (NumeritoX > CofresAzar(obj.TipoCofre).ObjProbability(NumCofre))
-                    NumCofre = RandomNumber(1, CofresAzar(obj.TipoCofre).CantObjs)
+                Do While (NumeritoX > CofresAzar(Obj.TipoCofre).ObjProbability(NumCofre))
+                    NumCofre = RandomNumber(1, CofresAzar(Obj.TipoCofre).CantObjs)
                     NumeritoX = RandomNumber(1, 100)
                 Loop
                         'Llegó acá, osea que encontró un obj para entregar.
-                        MiObj.ObjIndex = CofresAzar(obj.TipoCofre).ObjIndex(NumCofre)
-                        MiObj.Amount = CofresAzar(obj.TipoCofre).ObjAmount(NumCofre)
+                        MiObj.ObjIndex = CofresAzar(Obj.TipoCofre).ObjIndex(NumCofre)
+                        MiObj.Amount = CofresAzar(Obj.TipoCofre).ObjAmount(NumCofre)
+                        Call QuitarObjetos(UserList(userindex).Invent.Object(Slot).ObjIndex, 1, userindex)
                         
                             If Not MeterItemEnInventario(userindex, MiObj) Then
                                 Call TirarItemAlPiso(UserList(userindex).Pos, MiObj)
-                                Call UpdateUserInv(False, userindex, slot)
+                                Call UpdateUserInv(False, userindex, Slot)
                             End If
                             
                         SendData SendTarget.toindex, userindex, 0, "||115@" & MiObj.Amount & "@" & ObjData(MiObj.ObjIndex).Name
-            Else
-                Dim i As Long
-                Dim tmpAoP, tmpCoG As Boolean
-                
-                tmpAoP = (UCase$(UserList(userindex).clase) = "ASESINO" Or UCase$(UserList(userindex).clase) = "PALADIN")
-                tmpCoG = (UCase$(UserList(userindex).clase) = "GUERRERO" Or UCase$(UserList(userindex).clase) = "CAZADOR")
-                
-                For i = 1 To CofresAzar(obj.TipoCofre).CantObjs
-                    'Llegó acá, osea que encontró un obj para entregar.
-                        MiObj.ObjIndex = CofresAzar(obj.TipoCofre).ObjIndex(i)
-                        MiObj.Amount = CofresAzar(obj.TipoCofre).ObjAmount(i)
-                        
-                        If tmpAoP And MiObj.ObjIndex = 206 Then
-                            MiObj.ObjIndex = 530
-                        End If
-                        
-                        If tmpCoG Then
-                            Select Case MiObj.ObjIndex
-                                Case 206
-                                    MiObj.ObjIndex = 478
-                                Case 207
-                                    MiObj.ObjIndex = 551
-                                    MiObj.Amount = 100
-                                Case 1012
-                                    MiObj.ObjIndex = 404
-                            End Select
-                        End If
-                        
-                            If Not MeterItemEnInventario(userindex, MiObj) Then
-                                Call TirarItemAlPiso(UserList(userindex).Pos, MiObj)
-                                Call UpdateUserInv(False, userindex, slot)
-                            End If
-                            
-                        SendData SendTarget.toindex, userindex, 0, "||115@" & MiObj.Amount & "@" & ObjData(MiObj.ObjIndex).Name
-                Next i
-            End If
-                
         Exit Sub
         
-       
     Case eOBJType.otCajasDios
         Dim CofreNecesita As Integer
          
@@ -1185,14 +1094,14 @@ Select Case obj.OBJType
             CofreNecesita = 1477
          End If
          
-         If UserList(userindex).Invent.Object(slot).ObjIndex = CofreNecesita Then
+         If UserList(userindex).Invent.Object(Slot).ObjIndex = CofreNecesita Then
          
-            Dim CofreCerrado As obj
+            Dim CofreCerrado As Obj
             CofreCerrado.Amount = 1
             CofreCerrado.ObjIndex = CofreNecesita + 1
             
-               QuitarObjetos CofreNecesita, 1, userindex
-               MeterItemEnInventario userindex, CofreCerrado
+               'QuitarObjetos CofreNecesita, 1, userindex
+               MeterItemEnInventario userindex, CofreCerrado, Slot
          
          Dim ItemIndex As Integer
          
@@ -1219,7 +1128,7 @@ Select Case obj.OBJType
          End If
          
          
-         If UserList(userindex).Invent.Object(slot).ObjIndex = CofreNecesita + 1 Then
+         If UserList(userindex).Invent.Object(Slot).ObjIndex = CofreNecesita + 1 Then
          
          Dim Inventario As Integer, Items As Integer
          
@@ -1231,12 +1140,12 @@ Select Case obj.OBJType
             End If
          Next Inventario
          
-         If Items > MAX_INVENTORY_SLOTS - UserList(userindex).CofreDios.Cant Then
+         If Items > UserList(userindex).InventorySlots - UserList(userindex).CofreDios.Cant Then
             SendData SendTarget.toindex, userindex, 0, "||116"
           Exit Sub
          End If
          
-         Dim ObjetoDios As obj, xx As Integer
+         Dim ObjetoDios As Obj, xx As Integer
          
          For xx = 1 To 4
          ObjetoDios.Amount = 1
@@ -1250,204 +1159,16 @@ Select Case obj.OBJType
             UserList(userindex).CofreDios.Cant = 0
          Next xx
          
-            Dim CofreAbierto As obj
+            Dim CofreAbierto As Obj
             CofreAbierto.Amount = 1
             CofreAbierto.ObjIndex = CofreNecesita
             
-               QuitarObjetos CofreNecesita + 1, 1, userindex
-               MeterItemEnInventario userindex, CofreAbierto
+               'QuitarObjetos CofreNecesita + 1, 1, userindex
+               MeterItemEnInventario userindex, CofreAbierto, Slot
             
          End If
          
          Call UpdateUserInv(True, userindex, 0)
-         
-    Case eOBJType.otSubeClan6
-        If UserList(userindex).GuildIndex > 0 Then
-          If Guilds(UserList(userindex).GuildIndex).NivelClan = 5 And (m_EsGuildLeader(UserList(userindex).Name, UserList(userindex).GuildIndex) Or m_EsGuildSubLeader1(UserList(userindex).Name, UserList(userindex).GuildIndex) Or m_EsGuildSubLeader2(UserList(userindex).Name, UserList(userindex).GuildIndex)) Then
-              If TieneObjetos(1481, 1, userindex) = True Then
-                    Call WriteVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "NivelClan", "6")
-                    Call SendData(SendTarget.ToGuildMembers, UserList(userindex).GuildIndex, 0, "||210@" & Guilds(UserList(userindex).GuildIndex).GuildName & "@6")
-                    Call SendData(SendTarget.ToGuildMembers, UserList(userindex).GuildIndex, 0, "||211@6@24")
-                    Call QuitarObjetos(1481, 1, userindex)
-                    Exit Sub
-              Else
-                    Call SendData(SendTarget.toindex, userindex, 0, "||213")
-              Exit Sub
-              End If
-            Else
-                Call SendData(SendTarget.toindex, userindex, 0, "||208")
-              Exit Sub
-            End If
-        End If
-    
-    Case eOBJType.otSubeClan7
-        If UserList(userindex).GuildIndex > 0 Then
-          If Guilds(UserList(userindex).GuildIndex).NivelClan = 6 And (m_EsGuildLeader(UserList(userindex).Name, UserList(userindex).GuildIndex) Or m_EsGuildSubLeader1(UserList(userindex).Name, UserList(userindex).GuildIndex) Or m_EsGuildSubLeader2(UserList(userindex).Name, UserList(userindex).GuildIndex)) Then
-              If TieneObjetos(1482, 1, userindex) = True Then
-                Call WriteVar(App.Path & "\guilds\guildsinfo.inf", "GUILD" & UserList(userindex).GuildIndex, "NivelClan", "7")
-                Call SendData(SendTarget.ToGuildMembers, UserList(userindex).GuildIndex, 0, "||210@" & Guilds(UserList(userindex).GuildIndex).GuildName & "@7")
-                Call SendData(SendTarget.ToGuildMembers, UserList(userindex).GuildIndex, 0, "||211@7@28")
-                Call QuitarObjetos(1482, 1, userindex)
-                Exit Sub
-                Else
-                      Call SendData(SendTarget.toindex, userindex, 0, "||214")
-                Exit Sub
-                End If
-            Else
-                Call SendData(SendTarget.toindex, userindex, 0, "||208")
-              Exit Sub
-            End If
-        End If
-         
-    Case eOBJType.otRenunciaH
-    
-            If UserList(userindex).GuildIndex > 0 Then Call SendData(SendTarget.toindex, userindex, 0, "||302"): Exit Sub
-        
-            If (UserList(userindex).StatusMith.EsStatus = 2 Or EsHorda(userindex)) Then
-                UserList(userindex).StatusMith.EsStatus = 1
-                UserList(userindex).StatusMith.EligioStatus = 1
-                Call SendData(SendTarget.toindex, userindex, 0, "||355")
-                Call SendUserStatux(userindex)
-                        
-                If UserList(userindex).Faccion.FuerzasCaos = 1 Then
-                    Call ExpulsarFaccionCaos(userindex)
-                End If
-                
-                Call QuitarUserInvItem(userindex, slot, 1)
-                Call UpdateUserInv(False, userindex, slot)
-            Else
-                Call SendData(SendTarget.toindex, userindex, 0, "||239")
-            End If
-            
-    Case eOBJType.otRenunciaA
-    
-            If UserList(userindex).GuildIndex > 0 Then Call SendData(SendTarget.toindex, userindex, 0, "||302"): Exit Sub
-        
-            If (UserList(userindex).StatusMith.EsStatus = 1 Or EsAlianza(userindex)) Then
-                UserList(userindex).StatusMith.EsStatus = 2
-                UserList(userindex).StatusMith.EligioStatus = 1
-                Call SendData(SendTarget.toindex, userindex, 0, "||355")
-                Call SendUserStatux(userindex)
-                        
-                If UserList(userindex).Faccion.ArmadaReal = 1 Then
-                    Call ExpulsarFaccionReal(userindex)
-                End If
-                
-                Call QuitarUserInvItem(userindex, slot, 1)
-                Call UpdateUserInv(False, userindex, slot)
-            Else
-                Call SendData(SendTarget.toindex, userindex, 0, "||239")
-            End If
-         
-    Case eOBJType.otSacos
-        
-        UserList(userindex).Stats.PuntosDonacion = UserList(userindex).Stats.PuntosDonacion + obj.cantCredits
-        Call SendData(SendTarget.toindex, userindex, 0, "||930@" & obj.cantCredits)
-        
-        Call GuardarLogs("" & Date & " " & time & " " & UserList(userindex).Name & " obtuvo " & obj.cantCredits, "\Turbios\Sacos")
-        
-        Call QuitarUserInvItem(userindex, slot, 1)
-        Call UpdateUserInv(False, userindex, slot)
-         
-    Case eOBJType.otScroll
-        
-        With UserList(userindex)
-            Dim typeScroll As Byte
-            typeScroll = obj.typeScroll
-            
-            If (Not .flags.activoScroll(typeScroll)) Then
-                .flags.activoScroll(typeScroll) = True
-                .Scrolls(typeScroll).time = obj.timeScroll
-                .Scrolls(typeScroll).timeScroll = obj.timeScroll
-                .Scrolls(typeScroll).multScroll = obj.multScroll
-                
-                Call SendData(SendTarget.toindex, userindex, 0, "TIS" & obj.typeScroll & "," & obj.timeScroll & "," & obj.timeScroll)
-                Call QuitarUserInvItem(userindex, slot, 1)
-                Call UpdateUserInv(False, userindex, slot)
-                
-                Select Case typeScroll
-                    Case 1
-                        Call SendData(SendTarget.toindex, userindex, 0, "||929@Experiencia@" & obj.timeScroll & "@" & obj.multScroll)
-                    Case 2
-                        Call SendData(SendTarget.toindex, userindex, 0, "||929@Oro@" & obj.timeScroll & "@" & obj.multScroll)
-                    Case 3
-                        Call SendData(SendTarget.toindex, userindex, 0, "||929@Drop@" & obj.timeScroll & "@" & obj.multScroll)
-                    Case 4
-                        Call SendData(SendTarget.toindex, userindex, 0, "||929@Drop de Cristales@" & obj.timeScroll & "@" & obj.multScroll)
-                End Select
-                
-                
-            Else
-                Call SendData(SendTarget.toindex, userindex, 0, "||928")
-            End If
-            
-        End With
-            
-        
-        
-    Case eOBJType.otMontura
-    
-
-        If UserList(userindex).flags.Muerto = 1 Then
-            SendData SendTarget.toindex, userindex, 0, "||3"
-            Exit Sub
-        End If
-        
-        If UserList(userindex).flags.Navegando = 1 Then Exit Sub
-        If MapaEspecial(userindex) Then Exit Sub
-        
-        If UserList(userindex).flags.Transformado = 1 Then
-                Call SendData(SendTarget.toindex, userindex, 0, "||319")
-            Exit Sub
-        End If
-        
-        If UserList(userindex).flags.Montando = 0 Then
-            UserList(userindex).Char.Body = obj.Ropaje
-            UserList(userindex).Char.Head = UserList(userindex).OrigChar.Head
-            UserList(userindex).Char.ShieldAnim = NingunEscudo
-            UserList(userindex).Char.WeaponAnim = NingunArma
-            UserList(userindex).Char.CascoAnim = UserList(userindex).Char.CascoAnim
-            UserList(userindex).flags.Montando = 1
-         
-            Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "USM" & UserList(userindex).Char.CharIndex & "," & UserList(userindex).flags.Montando)
-            
-            If (obj.esVoladora = 1) Then
-                UserList(userindex).flags.levitando = 1
-                SendUserMontVol (userindex)
-            End If
-            
-            Call ChangeUserChar(toMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.Body, UserList(userindex).Char.Head, UserList(userindex).Char.Heading, UserList(userindex).Char.WeaponAnim, UserList(userindex).Char.ShieldAnim, UserList(userindex).Char.CascoAnim)
-            Call SendData(toindex, userindex, 0, "EQUIT")
-        Else
-             With UserList(userindex)
-                If MapData(.Pos.Map, .Pos.X, .Pos.Y).Blocked = 1 Then
-                    SendData SendTarget.toindex, userindex, 0, "||947"
-                    Exit Sub
-                End If
-            End With
-        
-            UserList(userindex).flags.Montando = 0
-            UserList(userindex).Char.Head = UserList(userindex).OrigChar.Head
-                
-                If UserList(userindex).Invent.ArmourEqpObjIndex > 0 Then
-                    UserList(userindex).Char.Body = equiparRopaje(userindex)
-                Else
-                    Call DarCuerpoDesnudo(userindex)
-                End If
-                
-                UserList(userindex).flags.levitando = 0
-                SendUserMontVol (userindex)
-                
-                If UserList(userindex).Invent.EscudoEqpObjIndex > 0 Then UserList(userindex).Char.ShieldAnim = ObjData(UserList(userindex).Invent.EscudoEqpObjIndex).ShieldAnim
-                If UserList(userindex).Invent.WeaponEqpObjIndex > 0 Then UserList(userindex).Char.WeaponAnim = ObjData(UserList(userindex).Invent.WeaponEqpObjIndex).WeaponAnim
-                If UserList(userindex).Invent.CascoEqpObjIndex > 0 Then UserList(userindex).Char.CascoAnim = ObjData(UserList(userindex).Invent.CascoEqpObjIndex).CascoAnim
-         
-                Call ChangeUserChar(toMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.Body, UserList(userindex).Char.Head, UserList(userindex).Char.Heading, UserList(userindex).Char.WeaponAnim, UserList(userindex).Char.ShieldAnim, UserList(userindex).Char.CascoAnim)
-                Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "USM" & UserList(userindex).Char.CharIndex & "," & UserList(userindex).flags.Montando)
-                Call SendData(toindex, userindex, 0, "EQUIT")
-        End If
-        
-        SendUserHitBox (userindex)
     
     Case eOBJType.otPocionResu
     
@@ -1457,7 +1178,7 @@ Select Case obj.OBJType
             Exit Sub
         End If
         
-        If UserList(userindex).Pos.Map = 71 Or UserList(userindex).Pos.Map = 100 Or UserList(userindex).Pos.Map = 104 Or UserList(userindex).Pos.Map = 106 Or UserList(userindex).Pos.Map = 107 Or UserList(userindex).Pos.Map = 108 Or UserList(userindex).Pos.Map = 109 Or UserList(userindex).Pos.Map = 110 Or UserList(userindex).Pos.Map = 111 Or UserList(userindex).Pos.Map = 118 Or UserList(userindex).Pos.Map = 120 Or UserList(userindex).Pos.Map = 166 Or UserList(userindex).Pos.Map = 164 Or UserList(userindex).Pos.Map = 162 Then
+        If UserList(userindex).Pos.Map = 101 Or UserList(userindex).Pos.Map = 100 Or UserList(userindex).Pos.Map = 18 Or UserList(userindex).Pos.Map = 54 Or UserList(userindex).Pos.Map = 99 Or UserList(userindex).Pos.Map = 8 Or UserList(userindex).Pos.Map = 72 Or UserList(userindex).Pos.Map = 110 Or UserList(userindex).Pos.Map = 111 Or UserList(userindex).Pos.Map = 118 Or UserList(userindex).Pos.Map = 120 Or UserList(userindex).Pos.Map = 166 Or UserList(userindex).Pos.Map = 164 Or UserList(userindex).Pos.Map = 162 Then
                 SendData SendTarget.toindex, userindex, 0, "||118"
             Exit Sub
         End If
@@ -1467,8 +1188,8 @@ Select Case obj.OBJType
             SendUserHP (userindex)
             SendData SendTarget.toindex, userindex, 0, "||119"
         
-        Call QuitarUserInvItem(userindex, slot, 1)
-        Call UpdateUserInv(False, userindex, slot)
+        Call QuitarUserInvItem(userindex, Slot, 1)
+        Call UpdateUserInv(True, userindex, 0)
 
     Case eOBJType.otFragmento
         
@@ -1482,7 +1203,7 @@ Select Case obj.OBJType
           Exit Sub
         End If
         
-        Dim FragmObj As obj
+        Dim FragmObj As Obj
         FragmObj.ObjIndex = 1481
         FragmObj.Amount = 1
         
@@ -1502,7 +1223,7 @@ Select Case obj.OBJType
         
     Case eOBJType.otGemaOctarina
             
-            Dim NumMejorados As Integer, Requiere As obj, TengoItem As Byte
+            Dim NumMejorados As Integer, Requiere As Obj, TengoItem As Byte
             
             NumMejorados = val(GetVar(DatPath & "Mejorados.dat", "INIT", "NumMejorados"))
             
@@ -1529,7 +1250,7 @@ Select Case obj.OBJType
         Dim SpawnAriete As WorldPos
         
         'If Fortaleza = guilds(UserList(UserIndex).GuildIndex).GuildName Then exit sub
-        If UserList(userindex).Pos.Map <> 167 Then
+        If UserList(userindex).Pos.Map <> 81 Then
             Call SendData(SendTarget.toindex, userindex, 0, "||123")
             Exit Sub
          End If
@@ -1549,13 +1270,13 @@ Select Case obj.OBJType
             Exit Sub
          End If
     
-        If UserList(userindex).Pos.Map = 167 And UserList(userindex).Pos.X = 49 And UserList(userindex).Pos.Y = 85 Then
-            SpawnAriete.Map = 167
+        If UserList(userindex).Pos.Map = 81 And UserList(userindex).Pos.X = 49 And UserList(userindex).Pos.Y = 85 Then
+            SpawnAriete.Map = 81
             SpawnAriete.X = 49
             SpawnAriete.Y = 85
             
             If RejaSur = 0 Then Exit Sub
-            If MapData(167, 49, 84).OBJInfo.ObjIndex <> 1471 Then Exit Sub
+            If MapData(81, 49, 84).OBJInfo.ObjIndex <> 1471 Then Exit Sub
             
             '/Lo corremos
             Dim yeguaX As Long
@@ -1563,8 +1284,8 @@ Select Case obj.OBJType
             
             For yeguaX = 1 To 3
                 For yeguaY = 1 To 3
-              If LegalPos(167, 49 + yeguaX, 85 + yeguaY) Then
-                    Call WarpUserChar(userindex, 167, 49 + yeguaX, 85 + yeguaY)
+              If LegalPos(81, 49 + yeguaX, 85 + yeguaY) Then
+                    Call WarpUserChar(userindex, 81, 49 + yeguaX, 85 + yeguaY)
               Exit For
               End If
             Next yeguaY
@@ -1577,18 +1298,18 @@ Select Case obj.OBJType
             RejaSurAtacada = True
             Call QuitarObjetos(1469, 1, userindex)
             frmMain.Rejas.Enabled = True
-        ElseIf UserList(userindex).Pos.Map = 167 And UserList(userindex).Pos.X = 49 And UserList(userindex).Pos.Y = 69 Then
-            SpawnAriete.Map = 167
+        ElseIf UserList(userindex).Pos.Map = 81 And UserList(userindex).Pos.X = 49 And UserList(userindex).Pos.Y = 69 Then
+            SpawnAriete.Map = 81
             SpawnAriete.X = 49
             SpawnAriete.Y = 69
             
             If RejaCentral = 0 Then Exit Sub
-            If MapData(167, 49, 68).OBJInfo.ObjIndex <> 1471 Then Exit Sub
+            If MapData(81, 49, 68).OBJInfo.ObjIndex <> 1471 Then Exit Sub
             
             For yeguaX = 1 To 3
                 For yeguaY = 1 To 3
-              If LegalPos(167, 49 + yeguaX, 69 + yeguaY) Then
-                    Call WarpUserChar(userindex, 167, 49 + yeguaX, 69 + yeguaY)
+              If LegalPos(81, 49 + yeguaX, 69 + yeguaY) Then
+                    Call WarpUserChar(userindex, 81, 49 + yeguaX, 69 + yeguaY)
               Exit For
               End If
             Next yeguaY
@@ -1600,18 +1321,18 @@ Select Case obj.OBJType
             RejaCentralAtacada = True
             Call QuitarObjetos(1469, 1, userindex)
             frmMain.Rejas.Enabled = True
-        ElseIf UserList(userindex).Pos.Map = 167 And UserList(userindex).Pos.X = 49 And UserList(userindex).Pos.Y = 49 Then
-            SpawnAriete.Map = 167
+        ElseIf UserList(userindex).Pos.Map = 81 And UserList(userindex).Pos.X = 49 And UserList(userindex).Pos.Y = 49 Then
+            SpawnAriete.Map = 81
             SpawnAriete.X = 49
             SpawnAriete.Y = 49
             
             If RejaNorte = 0 Then Exit Sub
-            If MapData(167, 49, 48).OBJInfo.ObjIndex <> 1471 Then Exit Sub
+            If MapData(81, 49, 48).OBJInfo.ObjIndex <> 1471 Then Exit Sub
         
             For yeguaX = 1 To 3
                 For yeguaY = 1 To 3
-              If LegalPos(167, 49 + yeguaX, 49 + yeguaY) Then
-                    Call WarpUserChar(userindex, 167, 49 + yeguaX, 49 + yeguaY)
+              If LegalPos(81, 49 + yeguaX, 49 + yeguaY) Then
+                    Call WarpUserChar(userindex, 81, 49 + yeguaX, 49 + yeguaY)
               Exit For
               End If
             Next yeguaY
@@ -1641,13 +1362,13 @@ Select Case obj.OBJType
         End If
         
         Dim CristalitosNew As Long
-        CristalitosNew = RandomNumber(obj.CristalesMin, obj.CristalesMax)
+        CristalitosNew = RandomNumber(Obj.CristalesMin, Obj.CristalesMax)
         
         UserList(userindex).flags.AlmasContenidas = UserList(userindex).flags.AlmasContenidas + CristalitosNew
         Call SendData(SendTarget.toindex, userindex, 0, "||128@" & CristalitosNew)
         
-        Call QuitarUserInvItem(userindex, slot, 1)
-        Call UpdateUserInv(False, userindex, slot)
+        Call QuitarUserInvItem(userindex, Slot, 1)
+        Call UpdateUserInv(False, userindex, Slot)
         
     Case eOBJType.otContenedor
         If UserList(userindex).flags.AlmasContenidas = 0 Then
@@ -1684,9 +1405,9 @@ Select Case obj.OBJType
         Call SendData(SendTarget.toindex, userindex, 0, "||132")
         Call SendData(SendTarget.toindex, userindex, 0, "||57@200")
       ElseIf RandomDragonOscuro >= 51 And RandomDragonOscuro <= 74 Then
-        UserList(userindex).Stats.GLD = UserList(userindex).Stats.GLD + 200000000
+        UserList(userindex).Stats.GLD = UserList(userindex).Stats.GLD + 20000000
         Call SendData(SendTarget.toindex, userindex, 0, "||132")
-        Call SendData(SendTarget.toindex, userindex, 0, "||63@200.000.000")
+        Call SendData(SendTarget.toindex, userindex, 0, "||63@20.000.000")
         SendUserGLD (userindex)
      ElseIf RandomDragonOscuro >= 85 And RandomDragonOscuro <= 100 Then
      
@@ -1723,18 +1444,88 @@ Select Case obj.OBJType
             Call SendData(SendTarget.toindex, userindex, 0, "||5")
             Exit Sub
         End If
-        UserList(userindex).Stats.MinAGU = UserList(userindex).Stats.MinAGU + obj.MinSed
+        UserList(userindex).Stats.MinAGU = UserList(userindex).Stats.MinAGU + Obj.MinSed
         If UserList(userindex).Stats.MinAGU > UserList(userindex).Stats.MaxAGU Then _
             UserList(userindex).Stats.MinAGU = UserList(userindex).Stats.MaxAGU
         UserList(userindex).flags.Sed = 0
         Call EnviarHambreYsed(userindex)
         
         'Quitamos del inv el item
-        Call QuitarUserInvItem(userindex, slot, 1)
+        Call QuitarUserInvItem(userindex, Slot, 1)
         
         Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "TW" & SND_BEBER)
         
-        Call UpdateUserInv(False, userindex, slot)
+        Call UpdateUserInv(False, userindex, Slot)
+        
+    Case 29
+   
+        If MapInfo(UserList(userindex).Pos.Map).Pk = False Or UserList(userindex).Pos.Map = 100 Or UserList(userindex).Pos.Map = 101 Or UserList(userindex).Pos.Map = 72 Or UserList(userindex).Pos.Map = 8 Or UserList(userindex).Pos.Map = 99 Or UserList(userindex).Pos.Map = 54 Or UserList(userindex).Pos.Map = 18 Or UserList(userindex).Pos.Map = 118 Then
+            SendData SendTarget.toindex, userindex, 0, "||135"
+            Exit Sub
+        End If
+       
+        If UserList(userindex).flags.Muerto = 1 Then
+            SendData SendTarget.toindex, userindex, 0, "||5"
+            Exit Sub
+        End If
+       
+        Dim GemaName As String
+       
+        Select Case Obj.Name
+            Case "Gema Roja"
+                GemaName = "Roja"
+                If UserList(userindex).flags.GemaActivada = GemaName Then Exit Sub
+                Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFF" & UserList(userindex).Char.CharIndex & "," & 88 & "," & 0)
+            Case "Gema Naranja"
+                GemaName = "Naranja"
+                If UserList(userindex).flags.GemaActivada = GemaName Then Exit Sub
+                Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFF" & UserList(userindex).Char.CharIndex & "," & 85 & "," & 0)
+            Case "Gema Verde"
+                GemaName = "Verde"
+                If UserList(userindex).flags.GemaActivada = GemaName Then Exit Sub
+                Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFF" & UserList(userindex).Char.CharIndex & "," & 89 & "," & 0)
+            Case "Gema Azul"
+                GemaName = "Azul"
+                If UserList(userindex).flags.GemaActivada = GemaName Then Exit Sub
+                Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFF" & UserList(userindex).Char.CharIndex & "," & 84 & "," & 0)
+            Case "Gema Plateada"
+                GemaName = "Plateada"
+                If UserList(userindex).flags.GemaActivada = GemaName Then Exit Sub
+                Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFF" & UserList(userindex).Char.CharIndex & "," & 83 & "," & 0)
+            Case "Gema Celeste"
+                GemaName = "Celeste"
+                If UserList(userindex).flags.GemaActivada = GemaName Then Exit Sub
+                Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFF" & UserList(userindex).Char.CharIndex & "," & 86 & "," & 0)
+            Case "Gema Violeta"
+                GemaName = "Violeta"
+                If UserList(userindex).flags.GemaActivada = GemaName Then Exit Sub
+                Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFF" & UserList(userindex).Char.CharIndex & "," & 90 & "," & 0)
+            Case "Gema Lila"
+                GemaName = "Lila"
+                If UserList(userindex).flags.GemaActivada = GemaName Then Exit Sub
+                Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFF" & UserList(userindex).Char.CharIndex & "," & 87 & "," & 0)
+        End Select
+       
+        If UserList(userindex).flags.ActivoGema = 1 Then
+        
+            With UserList(userindex).flags
+                .ActivoGema = 0
+                .GemaActivada = ""
+                .ActivoGema = 1
+                .GemaActivada = GemaName
+                .TimeGema = 120
+            End With
+                SendData SendTarget.toindex, userindex, 0, "||88"
+                SendData SendTarget.toindex, userindex, 0, "||99@" & Obj.Name
+        Else
+            With UserList(userindex).flags
+                .ActivoGema = 1
+                .GemaActivada = GemaName
+                .TimeGema = 120
+            End With
+            SendData SendTarget.toindex, userindex, 0, "||99@" & Obj.Name
+        End If
+        
     
     Case eOBJType.otLlaves
         If UserList(userindex).flags.Muerto = 1 Then
@@ -1750,7 +1541,7 @@ Select Case obj.OBJType
             If TargObj.Cerrada = 1 Then
                   '¿Cerrada con llave?
                   If TargObj.Llave > 0 Then
-                     If TargObj.clave = obj.clave Then
+                     If TargObj.clave = Obj.clave Then
          
                         MapData(UserList(userindex).flags.TargetObjMap, UserList(userindex).flags.TargetObjX, UserList(userindex).flags.TargetObjY).OBJInfo.ObjIndex _
                         = ObjData(MapData(UserList(userindex).flags.TargetObjMap, UserList(userindex).flags.TargetObjX, UserList(userindex).flags.TargetObjY).OBJInfo.ObjIndex).IndexCerrada
@@ -1762,7 +1553,7 @@ Select Case obj.OBJType
                         Exit Sub
                      End If
                   Else
-                     If TargObj.clave = obj.clave Then
+                     If TargObj.clave = Obj.clave Then
                         MapData(UserList(userindex).flags.TargetObjMap, UserList(userindex).flags.TargetObjX, UserList(userindex).flags.TargetObjY).OBJInfo.ObjIndex _
                         = ObjData(MapData(UserList(userindex).flags.TargetObjMap, UserList(userindex).flags.TargetObjX, UserList(userindex).flags.TargetObjY).OBJInfo.ObjIndex).IndexCerradaLlave
                         Call SendData(SendTarget.toindex, userindex, 0, "||136")
@@ -1790,27 +1581,27 @@ Select Case obj.OBJType
                 Exit Sub
             End If
             MiObj.Amount = 1
-            MiObj.ObjIndex = ObjData(UserList(userindex).Invent.Object(slot).ObjIndex).IndexAbierta
-            Call QuitarUserInvItem(userindex, slot, 1)
+            MiObj.ObjIndex = ObjData(UserList(userindex).Invent.Object(Slot).ObjIndex).IndexAbierta
+            Call QuitarUserInvItem(userindex, Slot, 1)
             If Not MeterItemEnInventario(userindex, MiObj) Then
                 Call TirarItemAlPiso(UserList(userindex).Pos, MiObj)
             End If
             
-            Call UpdateUserInv(False, userindex, slot)
+            Call UpdateUserInv(False, userindex, Slot)
     
         Case eOBJType.otBotellaLlena
             If UserList(userindex).flags.Muerto = 1 Then
                 Call SendData(SendTarget.toindex, userindex, 0, "||5")
                 Exit Sub
             End If
-            UserList(userindex).Stats.MinAGU = UserList(userindex).Stats.MinAGU + obj.MinSed
+            UserList(userindex).Stats.MinAGU = UserList(userindex).Stats.MinAGU + Obj.MinSed
             If UserList(userindex).Stats.MinAGU > UserList(userindex).Stats.MaxAGU Then _
                 UserList(userindex).Stats.MinAGU = UserList(userindex).Stats.MaxAGU
             UserList(userindex).flags.Sed = 0
             Call EnviarHambreYsed(userindex)
             MiObj.Amount = 1
-            MiObj.ObjIndex = ObjData(UserList(userindex).Invent.Object(slot).ObjIndex).IndexCerrada
-            Call QuitarUserInvItem(userindex, slot, 1)
+            MiObj.ObjIndex = ObjData(UserList(userindex).Invent.Object(Slot).ObjIndex).IndexCerrada
+            Call QuitarUserInvItem(userindex, Slot, 1)
             If Not MeterItemEnInventario(userindex, MiObj) Then
                 Call TirarItemAlPiso(UserList(userindex).Pos, MiObj)
             End If
@@ -1826,7 +1617,7 @@ Select Case obj.OBJType
                 Exit Sub
             End If
             
-            If UserList(userindex).Invent.Object(slot).Equipped = 0 Then Exit Sub
+            If UserList(userindex).Invent.Object(Slot).Equipped = 0 Then Exit Sub
             
             Select Case ObjIndex
                 Case CAÑA_PESCA, RED_PESCA
@@ -1849,10 +1640,10 @@ Select Case obj.OBJType
                 Exit Sub
             End If
             
-            If (Hechizos(ObjData(UserList(userindex).Invent.Object(slot).ObjIndex).HechizoIndex).ExclusivoClase = UCase$(UserList(userindex).clase)) Or (Hechizos(ObjData(UserList(userindex).Invent.Object(slot).ObjIndex).HechizoIndex).ExclusivoClasedos = UCase$(UserList(userindex).clase)) Or _
-            (Len(Hechizos(ObjData(UserList(userindex).Invent.Object(slot).ObjIndex).HechizoIndex).ExclusivoClase) = 0 And Len(Hechizos(ObjData(UserList(userindex).Invent.Object(slot).ObjIndex).HechizoIndex).ExclusivoClasedos) = 0) Then
-            Call AgregarHechizo(userindex, slot)
-            Call UpdateUserInv(False, userindex, slot)
+            If (Hechizos(ObjData(UserList(userindex).Invent.Object(Slot).ObjIndex).HechizoIndex).ExclusivoClase = UCase$(UserList(userindex).clase)) Or (Hechizos(ObjData(UserList(userindex).Invent.Object(Slot).ObjIndex).HechizoIndex).ExclusivoClasedos = UCase$(UserList(userindex).clase)) Or _
+            (Len(Hechizos(ObjData(UserList(userindex).Invent.Object(Slot).ObjIndex).HechizoIndex).ExclusivoClase) = 0 And Len(Hechizos(ObjData(UserList(userindex).Invent.Object(Slot).ObjIndex).HechizoIndex).ExclusivoClasedos) = 0) Then
+            Call AgregarHechizo(userindex, Slot)
+            Call UpdateUserInv(False, userindex, Slot)
             Else
             Call SendData(SendTarget.toindex, userindex, 0, "||104")
             End If
@@ -1869,7 +1660,7 @@ Select Case obj.OBJType
                 Call SendData(SendTarget.toindex, userindex, 0, "||5")
                 Exit Sub
             End If
-            Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "TW" & obj.Snd1)
+            Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "TW" & Obj.Snd1)
        
        Case eOBJType.otBarcos
     'Verifica si esta aproximado al agua antes de permitirle navegar
@@ -1883,7 +1674,7 @@ Select Case obj.OBJType
             LegalPos(UserList(userindex).Pos.Map, UserList(userindex).Pos.X, UserList(userindex).Pos.Y + 1, True)) And _
             UserList(userindex).flags.Navegando = 0) _
             Or UserList(userindex).flags.Navegando = 1 Then
-           Call DoNavega(userindex, obj, slot)
+           Call DoNavega(userindex, Obj, Slot)
         Else
             Call SendData(SendTarget.toindex, userindex, 0, "||106")
         End If
@@ -1948,8 +1739,8 @@ Sub TirarTodo(ByVal userindex As Integer)
 On Error Resume Next
 
 If MapData(UserList(userindex).Pos.Map, UserList(userindex).Pos.X, UserList(userindex).Pos.Y).trigger = 6 Then Exit Sub
-If UserList(userindex).Pos.Map = 100 Or UserList(userindex).Pos.Map = 89 Or UserList(userindex).Pos.Map = 150 Or UserList(userindex).Pos.Map = 132 Or UserList(userindex).Pos.Map = 133 Or UserList(userindex).Pos.Map = 134 Or UserList(userindex).Pos.Map = 135 Or UserList(userindex).Pos.Map = 143 Then Exit Sub
-If MapaEspecial(userindex) And UserList(userindex).Pos.Map <> 118 Then Exit Sub
+If UserList(userindex).Pos.Map = 100 Or UserList(userindex).Pos.Map = 118 Or UserList(userindex).Pos.Map = 150 Or UserList(userindex).Pos.Map = 132 Or UserList(userindex).Pos.Map = 133 Or UserList(userindex).Pos.Map = 134 Or UserList(userindex).Pos.Map = 135 Or UserList(userindex).Pos.Map = 143 Then Exit Sub
+If UserList(userindex).Pos.Map = 8 Or UserList(userindex).Pos.Map = 54 Or UserList(userindex).Pos.Map = 72 Or UserList(userindex).Pos.Map = 101 Then Exit Sub
 
 Call TirarTodosLosItems(userindex)
 
@@ -1969,13 +1760,12 @@ End Function
 Sub TirarTodosLosItems(ByVal userindex As Integer)
     Dim i As Byte
     Dim NuevaPos As WorldPos
-    Dim MiObj As obj
+    Dim MiObj As Obj
     Dim ItemIndex As Integer
+    
     If MapData(UserList(userindex).Pos.Map, UserList(userindex).Pos.X, UserList(userindex).Pos.Y).trigger = 6 Then Exit Sub
-    If UserList(userindex).Pos.Map = 27 And HayGuerraKhalim = True Then Exit Sub
-    If UserList(userindex).Pos.Map = 29 And HayGuerraAnvil = True Then Exit Sub
-    If UserList(userindex).Pos.Map <> 190 And (UserList(userindex).flags.EnJDH) Then Exit Sub
-    If UserList(userindex).Pos.Map = 28 Or UserList(userindex).Pos.Map = 89 Or UserList(userindex).Pos.Map = 130 Then Exit Sub
+    If MapInfo(UserList(userindex).Pos.Map).Pk = False Then Exit Sub
+    If UserList(userindex).Pos.Map = 1 Then Exit Sub
  
 For i = 1 To MAX_INVENTORY_SLOTS
 If UserList(userindex).Invent.Object(i).ObjIndex = SacriIndex Then
@@ -2012,19 +1802,19 @@ Next i
         End If
     Next i
 End Sub
-Sub DameTodoObj(ByVal userindex As Integer, ByVal slot As Byte, ByVal num As Integer, ByVal Map As Integer, ByVal X As Integer, ByVal Y As Integer)
+Sub DameTodoObj(ByVal userindex As Integer, ByVal Slot As Byte, ByVal num As Integer, ByVal Map As Integer, ByVal X As Integer, ByVal Y As Integer)
 
-Dim obj As obj
+Dim Obj As Obj
 
 
 If num > 0 Then
   
-  If num > UserList(userindex).Invent.Object(slot).Amount Then num = UserList(userindex).Invent.Object(slot).Amount
+  If num > UserList(userindex).Invent.Object(Slot).Amount Then num = UserList(userindex).Invent.Object(Slot).Amount
   
   'Check objeto en el suelo
-  If MapData(UserList(userindex).Pos.Map, X, Y).OBJInfo.ObjIndex = 0 Or MapData(UserList(userindex).Pos.Map, X, Y).OBJInfo.ObjIndex = UserList(userindex).Invent.Object(slot).ObjIndex Then
-        If UserList(userindex).Invent.Object(slot).Equipped = 1 Then Call Desequipar(userindex, slot)
-        obj.ObjIndex = UserList(userindex).Invent.Object(slot).ObjIndex
+  If MapData(UserList(userindex).Pos.Map, X, Y).OBJInfo.ObjIndex = 0 Or MapData(UserList(userindex).Pos.Map, X, Y).OBJInfo.ObjIndex = UserList(userindex).Invent.Object(Slot).ObjIndex Then
+        If UserList(userindex).Invent.Object(Slot).Equipped = 1 Then Call Desequipar(userindex, Slot)
+        Obj.ObjIndex = UserList(userindex).Invent.Object(Slot).ObjIndex
         
 '        If ObjData(Obj.ObjIndex).Newbie = 1 And EsNewbie(UserIndex) Then
 '            Call SendData(SendTarget.ToIndex, UserIndex, 0, "||No podes tirar el objeto." & FONTTYPE_INFO)
@@ -2035,14 +1825,14 @@ If num > 0 Then
             num = MAX_INVENTORY_OBJS - MapData(UserList(userindex).Pos.Map, X, Y).OBJInfo.Amount
         End If
         
-        obj.Amount = num
+        Obj.Amount = num
         
-        Call MakeObj(SendTarget.toMap, 0, Map, obj, Map, X, Y)
-        Call QuitarUserInvItem(userindex, slot, num)
-        Call UpdateUserInv(False, userindex, slot)
+        Call MakeObj(SendTarget.ToMap, 0, Map, Obj, Map, X, Y)
+        Call QuitarUserInvItem(userindex, Slot, num)
+        Call UpdateUserInv(False, userindex, Slot)
         
-        If UserList(userindex).flags.Privilegios > PlayerType.User Then Call LogGM(UserList(userindex).Name, "Tiro cantidad:" & num & " Objeto:" & ObjData(obj.ObjIndex).Name, False)
-        If UserList(userindex).flags.Privilegios > PlayerType.User Then Call LogGMss(UserList(userindex).Name, "Tiro cantidad:" & num & " Objeto:" & ObjData(obj.ObjIndex).Name, False)
+        If UserList(userindex).flags.Privilegios > PlayerType.User Then Call LogGM(UserList(userindex).Name, "Tiro cantidad:" & num & " Objeto:" & ObjData(Obj.ObjIndex).Name, False)
+        If UserList(userindex).flags.Privilegios > PlayerType.User Then Call LogGMss(UserList(userindex).Name, "Tiro cantidad:" & num & " Objeto:" & ObjData(Obj.ObjIndex).Name, False)
   Else
     Call SendData(SendTarget.toindex, userindex, 0, "||107")
   End If
@@ -2050,30 +1840,30 @@ If num > 0 Then
 End If
 
 End Sub
-Sub DameBancoObj(ByVal userindex As Integer, ByVal slot As Byte, ByVal num As Integer, ByVal Map As Integer, ByVal X As Integer, ByVal Y As Integer)
+Sub DameBancoObj(ByVal userindex As Integer, ByVal Slot As Byte, ByVal num As Integer, ByVal Map As Integer, ByVal X As Integer, ByVal Y As Integer)
 
-Dim obj As obj
+Dim Obj As Obj
 
 
 If num > 0 Then
   'If num > UserList(UserIndex).Invent.Object(Slot).Amount Then num = UserList(UserIndex).Invent.Object(Slot).Amount
   
   'Check objeto en el suelo
-  If MapData(UserList(userindex).Pos.Map, X, Y).OBJInfo.ObjIndex = 0 Or MapData(UserList(userindex).Pos.Map, X, Y).OBJInfo.ObjIndex = UserList(userindex).BancoInvent.Object(slot).ObjIndex Then
-        obj.ObjIndex = UserList(userindex).BancoInvent.Object(slot).ObjIndex
+  If MapData(UserList(userindex).Pos.Map, X, Y).OBJInfo.ObjIndex = 0 Or MapData(UserList(userindex).Pos.Map, X, Y).OBJInfo.ObjIndex = UserList(userindex).BancoInvent.Object(Slot).ObjIndex Then
+        Obj.ObjIndex = UserList(userindex).BancoInvent.Object(Slot).ObjIndex
         
         If num + MapData(UserList(userindex).Pos.Map, X, Y).OBJInfo.Amount > MAX_INVENTORY_OBJS Then
             num = MAX_INVENTORY_OBJS - MapData(UserList(userindex).Pos.Map, X, Y).OBJInfo.Amount
         End If
         
-        obj.Amount = num
+        Obj.Amount = num
         
-        Call MakeObj(SendTarget.toMap, 0, Map, obj, Map, X, Y)
-        Call QuitarBancoInvItem(userindex, slot, num)
-        Call UpdateBanUserInv(False, userindex, slot)
+        Call MakeObj(SendTarget.ToMap, 0, Map, Obj, Map, X, Y)
+        Call QuitarBancoInvItem(userindex, Slot, num)
+        Call UpdateBanUserInv(False, userindex, Slot)
         
-        If UserList(userindex).flags.Privilegios > PlayerType.User Then Call LogGM(UserList(userindex).Name, "Tiro cantidad:" & num & " Objeto:" & ObjData(obj.ObjIndex).Name, False)
-        If UserList(userindex).flags.Privilegios > PlayerType.User Then Call LogGMss(UserList(userindex).Name, "Tiro cantidad:" & num & " Objeto:" & ObjData(obj.ObjIndex).Name, False)
+        If UserList(userindex).flags.Privilegios > PlayerType.User Then Call LogGM(UserList(userindex).Name, "Tiro cantidad:" & num & " Objeto:" & ObjData(Obj.ObjIndex).Name, False)
+        If UserList(userindex).flags.Privilegios > PlayerType.User Then Call LogGMss(UserList(userindex).Name, "Tiro cantidad:" & num & " Objeto:" & ObjData(Obj.ObjIndex).Name, False)
   Else
     Call SendData(SendTarget.toindex, userindex, 0, "||107")
   End If
@@ -2084,7 +1874,7 @@ End Sub
 Sub DameBanco(ByVal userindex As Integer)
     Dim i As Byte
     Dim NuevaPos As WorldPos
-    Dim MiObj As obj
+    Dim MiObj As Obj
     Dim ItemIndex As Integer
     
     For i = 1 To MAX_BANCOINVENTORY_SLOTS
@@ -2107,7 +1897,7 @@ End Sub
 Sub DameTodo(ByVal userindex As Integer)
     Dim i As Byte
     Dim NuevaPos As WorldPos
-    Dim MiObj As obj
+    Dim MiObj As Obj
     Dim ItemIndex As Integer
     
     For i = 1 To MAX_INVENTORY_SLOTS
@@ -2135,7 +1925,7 @@ End Function
 Sub TirarTodosLosItemsNoNewbies(ByVal userindex As Integer)
 Dim i As Byte
 Dim NuevaPos As WorldPos
-Dim MiObj As obj
+Dim MiObj As Obj
 Dim ItemIndex As Integer
 If MapData(UserList(userindex).Pos.Map, UserList(userindex).Pos.X, UserList(userindex).Pos.Y).trigger = 6 Then Exit Sub
  

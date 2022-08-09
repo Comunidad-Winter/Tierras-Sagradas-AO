@@ -1,5 +1,5 @@
 Attribute VB_Name = "Acciones"
-'Argentum Online 0.9.0.2
+ 'Argentum Online 0.9.0.2
 'Copyright (C) 2002 Márquez Pablo Ignacio, Jonatan Ezequiel Salguero
 '
 'This program is free software; you can redistribute it and/or modify
@@ -124,8 +124,6 @@ If InMapBounds(Map, X, Y) Then
                 If MapData(Map, X, Y).OBJInfo.ObjIndex = FOGATA_APAG And UserList(userindex).flags.Muerto = 0 Then
                     Call AccionParaRamita(Map, X, Y, userindex)
                 End If
-            Case eOBJType.otCofreJDH
-                Call Clickea_Cofre(Map, X, Y, userindex)
     End Select
     
     ElseIf MapData(Map, X, Y).NpcIndex > 0 Then   'Acciones NPCs
@@ -143,13 +141,6 @@ If InMapBounds(Map, X, Y) Then
         ElseIf Npclist(MapData(Map, X, Y).NpcIndex).Numero = 156 Or Npclist(MapData(Map, X, Y).NpcIndex).Numero = 157 Or Npclist(MapData(Map, X, Y).NpcIndex).Numero = 158 Or Npclist(UserList(userindex).flags.TargetNPC).Numero = 181 Or Npclist(UserList(userindex).flags.TargetNPC).Numero = 182 Then
             If Npclist(UserList(userindex).flags.TargetNPC).DueñoMascota = userindex Then
                 Call SendData(SendTarget.toindex, userindex, 0, "AXELPT")
-            End If
-        ElseIf Npclist(MapData(Map, X, Y).NpcIndex).NPCtype = eNPCType.Viajero Then
-            If Distancia(Npclist(MapData(Map, X, Y).NpcIndex).Pos, UserList(userindex).Pos) > 5 Then
-                Call SendData(SendTarget.toindex, userindex, 0, "||13")
-                Exit Sub
-            Else
-                Call SendData(SendTarget.toindex, userindex, 0, "TRAVELS")
             End If
             
         ElseIf Npclist(UserList(userindex).flags.TargetNPC).NPCtype = eNPCType.Quest Then
@@ -191,7 +182,7 @@ If InMapBounds(Map, X, Y) Then
                 Exit Sub
             Else
             
-                Dim CofreNecesita As obj
+                Dim CofreNecesita As Obj
                 
                     CofreNecesita.Amount = 1
                 
@@ -211,10 +202,6 @@ If InMapBounds(Map, X, Y) Then
                 End If
                 
                 UserList(userindex).flags.AlmasContenidas = UserList(userindex).flags.AlmasContenidas - 10000
-                
-                If UserList(userindex).flags.AlmasOfrecidas >= 120000 Then
-                    Call QuitarObjetos(1274, 1, userindex)
-                End If
             End If
             
             
@@ -252,12 +239,12 @@ If InMapBounds(Map, X, Y) Then
                 
                 Dim ln As String
                 'Lista de objetos del banco
-                Dim loopC As Long
-                For loopC = 1 To MAX_BANCOINVENTORY_SLOTS
-                    ln = (GetVar(App.Path & "\guilds\Bancos\" & Guilds(UserList(userindex).GuildIndex).GuildName & ".bov", "BancoInventory", "Obj" & loopC))
-                    UserList(userindex).BancoInventB.Object(loopC).ObjIndex = CInt(ReadField(1, ln, 45))
-                    UserList(userindex).BancoInventB.Object(loopC).Amount = CInt(ReadField(2, ln, 45))
-                Next loopC
+                Dim LoopC As Long
+                For LoopC = 1 To MAX_BANCOINVENTORY_SLOTS
+                    ln = (GetVar(App.Path & "\guilds\Bancos\" & Guilds(UserList(userindex).GuildIndex).GuildName & ".bov", "BancoInventory", "Obj" & LoopC))
+                    UserList(userindex).BancoInventB.Object(LoopC).ObjIndex = CInt(ReadField(1, ln, 45))
+                    UserList(userindex).BancoInventB.Object(LoopC).Amount = CInt(ReadField(2, ln, 45))
+                Next LoopC
                 
                 UserList(userindex).flags.CuentaBancaria = Guilds(UserList(userindex).GuildIndex).GuildName
                 Call BIniciarDeposito(userindex)
@@ -302,17 +289,17 @@ If InMapBounds(Map, X, Y) Then
                 Exit Sub
             End If
            
-            If UserList(userindex).Stats.ELV < 60 Then
+            If UserList(userindex).Stats.ELV < 55 Then
                 Call SendData(SendTarget.toindex, userindex, 0, "||643")
               Exit Sub
             End If
             
-            If TieneObjetos(1274, 1, userindex) Or UserList(userindex).flags.JerarquiaDios > 1 Then
+            If TieneObjetos(1274, 1, userindex) = True Then
                 Call SendData(SendTarget.toindex, userindex, 0, "||644")
               Exit Sub
             End If
             
-            Dim ElContenedor As obj
+            Dim ElContenedor As Obj
             ElContenedor.ObjIndex = 1274
             ElContenedor.Amount = 1
             
@@ -344,7 +331,7 @@ If InMapBounds(Map, X, Y) Then
                 Exit Sub
             End If
            
-            If UserList(userindex).Stats.ELV < 60 Then
+            If UserList(userindex).Stats.ELV < 55 Then
             Call SendData(SendTarget.toindex, userindex, 0, "||643")
             Exit Sub
             End If
@@ -355,46 +342,52 @@ If InMapBounds(Map, X, Y) Then
             End If
            
        
-            If Not TieneObjetos(1073, 1, userindex) Or Not TieneObjetos(1074, 1, userindex) Or Not TieneObjetos(1075, 1, userindex) Or Not TieneObjetos(1076, 1, userindex) Or Not TieneObjetos(1047, 1, userindex) Or Not TieneObjetos(895, 1, userindex) Then
-                Call SendData(SendTarget.toindex, userindex, 0, "||648")
-                Exit Sub
-            Else
-              If UserList(userindex).flags.partyIndex = 0 Then
+        If TieneObjetos(1073, 1, userindex) = False Or TieneObjetos(1074, 1, userindex) = False Or TieneObjetos(1075, 1, userindex) = False Or TieneObjetos(1076, 1, userindex) = False Or TieneObjetos(1047, 1, userindex) = False Then
+            Call SendData(SendTarget.toindex, userindex, 0, "||648")
+            Exit Sub
+        Else
+        
+          If UserList(userindex).flags.PartyIndex = 0 Then
+            Call SendData(SendTarget.toindex, userindex, 0, "||649")
+            Exit Sub
+          End If
+          
+            Dim cantusers As Byte
+            cantusers = 0
+            
+            For i = 1 To LastUser
+             If UserList(i).flags.PartyIndex = UserList(userindex).flags.PartyIndex Then
+             
+                If UserList(i).flags.Muerto = 1 Or UserList(i).Pos.Map = 100 Or UserList(i).Pos.Map = 99 Or UserList(i).Pos.Map = 118 Or UserList(i).Pos.Map = 8 Or UserList(i).Pos.Map = 54 Or UserList(i).Pos.Map = 101 Or UserList(i).Pos.Map = 72 Then
+                    Call SendData(SendTarget.toindex, userindex, 0, "||650")
+                    Exit For
+                  Exit Sub
+                End If
+             
+               cantusers = cantusers + 1
+             End If
+            Next i
+            
+              If cantusers < 5 Then
                 Call SendData(SendTarget.toindex, userindex, 0, "||649")
                 Exit Sub
               End If
-          
-            If miembrosParty(UserList(userindex).flags.partyIndex) < 5 Then
-                Call SendData(SendTarget.toindex, userindex, 0, "||649")
-                Exit Sub
-            End If
-            
-            If (realizandoNobleza > 0) Then Call SendData(SendTarget.toindex, userindex, 0, "984"): Exit Sub
-            
-            mdParty.party_tepearNobleza (userindex)
+              
+            For i = 1 To LastUser
+                If UserList(i).flags.PartyIndex = UserList(userindex).flags.PartyIndex Then
+                    Call WarpUserChar(i, 141, RandomNumber(46, 54), RandomNumber(52, 58), True)
+                End If
+            Next i
         
             Call QuitarObjetos(1047, 1, userindex) 'Saca la gema negra
-            Call QuitarObjetos(895, 1, userindex)
-            
-            nobleza_etapaUno (UserList(userindex).flags.partyIndex)
+            Dim NobleDesterrado As Integer
+            Dim NobleDesterrado1 As WorldPos
+            NobleDesterrado = 951
+            NobleDesterrado1.Map = 141
+            NobleDesterrado1.X = 50
+            NobleDesterrado1.Y = 42
+            Call SpawnNpc(NobleDesterrado, NobleDesterrado1, True, False)
         End If
-        
-        ElseIf Npclist(MapData(Map, X, Y).NpcIndex).NPCtype = eNPCType.NpcBargomaud Then
-        
-            If Distancia(Npclist(MapData(Map, X, Y).NpcIndex).Pos, UserList(userindex).Pos) > 5 Then
-                Call SendData(SendTarget.toindex, userindex, 0, "||14")
-                Exit Sub
-            End If
-            
-            If UserList(userindex).Stats.ELV < 55 Then
-                Call SendData(SendTarget.toindex, userindex, 0, "||643")
-                Exit Sub
-            End If
-            
-            
-            Call WarpUserChar(userindex, 161, 50, 53, True)
-            Call SendData(SendTarget.toindex, userindex, 0, "||651@" & UserList(userindex).Name)
-
         
         ElseIf Npclist(MapData(Map, X, Y).NpcIndex).NPCtype = eNPCType.cirujano Then
             If Distancia(Npclist(MapData(Map, X, Y).NpcIndex).Pos, UserList(userindex).Pos) > 5 Then
@@ -494,7 +487,7 @@ End Sub
 Sub AccionParaPuerta(ByVal Map As Integer, ByVal X As Integer, ByVal Y As Integer, ByVal userindex As Integer)
 On Error Resume Next
 
-Dim MiObj As obj
+Dim MiObj As Obj
 Dim wp As WorldPos
 
 If Not (Distance(UserList(userindex).Pos.X, UserList(userindex).Pos.Y, X, Y) > 3) Then
@@ -513,11 +506,11 @@ If Not (Distance(UserList(userindex).Pos.X, UserList(userindex).Pos.Y, X, Y) > 3
                         MapData(Map, X - 2, Y).Blocked = 0
                         MapData(Map, X + 1, Y).Blocked = 0
                         MapData(Map, X + 2, Y).Blocked = 0
-                        Call Bloquear(SendTarget.toMap, 0, Map, Map, X, Y, 0)
-                        Call Bloquear(SendTarget.toMap, 0, Map, Map, X - 1, Y, 0)
-                        Call Bloquear(SendTarget.toMap, 0, Map, Map, X - 2, Y, 0)
-                        Call Bloquear(SendTarget.toMap, 0, Map, Map, X + 1, Y, 0)
-                        Call Bloquear(SendTarget.toMap, 0, Map, Map, X + 2, Y, 0)
+                        Call Bloquear(SendTarget.ToMap, 0, Map, Map, X, Y, 0)
+                        Call Bloquear(SendTarget.ToMap, 0, Map, Map, X - 1, Y, 0)
+                        Call Bloquear(SendTarget.ToMap, 0, Map, Map, X - 2, Y, 0)
+                        Call Bloquear(SendTarget.ToMap, 0, Map, Map, X + 1, Y, 0)
+                        Call Bloquear(SendTarget.ToMap, 0, Map, Map, X + 2, Y, 0)
                     MapData(Map, X, Y).OBJInfo.ObjIndex = ObjData(MapData(Map, X, Y).OBJInfo.ObjIndex).IndexAbierta
                     Call ModAreas.SendToAreaByPos(Map, X, Y, "HO" & ObjData(MapData(Map, X, Y).OBJInfo.ObjIndex).GrhIndex & "," & X & "," & Y)
                  Exit Sub
@@ -537,10 +530,10 @@ If Not (Distance(UserList(userindex).Pos.X, UserList(userindex).Pos.Y, X, Y) > 3
                     MapData(Map, X + 2, Y).Blocked = 0
                     
                     'Bloquea todos los mapas
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X, Y, 0)
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X - 1, Y, 0)
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X + 1, Y, 0)
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X + 2, Y, 0)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X, Y, 0)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X - 1, Y, 0)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X + 1, Y, 0)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X + 2, Y, 0)
                 ElseIf ObjData(MapData(Map, X, Y).OBJInfo.ObjIndex).Porton = 1 Then
                     'Desbloquea
                     MapData(Map, X, Y).Blocked = 0
@@ -550,19 +543,19 @@ If Not (Distance(UserList(userindex).Pos.X, UserList(userindex).Pos.Y, X, Y) > 3
                     MapData(Map, X + 2, Y).Blocked = 0
                     
                     'Bloquea todos los mapas
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X, Y, 0)
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X - 1, Y, 0)
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X - 2, Y, 0)
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X + 1, Y, 0)
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X + 2, Y, 0)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X, Y, 0)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X - 1, Y, 0)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X - 2, Y, 0)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X + 1, Y, 0)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X + 2, Y, 0)
                 Else
                     'Desbloquea
                     MapData(Map, X, Y).Blocked = 0
                     MapData(Map, X - 1, Y).Blocked = 0
                     
                     'Bloquea todos los mapas
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X, Y, 0)
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X - 1, Y, 0)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X, Y, 0)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X - 1, Y, 0)
                 End If
                       
                     'Sonido
@@ -585,11 +578,11 @@ If Not (Distance(UserList(userindex).Pos.X, UserList(userindex).Pos.Y, X, Y) > 3
                     MapData(Map, X - 2, Y).Blocked = 1
                     MapData(Map, X + 1, Y).Blocked = 1
                     MapData(Map, X + 2, Y).Blocked = 1
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X, Y, 1)
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X - 1, Y, 1)
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X - 2, Y, 1)
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X + 1, Y, 1)
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X + 2, Y, 1)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X, Y, 1)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X - 1, Y, 1)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X - 2, Y, 1)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X + 1, Y, 1)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X + 2, Y, 1)
                     
                     'Cierra puerta
                     MapData(Map, X, Y).OBJInfo.ObjIndex = ObjData(MapData(Map, X, Y).OBJInfo.ObjIndex).IndexCerrada
@@ -609,10 +602,10 @@ If Not (Distance(UserList(userindex).Pos.X, UserList(userindex).Pos.Y, X, Y) > 3
                     MapData(Map, X + 1, Y).Blocked = 1
                     MapData(Map, X + 2, Y).Blocked = 1
                 
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X - 1, Y, 1)
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X + 1, Y, 1)
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X + 2, Y, 1)
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X, Y, 1)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X - 1, Y, 1)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X + 1, Y, 1)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X + 2, Y, 1)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X, Y, 1)
                 ElseIf ObjData(MapData(Map, X, Y).OBJInfo.ObjIndex).Porton = 1 Then
                     MapData(Map, X, Y).Blocked = 1
                     MapData(Map, X - 1, Y).Blocked = 1
@@ -620,17 +613,17 @@ If Not (Distance(UserList(userindex).Pos.X, UserList(userindex).Pos.Y, X, Y) > 3
                     MapData(Map, X + 1, Y).Blocked = 1
                     MapData(Map, X + 2, Y).Blocked = 1
                 
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X - 1, Y, 1)
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X - 2, Y, 1)
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X + 1, Y, 1)
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X + 2, Y, 1)
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X, Y, 1)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X - 1, Y, 1)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X - 2, Y, 1)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X + 1, Y, 1)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X + 2, Y, 1)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X, Y, 1)
                 Else
                     MapData(Map, X, Y).Blocked = 1
                     MapData(Map, X - 1, Y).Blocked = 1
                 
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X - 1, Y, 1)
-                    Call Bloquear(SendTarget.toMap, 0, Map, Map, X, Y, 1)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X - 1, Y, 1)
+                    Call Bloquear(SendTarget.ToMap, 0, Map, Map, X, Y, 1)
                 End If
                 
                 SendData SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "TW" & SND_PUERTA
@@ -650,13 +643,13 @@ Sub AccionParaCartel(ByVal Map As Integer, ByVal X As Integer, ByVal Y As Intege
 On Error Resume Next
 
 
-Dim MiObj As obj
+Dim MiObj As Obj
 
 If ObjData(MapData(Map, X, Y).OBJInfo.ObjIndex).OBJType = 8 Then
   
-  If Len(ObjData(MapData(Map, X, Y).OBJInfo.ObjIndex).texto) > 0 Then
+  If Len(ObjData(MapData(Map, X, Y).OBJInfo.ObjIndex).Texto) > 0 Then
        Call SendData(SendTarget.toindex, userindex, 0, "MCAR" & _
-        ObjData(MapData(Map, X, Y).OBJInfo.ObjIndex).texto & _
+        ObjData(MapData(Map, X, Y).OBJInfo.ObjIndex).Texto & _
         Chr(176) & ObjData(MapData(Map, X, Y).OBJInfo.ObjIndex).GrhSecundario)
   End If
   
@@ -669,7 +662,7 @@ On Error Resume Next
 
 Dim Suerte As Byte
 Dim exito As Byte
-Dim obj As obj
+Dim Obj As Obj
 Dim raise As Integer
 
 Dim Pos As WorldPos
@@ -699,13 +692,13 @@ exito = RandomNumber(1, Suerte)
 
 If exito = 1 Then
     If MapInfo(UserList(userindex).Pos.Map).Zona <> Ciudad Then
-        obj.ObjIndex = FOGATA
-        obj.Amount = 1
+        Obj.ObjIndex = FOGATA
+        Obj.Amount = 1
         
         Call SendData(toindex, userindex, 0, "||653")
         Call SendData(ToPCArea, userindex, UserList(userindex).Pos.Map, "FO")
         
-        Call MakeObj(toMap, 0, Map, obj, Map, X, Y)
+        Call MakeObj(ToMap, 0, Map, Obj, Map, X, Y)
         
         'Las fogatas prendidas se deben eliminar
         Dim Fogatita As New cGarbage
@@ -727,26 +720,41 @@ If UserList(userindex).flags.Hambre = 0 And UserList(userindex).flags.Sed = 0 Th
 End If
 
 End Sub
-Function AgregarPuntos(userindex As Integer, ByVal Cantidad As Long)
+Function AgregarPuntos(userindex As Integer, Cantidad As Long)
     UserList(userindex).Stats.PuntosTorneo = UserList(userindex).Stats.PuntosTorneo + Cantidad
     Call EnviarPuntos(userindex)
+    
+    If MisionesDiarias(UserList(userindex).Misiones.NumeroMision).Tipo = 10 Then
+        If UserList(userindex).Misiones.ConteoUser < MisionesDiarias(UserList(userindex).Misiones.NumeroMision).Cantidad Then UserList(userindex).Misiones.ConteoUser = UserList(userindex).Misiones.ConteoUser + Cantidad
+    End If
 End Function
+Sub OtorgarMisionDiaria(userindex As Integer)
+
+    Dim n As Byte
+    Dim MisionRandom As Byte
+    n = val(GetVar(App.Path & "\Dat\MisionesDiarias.dat", "INIT", "NumMisiones"))
+
+    MisionRandom = RandomNumber(1, n)
+
+    UserList(userindex).Misiones.Dia = ReadField(1, Date, Asc("/"))
+    UserList(userindex).Misiones.NumeroMision = MisionRandom
+    UserList(userindex).Misiones.ConteoUser = 0
+    UserList(userindex).Misiones.Completada = 0
+    
+End Sub
 Sub OtorgarGranPoder(userindex As Integer)
 Dim EncontroIdeal As Boolean
-On Error Resume Next
-
 If LastUser = 0 Then Exit Sub
 If userindex = 0 Then
     For userindex = 1 To LastUser
          If UserList(userindex).flags.UserLogged = True Then
-             If UserList(userindex).flags.Muerto = 0 And UserList(userindex).flags.Privilegios = User And MapInfo(UserList(userindex).Pos.Map).Pk = True And UserList(userindex).Pos.Map <> 78 And UserList(userindex).Pos.Map <> 31 And UserList(userindex).Pos.Map <> 32 And UserList(userindex).Pos.Map <> 33 And UserList(userindex).Pos.Map <> 34 And UserList(userindex).Pos.Map <> 167 And (Not MapaEspecial(userindex)) And _
-              UserList(userindex).flags.TeniaElDon = 0 And (NumUsers + BOnlines) >= 10 Then
+             If UserList(userindex).flags.Muerto = 0 And UserList(userindex).flags.Privilegios = User And MapInfo(UserList(userindex).Pos.Map).Pk = True And UserList(userindex).Pos.Map <> 78 And UserList(userindex).Pos.Map <> 31 And UserList(userindex).Pos.Map <> 32 And UserList(userindex).Pos.Map <> 33 And UserList(userindex).Pos.Map <> 34 And UserList(userindex).Pos.Map <> 54 And UserList(userindex).Pos.Map <> 72 And UserList(userindex).Pos.Map <> 101 And UserList(userindex).Pos.Map <> 18 And UserList(userindex).Pos.Map <> 99 And UserList(userindex).Pos.Map <> 8 And UserList(userindex).Pos.Map <> 100 And UserList(userindex).Pos.Map <> 19 And UserList(userindex).Pos.Map <> 81 And UserList(userindex).Pos.Map <> 118 And UserList(userindex).Pos.Map <> 132 And UserList(userindex).Pos.Map <> 133 And UserList(userindex).Pos.Map <> 134 And UserList(userindex).Pos.Map <> 135 And UserList(userindex).Pos.Map <> 143 And _
+             UserList(userindex).Pos.Map <> 150 And UserList(userindex).flags.TeniaElDon = 0 And (NumUsers + BOnlines) >= 10 Then
                 EncontroIdeal = True
                 Exit For
             End If
         End If
      Next userindex
-     
     If Not EncontroIdeal Then
         userindex = 0
         GranPoder = 0
@@ -760,15 +768,15 @@ If userindex = 0 Then
                 
     End If
 End If
-
 If userindex > 0 Then
+   ' If MapInfo(UserList(Userindex).Pos.Map).Pk = False Then Call OtorgarGranPoder(0)
+   ' If UserList(Userindex).flags.Muerto <> 0 Then Call OtorgarGranPoder(0)
     GranPoder = userindex
     Call SendData(SendTarget.ToAll, userindex, 0, "||655@" & UserList(userindex).Name & "@" & UserList(userindex).Pos.Map)
     UserList(userindex).flags.GranPoder = 1
     SendUserVariant (userindex)
     Call WarpUserChar(userindex, UserList(userindex).Pos.Map, UserList(userindex).Pos.X, UserList(userindex).Pos.Y, False)
-Else
+    Else
     GranPoder = 0
 End If
-
 End Sub

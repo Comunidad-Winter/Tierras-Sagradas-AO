@@ -1,315 +1,343 @@
 Attribute VB_Name = "mdParty"
 Option Explicit
 
-Private Const MAX_MIEMBROS As Byte = 10
+''
+' SOPORTES PARA LAS PARTIES
+' (Ver este modulo como una clase abstracta "PartyManager")
+'
 
-Private Type tParty
-    Active As Boolean
-    Lider As Integer
-    Miembros(1 To MAX_MIEMBROS) As Integer
-    cantMiembros As Byte
+
+''
+'cantidad maxima de parties en el servidor
+Public Const MAX_PARTIES As Integer = 300
+
+''
+'nivel minimo para crear party
+Public Const MINPARTYLEVEL As Byte = 15
+
+''
+'Cantidad maxima de gente en la party
+Public Const PARTY_MAXMEMBERS As Byte = 5
+
+''
+'Si esto esta en True, la exp sale por cada golpe que le da
+'Si no, la exp la recibe al salirse de la party (pq las partys, floodean)
+Public Const PARTY_EXPERIENCIAPORGOLPE As Boolean = False
+
+''
+'maxima diferencia de niveles permitida en una party
+Public Const MAXPARTYDELTALEVEL As Byte = 7
+
+''
+'distancia al leader para que este acepte el ingreso
+Public Const MAXDISTANCIAINGRESOPARTY As Byte = 2
+
+''
+'maxima distancia a un exito para obtener su experiencia
+Public Const PARTY_MAXDISTANCIA As Byte = 18
+
+''
+'restan las muertes de los miembros?
+Public Const CASTIGOS As Boolean = False
+
+''
+'tPartyMember
+'
+' @param UserIndex UserIndex
+' @param Experiencia Experiencia
+'
+Public Type tPartyMember
+    UserIndex As Integer
+    Experiencia As Long
 End Type
 
-Private infoParty(1 To 1000) As tParty
-Public Sub CreateParty(ByRef userindex As Integer)
 
-        Dim i As Long, newParty As Integer
-
-        '¿Ya tiene party?
-        If UserList(userindex).flags.partyIndex <> 0 Then
-                Call SendData(SendTarget.toindex, userindex, 0, "||372")
-          Exit Sub
-        End If
-        
-        'Buscamos un index libre
-        For i = 1 To UBound(infoParty)
-            If (Not infoParty(i).Active) Then
-                newParty = i
-                Exit For
-            End If
-        Next i
-        
-        'Seteamos las variables correspondientes
-        resetParty (newParty)
-        infoParty(newParty).Active = True
-        infoParty(newParty).Lider = userindex
-        infoParty(newParty).Miembros(1) = userindex
-        infoParty(newParty).cantMiembros = 1
-        
-        UserList(userindex).flags.partyIndex = newParty
-        Call SendData(SendTarget.toindex, userindex, 0, "||373")
-End Sub
-Public Function miembrosParty(ByVal index As Integer) As Byte
-    miembrosParty = infoParty(index).cantMiembros
+Public Function NextParty() As Integer
+Dim i As Integer
+NextParty = -1
+For i = 1 To MAX_PARTIES
+    If Parties(i) Is Nothing Then
+        NextParty = i
+        Exit Function
+    End If
+Next i
 End Function
-Public Sub party_tepearNobleza(ByVal userindex As Integer)
 
-    Dim i As Long, cuantosMeti As Byte
-    cuantosMeti = 0
-    
-    For i = 1 To miembrosParty(UserList(userindex).flags.partyIndex)
-        If (cuantosMeti < 5) And (infoParty(UserList(userindex).flags.partyIndex).Miembros(i) > 0) And (Not MapaEspecial(infoParty(UserList(userindex).flags.partyIndex).Miembros(i))) Then
-            Call WarpUserChar(infoParty(UserList(userindex).flags.partyIndex).Miembros(i), 141, RandomNumber(46, 54), RandomNumber(52, 58), True)
-            cuantosMeti = cuantosMeti + 1
-        End If
-    Next i
+Public Function PuedeCrearParty(ByVal UserIndex As Integer) As Boolean
+    PuedeCrearParty = True
+'    If UserList(UserIndex).Stats.ELV < MINPARTYLEVEL Then
+    If UserList(UserIndex).Stats.UserAtributos(eAtributos.Carisma) * UserList(UserIndex).Stats.UserSkills(eSkill.Liderazgo) < 100 Then
+        Call SendData(SendTarget.ToIndex, UserIndex, 0, "|| Tu carisma y liderazgo no son suficientes para liderar una party." & FONTTYPE_PARTY)
+        PuedeCrearParty = False
+    ElseIf UserList(UserIndex).flags.Muerto = 1 Then
+        Call SendData(SendTarget.ToIndex, UserIndex, 0, "|| Estás muerto!" & FONTTYPE_PARTY)
+        PuedeCrearParty = False
+    End If
+End Function
 
-End Sub
-Public Sub party_tepearTanaris(ByVal index As Integer)
-
-    Dim i As Long
-    
-    For i = 1 To miembrosParty(index)
-        If (infoParty(index).Miembros(i) > 0) And (UserList(infoParty(index).Miembros(i)).Pos.Map = 141) Then
-            Call WarpUserChar(infoParty(index).Miembros(i), 28, 54, 36, True)
-        End If
-    Next i
-
-End Sub
-Public Sub party_entregarInframundo(ByVal index As Integer)
-
-    Dim i As Long, tmpIndex As Integer
-    
-    For i = 1 To miembrosParty(index)
-        tmpIndex = infoParty(index).Miembros(i)
-        If (tmpIndex) And (UserList(tmpIndex).Pos.Map = 141) Then
-            
-            If TieneObjetos(1073, 1, tmpIndex) And TieneObjetos(1074, 1, tmpIndex) And TieneObjetos(1075, 1, tmpIndex) And TieneObjetos(1076, 1, tmpIndex) Then
-                Dim Fer As obj
-                Fer.ObjIndex = 1077
-                Fer.Amount = 1
-                
-                Call MeterItemEnInventario(tmpIndex, Fer)
-                Call SendData(SendTarget.toindex, tmpIndex, 0, "||49")
-            End If
-                
-            Call SendData(SendTarget.toindex, tmpIndex, 0, "||983")
-            Call WarpUserChar(tmpIndex, 28, 54, 36, True)
-        End If
-    Next i
-
-End Sub
-Public Sub SoliciteParty(ByRef Leader As Integer, ByRef NewMember As Integer)
-
-                Dim partyIndex As Integer
-                partyIndex = UserList(Leader).flags.partyIndex
-                
-                '¿El que invita tiene party?
-                If partyIndex = 0 Then
-                    Call SendData(SendTarget.toindex, Leader, 0, "||376")
-                    Exit Sub
-                End If
-                
-                '¿Es el lider de la party?
-                If infoParty(partyIndex).Lider <> Leader Then
-                    Call SendData(SendTarget.toindex, Leader, 0, "||377")
-                    Exit Sub
-                End If
-                
-                '¿El miembro a invitar tiene party?
-                If UserList(NewMember).flags.partyIndex <> 0 Then
-                    Call SendData(SendTarget.toindex, Leader, 0, "||380")
-                  Exit Sub
-                End If
-                
-                '¿El miembro a invitar está muerto?
-                If UserList(NewMember).flags.Muerto = 1 Then
-                    Call SendData(SendTarget.toindex, Leader, 0, "||374")
-                    Exit Sub
-                End If
-        
-                '¿Se está autoinvitando?
-                If Leader = NewMember Then
-                    Call SendData(SendTarget.toindex, Leader, 0, "||375")
-                    Exit Sub
-                End If
-                
-                '¿Está muy lejos?
-                If Distancia(UserList(NewMember).Pos, UserList(Leader).Pos) > 3 Then
-                    Call SendData(SendTarget.toindex, Leader, 0, "||10")
-                    Exit Sub
-                End If
-                
-                '¿Ya tiene la solicitud de esta party?
-                If UserList(NewMember).flags.PartySolicitud = partyIndex Then
-                    Call SendData(SendTarget.toindex, Leader, 0, "||378")
-                  Exit Sub
-                End If
-                
-                'Buscamos slot libre
-                Dim posIn As Byte
-                posIn = slotLibre(partyIndex)
-                
-                If (posIn <> 0) Then
-                    UserList(NewMember).flags.PartySolicitud = partyIndex
-                    Call SendData(SendTarget.toindex, NewMember, 0, "||381@" & UserList(Leader).Name)
-                    Call SendData(SendTarget.toindex, Leader, 0, "||382@" & UserList(NewMember).Name)
-                Else
-                    Call SendData(SendTarget.toindex, Leader, 0, "||379")
-                End If
-End Sub
-Public Sub acceptParty(ByRef userindex As Integer)
-
-        Dim solicitudIndex As Integer
-        solicitudIndex = UserList(userindex).flags.PartySolicitud
-        
-        '¿Tiene alguna solicitud de party? o ¿La party ofertada sigue activa?
-        If (solicitudIndex = 0) Or (Not infoParty(solicitudIndex).Active) Then
-                Call SendData(SendTarget.toindex, userindex, 0, "||383")
-            Exit Sub
-         End If
-         
-         '¿Está en alguna party ya?
-         If UserList(userindex).flags.partyIndex <> 0 Then
-                Call SendData(SendTarget.toindex, userindex, 0, "||384")
-            Exit Sub
-         End If
-         
-         Dim posIn As Byte
-         posIn = slotLibre(solicitudIndex)
-         
-         If (posIn > 0) Then
-            infoParty(solicitudIndex).Miembros(posIn) = userindex
-            infoParty(solicitudIndex).cantMiembros = infoParty(solicitudIndex).cantMiembros + 1
-            UserList(userindex).flags.partyIndex = solicitudIndex
-            UserList(userindex).flags.PartySolicitud = 0
-            Call SendData(SendTarget.ToPartyArea, userindex, 0, "||386@" & UserList(userindex).Name)
-         Else
-            Call SendData(SendTarget.toindex, userindex, 0, "||379")
-         End If
-
-End Sub
-Public Sub cancelParty(ByRef userindex As Integer)
-
-            '¿Ya está una party?, la abandonamos.
-            If UserList(userindex).flags.partyIndex <> 0 Then
-               Call SendData(SendTarget.ToPartyArea, userindex, 0, "||388@" & UserList(userindex).Name)
-                
-               infoParty(UserList(userindex).flags.partyIndex).cantMiembros = infoParty(UserList(userindex).flags.partyIndex).cantMiembros - 1
-               UserList(userindex).flags.partyIndex = 0
-               UserList(userindex).flags.PartySolicitud = 0
-               Exit Sub
-            End If
-
-            '¿Tiene una solicitud de party?, la cancelamos.
-            If UserList(userindex).flags.PartySolicitud <> 0 Then
-               UserList(userindex).flags.PartySolicitud = 0
-               Call SendData(SendTarget.toindex, userindex, 0, "||387")
-               Exit Sub
+Public Sub CrearParty(ByVal UserIndex As Integer)
+Dim tInt As Integer
+If UserList(UserIndex).PartyIndex = 0 Then
+    If UserList(UserIndex).flags.Muerto = 0 Then
+        If UserList(UserIndex).Stats.UserSkills(eSkill.Liderazgo) >= 5 Then
+            tInt = mdParty.NextParty
+            If tInt = -1 Then
+                Call SendData(SendTarget.ToIndex, UserIndex, 0, "|| Por el momento no se pueden crear mas parties" & FONTTYPE_PARTY)
+                Exit Sub
             Else
-                   Call SendData(SendTarget.toindex, userindex, 0, "||383")
-               Exit Sub
-            End If
-         
-End Sub
-Public Sub closeParty(ByRef userindex As Integer)
-
-        Dim indexParty As Integer
-        indexParty = UserList(userindex).flags.partyIndex
-
-        '¿Está en una party?
-        If (indexParty = 0) Then
-            Call SendData(SendTarget.toindex, userindex, 0, "||389")
-            Exit Sub
-        End If
-        
-        '¿Es lider?
-        If (infoParty(indexParty).Lider <> userindex) Then
-            Call SendData(SendTarget.toindex, userindex, 0, "||377")
-            Exit Sub
-        End If
-         
-         
-         Call SendData(SendTarget.ToPartyArea, userindex, 0, "||390")
-         resetParty (indexParty)
-         UserList(userindex).flags.partyIndex = 0
-         UserList(userindex).flags.PartySolicitud = 0
-
-End Sub
-Public Sub informationParty(ByRef userindex As Integer)
-
-            Dim indexParty As Integer, i As Long
-            indexParty = UserList(userindex).flags.partyIndex
-
-            '¿Tiene una party?
-            If (indexParty = 0) Then
-               Call SendData(SendTarget.toindex, userindex, 0, "||377")
-             Exit Sub
-            End If
-            
-            'Informamos
-            Call SendData(SendTarget.toindex, userindex, 0, "||391")
-            For i = 1 To MAX_MIEMBROS
-               If (infoParty(indexParty).Miembros(i) <> 0) Then
-                       Call SendData(SendTarget.toindex, userindex, 0, "||392@" & UserList(infoParty(indexParty).Miembros(i)).Name & "@" & UserList(infoParty(indexParty).Miembros(i)).Stats.ELV & "@" & UserList(infoParty(indexParty).Miembros(i)).clase)
+                Set Parties(tInt) = New clsParty
+                If Not Parties(tInt).NuevoMiembro(UserIndex) Then
+                    Call SendData(SendTarget.ToIndex, UserIndex, 0, "|| La party está llena, no puedes entrar" & FONTTYPE_PARTY)
+                    Set Parties(tInt) = Nothing
+                    Exit Sub
+                Else
+                    Call SendData(SendTarget.ToIndex, UserIndex, 0, "|| ¡ Has formado una party !" & FONTTYPE_PARTY)
+                    UserList(UserIndex).PartyIndex = tInt
+                    UserList(UserIndex).PartySolicitud = 0
+                    If Not Parties(tInt).HacerLeader(UserIndex) Then
+                        Call SendData(SendTarget.ToIndex, UserIndex, 0, "|| No puedes hacerte líder." & FONTTYPE_PARTY)
+                    Else
+                        Call SendData(SendTarget.ToIndex, UserIndex, 0, "|| ¡ Te has convertido en líder de la party !" & FONTTYPE_PARTY)
+                    End If
                 End If
-            Next i
-End Sub
-Public Sub disconnectParty(ByRef userindex As Integer)
-
-    'Si es lider, cerramos la party, de lo contrario solo abandonamos.
-    If (infoParty(UserList(userindex).flags.partyIndex).Lider = userindex) Then
-        mdParty.closeParty (userindex)
+            End If
+        Else
+            Call SendData(SendTarget.ToIndex, UserIndex, 0, "|| No tienes suficientes puntos de liderazgo para liderar una party." & FONTTYPE_PARTY)
+        End If
     Else
-        mdParty.cancelParty (userindex)
+        Call SendData(SendTarget.ToIndex, UserIndex, 0, "|| Estás muerto!" & FONTTYPE_PARTY)
+    End If
+Else
+    Call SendData(SendTarget.ToIndex, UserIndex, 0, "|| Ya perteneces a una party." & FONTTYPE_PARTY)
+End If
+End Sub
+
+Public Sub SolicitarIngresoAParty(ByVal UserIndex As Integer)
+'ESTO ES enviado por el PJ para solicitar el ingreso a la party
+Dim tInt As Integer
+
+    If UserList(UserIndex).PartyIndex > 0 Then
+        'si ya esta en una party
+        Call SendData(SendTarget.ToIndex, UserIndex, 0, "|| Ya perteneces a una party, escribe /SALIRPARTY para abandonarla" & FONTTYPE_PARTY)
+        UserList(UserIndex).PartySolicitud = 0
+        Exit Sub
+    End If
+    If UserList(UserIndex).flags.Muerto = 1 Then
+        Call SendData(SendTarget.ToIndex, UserIndex, 0, "|| ¡Estás muerto!" & FONTTYPE_INFO)
+        UserList(UserIndex).PartySolicitud = 0
+        Exit Sub
+    End If
+    tInt = UserList(UserIndex).flags.TargetUser
+    If tInt > 0 Then
+        If UserList(tInt).PartyIndex > 0 Then
+            UserList(UserIndex).PartySolicitud = UserList(tInt).PartyIndex
+            Call SendData(SendTarget.ToIndex, UserIndex, 0, "|| El fundador decidirá si te acepta en la party" & FONTTYPE_PARTY)
+        Else
+            Call SendData(SendTarget.ToIndex, UserIndex, 0, "|| " & UserList(tInt).name & " no es fundador de ninguna party." & FONTTYPE_INFO)
+            UserList(UserIndex).PartySolicitud = 0
+            Exit Sub
+        End If
+    Else
+        Call SendData(SendTarget.ToIndex, UserIndex, 0, "|| Para ingresar a una party debes hacer click sobre el fundador y luego escribir /PARTY" & FONTTYPE_PARTY)
+        UserList(UserIndex).PartySolicitud = 0
     End If
 
 End Sub
-Public Sub doExperience(ByVal userindex As Integer, ByVal Experiencia As Long)
-      
-      Dim i As Long, indexParty, partyMember As Integer
-      indexParty = UserList(userindex).flags.partyIndex
-      
-      Experiencia = Experiencia / infoParty(indexParty).cantMiembros
-      
-      For i = 1 To infoParty(indexParty).cantMiembros
-            partyMember = infoParty(indexParty).Miembros(i)
-        
-            If (partyMember <> 0) Then
-                If (Distancia(UserList(partyMember).Pos, UserList(userindex).Pos) < 15) Then
-                    UserList(partyMember).Stats.Exp = UserList(partyMember).Stats.Exp + Experiencia
-                    
-                    If UserList(partyMember).Stats.Exp > MAXEXP Then UserList(partyMember).Stats.Exp = MAXEXP
-                    Call SendData(SendTarget.toindex, partyMember, 0, "||170@" & PonerPuntos(Experiencia))
-                    SendUserEXP (partyMember)
-                    Call CheckUserLevel(partyMember)
-                End If
-            End If
-      Next i
-        
+Public Sub SalirDeParty(ByVal UserIndex As Integer)
+Dim PI As Integer
+PI = UserList(UserIndex).PartyIndex
+If PI > 0 Then
+    If Parties(PI).SaleMiembro(UserIndex) Then
+        'sale el leader
+        Set Parties(PI) = Nothing
+    Else
+        UserList(UserIndex).PartyIndex = 0
+    End If
+Else
+    Call SendData(SendTarget.ToIndex, UserIndex, 0, "|| No eres miembro de ninguna party." & FONTTYPE_INFO)
+End If
+
 End Sub
-Private Sub resetParty(index As Integer)
-    infoParty(index).Active = False
-    infoParty(index).Lider = 0
-    infoParty(index).cantMiembros = 0
+
+
+Public Sub ExpulsarDeParty(ByVal Leader As Integer, ByVal OldMember As Integer)
+Dim PI As Integer
+Dim razon As String
+PI = UserList(Leader).PartyIndex
+If PI > 0 Then
+    If PI = UserList(OldMember).PartyIndex Then
+        If Parties(PI).EsPartyLeader(Leader) Then
+            If Parties(PI).SaleMiembro(OldMember) Then
+                'si la funcion me da true, entonces la party se disolvio
+                'y los partyindex fueron reseteados a 0
+                Set Parties(PI) = Nothing
+            Else
+                UserList(OldMember).PartyIndex = 0
+            End If
+        Else
+            Call SendData(SendTarget.ToIndex, Leader, 0, "|| Solo el fundador puede expulsar miembros de una party." & FONTTYPE_INFO)
+        End If
+    Else
+        Call SendData(SendTarget.ToIndex, Leader, 0, "|| " & UserList(OldMember).name & " no pertenece a tu party." & FONTTYPE_INFO)
+    End If
+Else
+    Call SendData(SendTarget.ToIndex, Leader, 0, "|| No eres miembro de ninguna party." & FONTTYPE_INFO)
+End If
+
+
+
+End Sub
+
+
+Public Sub AprobarIngresoAParty(ByVal Leader As Integer, ByVal NewMember As Integer)
+'el UI es el leader
+Dim PI As Integer
+Dim razon As String
+
+PI = UserList(Leader).PartyIndex
+
+If PI > 0 Then
+    If Parties(PI).EsPartyLeader(Leader) Then
+        If UserList(NewMember).PartyIndex = 0 Then
+            If Not UserList(Leader).flags.Muerto = 1 Then
+                If Not UserList(NewMember).flags.Muerto = 1 Then
+                    If UserList(NewMember).PartySolicitud = PI Then
+                        If Parties(PI).PuedeEntrar(NewMember, razon) Then
+                            If Parties(PI).NuevoMiembro(NewMember) Then
+                                Call Parties(PI).MandarMensajeAConsola(UserList(Leader).name & " ha aceptado a " & UserList(NewMember).name & " en la party.", "Servidor")
+                                UserList(NewMember).PartyIndex = PI
+                                UserList(NewMember).PartySolicitud = 0
+                            Else
+                                'no pudo entrar
+                                'ACA UNO PUEDE CODIFICAR OTRO TIPO DE ERRORES...
+                                Call SendData(SendTarget.ToAdmins, Leader, 0, "|| Servidor> CATASTROFE EN PARTIES, NUEVOMIEMBRO DIO FALSE! :S " & FONTTYPE_PARTY)
+                            End If
+                        Else
+                            'no debe entrar
+                            Call SendData(SendTarget.ToIndex, Leader, 0, "|| " & razon & FONTTYPE_PARTY)
+                        End If
+                    Else
+                        Call SendData(SendTarget.ToIndex, Leader, 0, "|| " & UserList(NewMember).name & " no ha solicitado ingresar a tu party." & FONTTYPE_PARTY)
+                        Exit Sub
+                    End If
+                Else
+                    Call SendData(SendTarget.ToIndex, Leader, 0, "|| ¡Está muerto, no puedes aceptar miembros en ese estado!" & FONTTYPE_PARTY)
+                    Exit Sub
+                End If
+            Else
+                Call SendData(SendTarget.ToIndex, Leader, 0, "|| ¡Estás muerto, no puedes aceptar miembros en ese estado!" & FONTTYPE_PARTY)
+                Exit Sub
+            End If
+        Else
+            Call SendData(SendTarget.ToIndex, Leader, 0, "||" & UserList(NewMember).name & " ya es miembro de otra party." & FONTTYPE_PARTY)
+            ' ya tiene party el otro tipo
+        End If
+    Else
+        Call SendData(SendTarget.ToIndex, Leader, 0, "|| No eres líder, no puedes aceptar miembros." & FONTTYPE_PARTY)
+        Exit Sub
+    End If
+Else
+    Call SendData(SendTarget.ToIndex, Leader, 0, "|| No eres miembro de ninguna party." & FONTTYPE_INFO)
+    Exit Sub
+End If
+
+End Sub
+
+Public Sub BroadCastParty(ByVal UserIndex As Integer, ByRef texto As String)
+Dim PI As Integer
     
-    Dim i As Long, partyMember As Integer
-    For i = 1 To MAX_MIEMBROS
-        partyMember = infoParty(index).Miembros(i)
-        
-        If (partyMember <> 0) Then
-            With UserList(partyMember)
-                .flags.partyIndex = 0
-                .flags.PartySolicitud = 0
-            End With
-            
-            infoParty(index).Miembros(i) = 0
+    PI = UserList(UserIndex).PartyIndex
+    
+    If PI > 0 Then
+        Call Parties(PI).MandarMensajeAConsola(texto, UserList(UserIndex).name)
+    End If
+
+End Sub
+
+Public Sub OnlineParty(ByVal UserIndex As Integer)
+Dim PI As Integer
+Dim texto As String
+
+    PI = UserList(UserIndex).PartyIndex
+    
+    If PI > 0 Then
+        Call Parties(PI).ObtenerMiembrosOnline(texto)
+        Call SendData(SendTarget.ToIndex, UserIndex, 0, "||" & texto & FONTTYPE_PARTY)
+    End If
+    
+
+End Sub
+
+
+Public Sub TransformarEnLider(ByVal OldLeader As Integer, ByVal NewLeader As Integer)
+Dim PI As Integer
+
+If OldLeader = NewLeader Then Exit Sub
+
+PI = UserList(OldLeader).PartyIndex
+
+If PI > 0 Then
+    If PI = UserList(NewLeader).PartyIndex Then
+        If UserList(NewLeader).flags.Muerto = 0 Then
+            If Parties(PI).EsPartyLeader(OldLeader) Then
+                If Parties(PI).HacerLeader(NewLeader) Then
+                    Call Parties(PI).MandarMensajeAConsola("El nuevo líder de la party es " & UserList(NewLeader).name, UserList(OldLeader).name)
+                Else
+                    Call SendData(SendTarget.ToIndex, OldLeader, 0, "||¡No se ha hecho el cambio de mando!" & FONTTYPE_PARTY)
+                End If
+            Else
+                Call SendData(SendTarget.ToIndex, OldLeader, 0, "||¡No eres el líder!" & FONTTYPE_PARTY)
+            End If
+        Else
+            Call SendData(SendTarget.ToIndex, OldLeader, 0, "||¡Está muerto!" & FONTTYPE_INFO)
+        End If
+    Else
+        Call SendData(SendTarget.ToIndex, OldLeader, 0, "||" & UserList(NewLeader).name & " no pertenece a tu party." & FONTTYPE_INFO)
+    End If
+End If
+
+End Sub
+
+
+Public Sub ActualizaExperiencias()
+'esta funcion se invoca antes de worlsaves, y apagar servidores
+'en caso que la experiencia sea acumulada y no por golpe
+'para que grabe los datos en los charfiles
+Dim i As Integer
+
+If Not PARTY_EXPERIENCIAPORGOLPE Then
+    
+    haciendoBK = True
+    Call SendData(SendTarget.ToAll, 0, 0, "BKW")
+    
+    Call SendData(SendTarget.ToAll, 0, 0, "||Servidor> Distribuyendo experiencia en parties." & FONTTYPE_SERVER)
+    For i = 1 To MAX_PARTIES
+        If Not Parties(i) Is Nothing Then
+            Call Parties(i).FlushExperiencia
         End If
     Next i
+    Call SendData(SendTarget.ToAll, 0, 0, "||Servidor> Experiencia distribuida." & FONTTYPE_SERVER)
+    Call SendData(SendTarget.ToAll, 0, 0, "BKW")
+    haciendoBK = False
+
+End If
+
 End Sub
-Private Function slotLibre(index As Integer) As Byte
 
-            Dim i As Long, sLib As Byte
-            sLib = 0
-            
-            
-            For i = 1 To MAX_MIEMBROS
-                If (infoParty(index).Miembros(i) = 0) Then
-                    sLib = i
-                    Exit For
-                End If
-            Next i
-            
-            slotLibre = sLib
+Public Sub ObtenerExito(ByVal UserIndex As Integer, ByVal Exp As Long, mapa As Integer, X As Integer, Y As Integer)
+    If Exp <= 0 Then
+        If Not CASTIGOS Then Exit Sub
+    End If
+    
+    Call Parties(UserList(UserIndex).PartyIndex).ObtenerExito(Exp, mapa, X, Y)
+
+
+End Sub
+
+Public Function CantMiembros(ByVal UserIndex As Integer) As Integer
+CantMiembros = 0
+If UserList(UserIndex).PartyIndex > 0 Then
+    CantMiembros = Parties(UserList(UserIndex).PartyIndex).CantMiembros
+End If
+
 End Function
-

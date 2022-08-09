@@ -79,7 +79,7 @@ Procesado = True 'ver al final del sub
            
         UserList(userindex).Counters.TimeComandos = 5
     
-            If UserList(userindex).Pos.Map = 78 Or UserList(userindex).Pos.Map = 100 Or UserList(userindex).Pos.Map = 107 Or MapInfo(UserList(userindex).Pos.Map).Pk = True Or UserList(userindex).Pos.Map = 110 Or UserList(userindex).Pos.Map = 109 Or UserList(userindex).Pos.Map = 108 Or UserList(userindex).Pos.Map = 106 Or UserList(userindex).Pos.Map = 71 Or UserList(userindex).Pos.Map = 118 Or UserList(userindex).Pos.Map = 120 Then
+            If UserList(userindex).Pos.Map = 78 Or UserList(userindex).Pos.Map = 100 Or UserList(userindex).Pos.Map = 99 Or MapInfo(UserList(userindex).Pos.Map).Pk = True Or UserList(userindex).Pos.Map = 110 Or UserList(userindex).Pos.Map = 72 Or UserList(userindex).Pos.Map = 8 Or UserList(userindex).Pos.Map = 54 Or UserList(userindex).Pos.Map = 101 Or UserList(userindex).Pos.Map = 118 Or UserList(userindex).Pos.Map = 120 Then
                     Call SendData(SendTarget.toindex, userindex, 0, "||291")
                 Exit Sub
             End If
@@ -144,7 +144,7 @@ Procesado = True 'ver al final del sub
                 For loopC = 1 To LastUser
                     'If UserList(LoopC).name <> "" Then
                     If UserList(loopC).flags.NumTorneo > 0 And UserList(loopC).Name <> "" Then
-                      If UserList(loopC).Pos.Map = 100 Or UserList(userindex).Pos.Map = 107 Then 'MAPA TORNEO ----
+                      If UserList(loopC).Pos.Map = 100 Or UserList(userindex).Pos.Map = 99 Then 'MAPA TORNEO ----
                         CronologiaParticipantes(UserList(loopC).flags.NumTorneo) = " " & UserList(loopC).flags.NumTorneo & ". " & UCase$(UserList(loopC).Name) & " [" & UserList(loopC).clase & "]"
                         'tStr = tStr & "[" & UserList(LoopC).flags.NumTorneo & "] " & UCase$(UserList(LoopC).name) & "[" & UserList(LoopC).clase & "], "
                       ElseIf loopC <= 0 Then
@@ -189,12 +189,11 @@ Procesado = True 'ver al final del sub
         Exit Sub
         End If
 
-        If MapInfo(UserList(userindex).Pos.Map).Pk = True Or UserList(userindex).Pos.Map = 71 Or UserList(userindex).Pos.Map = 106 Or UserList(userindex).Pos.Map = 108 Or UserList(userindex).Pos.Map = 109 Or UserList(userindex).Pos.Map = 78 Or UserList(userindex).Pos.Map = 100 Or UserList(userindex).Pos.Map = 104 Or UserList(userindex).Pos.Map = 107 Or UserList(userindex).Pos.Map = 110 Or UserList(userindex).Pos.Map = 118 Or UserList(userindex).Pos.Map = 120 Then
+        If MapInfo(UserList(userindex).Pos.Map).Pk = True Or UserList(userindex).Pos.Map = 101 Or UserList(userindex).Pos.Map = 54 Or UserList(userindex).Pos.Map = 8 Or UserList(userindex).Pos.Map = 72 Or UserList(userindex).Pos.Map = 78 Or UserList(userindex).Pos.Map = 100 Or UserList(userindex).Pos.Map = 18 Or UserList(userindex).Pos.Map = 99 Or UserList(userindex).Pos.Map = 110 Or UserList(userindex).Pos.Map = 118 Or UserList(userindex).Pos.Map = 120 Then
                 Call SendData(SendTarget.toindex, userindex, 0, "||291")
             Exit Sub
         End If
 
-        Call WarpUserChar(userindex, 27, 47, 48, True)
         Call VolverCriminal(userindex)
 Exit Sub
 
@@ -215,7 +214,7 @@ Case "/ALIANZA"
     Exit Sub
     End If
 
-    If MapInfo(UserList(userindex).Pos.Map).Pk = True Or UserList(userindex).Pos.Map = 71 Or UserList(userindex).Pos.Map = 106 Or UserList(userindex).Pos.Map = 108 Or UserList(userindex).Pos.Map = 109 Or UserList(userindex).Pos.Map = 78 Or UserList(userindex).Pos.Map = 100 Or UserList(userindex).Pos.Map = 104 Or UserList(userindex).Pos.Map = 107 Or UserList(userindex).Pos.Map = 110 Or UserList(userindex).Pos.Map = 118 Or UserList(userindex).Pos.Map = 120 Then
+    If MapInfo(UserList(userindex).Pos.Map).Pk = True Or UserList(userindex).Pos.Map = 101 Or UserList(userindex).Pos.Map = 54 Or UserList(userindex).Pos.Map = 8 Or UserList(userindex).Pos.Map = 72 Or UserList(userindex).Pos.Map = 78 Or UserList(userindex).Pos.Map = 100 Or UserList(userindex).Pos.Map = 18 Or UserList(userindex).Pos.Map = 99 Or UserList(userindex).Pos.Map = 110 Or UserList(userindex).Pos.Map = 118 Or UserList(userindex).Pos.Map = 120 Then
             Call SendData(SendTarget.toindex, userindex, 0, "||291")
         Exit Sub
     End If
@@ -225,7 +224,6 @@ Case "/ALIANZA"
     Exit Sub
     End If
     
-    Call WarpUserChar(userindex, 29, 50, 90, True)
     Call VolverCiudadano(userindex)
 Exit Sub
 
@@ -234,19 +232,19 @@ Exit Sub
                               Call SendData(SendTarget.toindex, userindex, 0, "Z12")
                               Exit Sub
                     End If
-                    'If UserList(userindex).flags.TargetNPC = 0 Then
-                   '       Call SendData(SendTarget.toindex, userindex, 0, "Z30")
-                  '        Exit Sub
-                 '   End If
-                '    If Distancia(Npclist(UserList(userindex).flags.TargetNPC).Pos, UserList(userindex).Pos) > 10 Then
-               '               Call SendData(SendTarget.toindex, userindex, 0, "Z27")
-              '                Exit Sub
-             '       End If
-            'If Npclist(UserList(userindex).flags.TargetNPC).NPCtype = eNPCType.Quest Then
+                    If UserList(userindex).flags.TargetNPC = 0 Then
+                          Call SendData(SendTarget.toindex, userindex, 0, "Z30")
+                          Exit Sub
+                    End If
+                    If Distancia(Npclist(UserList(userindex).flags.TargetNPC).Pos, UserList(userindex).Pos) > 10 Then
+                              Call SendData(SendTarget.toindex, userindex, 0, "Z27")
+                              Exit Sub
+                    End If
+            If Npclist(UserList(userindex).flags.TargetNPC).NPCtype = eNPCType.Quest Then
             Call SendData(SendTarget.toindex, userindex, 0, "DAMEQUEST")
-            'Else
-            'Call SendData(SendTarget.toindex, userindex, 0, "||9")
-            'End If
+            Else
+            Call SendData(SendTarget.toindex, userindex, 0, "||9")
+            End If
         Exit Sub
         
         Case "/NOQUEST"
@@ -387,7 +385,7 @@ Exit Sub
          
             Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "USM" & UserList(userindex).Char.CharIndex & "," & UserList(userindex).flags.Montando)
             Call QuitarNPC(UserList(userindex).flags.TargetNPC)
-            Call ChangeUserChar(toMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.Body, UserList(userindex).Char.Head, UserList(userindex).Char.Heading, UserList(userindex).Char.WeaponAnim, UserList(userindex).Char.ShieldAnim, UserList(userindex).Char.CascoAnim)
+            Call ChangeUserChar(ToMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.Body, UserList(userindex).Char.Head, UserList(userindex).Char.Heading, UserList(userindex).Char.WeaponAnim, UserList(userindex).Char.ShieldAnim, UserList(userindex).Char.CascoAnim)
             Call SendData(toindex, userindex, 0, "EQUIT")
         Else
             Call SendData(SendTarget.toindex, userindex, 0, "||320")
@@ -568,116 +566,155 @@ Exit Sub
         Next Usersclan
         Exit Sub
         
-        Case "/PARTICIPAR"
+        Case "/BONIFICADORES"
         
-            If TieneItemDiosEquipado(userindex) = True Then
-                Call SendData(toindex, userindex, 0, "||295")
-             Exit Sub
+            If UCase$(UserList(userindex).clase) = "BARDO" Or UCase$(UserList(userindex).clase) = "CLERIGO" Or UCase$(UserList(userindex).clase) = "GUERRERO" Or UCase$(UserList(userindex).clase) = "CAZADOR" Or UCase$(UserList(userindex).clase) = "PALADIN" Or UCase$(UserList(userindex).clase) = "ASESINO" Or UCase$(UserList(userindex).clase) = "MAGO" Or UCase$(UserList(userindex).clase) = "DRUIDA" Then
+                If UserList(userindex).Stats.ELV >= 20 And UserList(userindex).Bon1 = "Ninguno/No elegido." Then
+                  Call SendData(SendTarget.toindex, userindex, 0, "99" & GetVar(DatPath & "ClassBonus.dat", "" & UCase$(UserList(userindex).clase) & "", "Nivel1Opcion1") & "," & GetVar(DatPath & "ClassBonus.dat", "" & UCase$(UserList(userindex).clase) & "", "Nivel1Opcion2"))
+                  Exit Sub
+                End If
+                
+                If UserList(userindex).Stats.ELV >= 40 And UserList(userindex).Bon2 = "Ninguno/No elegido." Then
+                  Call SendData(SendTarget.toindex, userindex, 0, "99" & GetVar(DatPath & "ClassBonus.dat", "" & UCase$(UserList(userindex).clase) & "", "Nivel2Opcion1") & "," & GetVar(DatPath & "ClassBonus.dat", "" & UCase$(UserList(userindex).clase) & "", "Nivel2Opcion2"))
+                  Exit Sub
+                End If
+                
+                If UserList(userindex).Stats.ELV >= 60 And UserList(userindex).Bon3 = "Ninguno/No elegido." Then
+                  Call SendData(SendTarget.toindex, userindex, 0, "99" & GetVar(DatPath & "ClassBonus.dat", "" & UCase$(UserList(userindex).clase) & "", "Nivel3Opcion1") & "," & GetVar(DatPath & "ClassBonus.dat", "" & UCase$(UserList(userindex).clase) & "", "Nivel3Opcion2"))
+                  Exit Sub
+                End If
             End If
         
-            If HayAram Then
-                Call Aram_Ingresar(userindex)
-            ElseIf HayJDH Then
-                Call Entrar_JDH(userindex)
-            ElseIf modBatMistica.hayBatalla Then
-                Call modBatMistica.ingresarBatalla(userindex)
-            ElseIf mEventoLUZ.evLuz_Activo Then
-                Call mEventoLUZ.evLuz_Ingresar(userindex)
-            ElseIf HayEventoFacc Then
-                Call modEventoFaccionario.EventoFacc_Ingresar(userindex)
+        Exit Sub
+        
+        Case "/EDITLVL"
+            If UserList(userindex).Stats.ELV < 50 Then
+                For loopC = 1 To (50 - UserList(userindex).Stats.ELV)
+                    UserList(userindex).Stats.Exp = UserList(userindex).Stats.ELU
+                    Call CheckUserLevel(userindex)
+                Next loopC
             End If
         Exit Sub
         
-        Case "/EVENTOS"
-            If diosAbierto = "TARRASKE" Or diosAbierto = "MIFRIT" Or diosAbierto = "EREBROS" Or diosAbierto = "POSEIDON" Then
-                Call SendData(SendTarget.toindex, userindex, 0, "||950@" & LCase$(diosAbierto))
+        Case "/RRPERSONAJE"
+            UserList(userindex).Stats.MET = 1
+            Dim MiInt As Long
+            MiInt = RandomNumber(1, UserList(userindex).Stats.UserAtributos(eAtributos.Constitucion) \ 3)
+            
+            UserList(userindex).Stats.MaxHP = 21
+            UserList(userindex).Stats.MinHP = 21
+            
+            UserList(userindex).Stats.FIT = 1
+            
+            
+            MiInt = RandomNumber(1, UserList(userindex).Stats.UserAtributos(eAtributos.Agilidad) \ 6)
+            If MiInt = 1 Then MiInt = 2
+            
+            UserList(userindex).Stats.MaxSta = 20 * MiInt
+            UserList(userindex).Stats.MinSta = 20 * MiInt
+            
+            
+            UserList(userindex).Stats.MaxAGU = 100
+            UserList(userindex).Stats.MinAGU = 100
+            
+            UserList(userindex).Stats.MaxHam = 100
+            UserList(userindex).Stats.MinHam = 100
+            
+            UserList(userindex).InventorySlots = 21
+            
+            
+            '<-----------------MANA----------------------->
+            If UCase$(UserList(userindex).clase) = "MAGO" Or UCase$(UserList(userindex).clase) = "NIGROMANTE" Then
+                MiInt = RandomNumber(1, UserList(userindex).Stats.UserAtributos(eAtributos.Inteligencia)) / 3
+                UserList(userindex).Stats.MaxMAN = 100 + MiInt
+                UserList(userindex).Stats.MinMAN = 100 + MiInt
+            ElseIf UCase$(UserList(userindex).clase) = "CLERIGO" Or UCase$(UserList(userindex).clase) = "DRUIDA" _
+                Or UCase$(UserList(userindex).clase) = "BARDO" Or UCase$(UserList(userindex).clase) = "ASESINO" Then
+                    MiInt = RandomNumber(1, UserList(userindex).Stats.UserAtributos(eAtributos.Inteligencia)) / 4
+                    UserList(userindex).Stats.MaxMAN = 50
+                    UserList(userindex).Stats.MinMAN = 50
             Else
-                Call SendData(SendTarget.toindex, userindex, 0, "||951@" & 60 - MinutosPortalesDios)
+                UserList(userindex).Stats.MaxMAN = 0
+                UserList(userindex).Stats.MinMAN = 0
             End If
+            
+            UserList(userindex).Stats.MaxHIT = 2
+            UserList(userindex).Stats.MinHIT = 1
+            
+            UserList(userindex).Stats.Exp = 0
+            UserList(userindex).Stats.ELU = 300
+            UserList(userindex).Stats.ELV = 1
                         
-            If ReyON Then
-                Call SendData(SendTarget.toindex, userindex, 0, "||952")
-            Else
-                Call SendData(SendTarget.toindex, userindex, 0, "||953@" & 60 - MinutosRey)
-            End If
-            
-            If HayJDH Then
-                Call SendData(SendTarget.toindex, userindex, 0, "||954@Juegos del Hambre")
-            ElseIf modBatMistica.hayBatalla Then
-                Call SendData(SendTarget.toindex, userindex, 0, "||954@Batalla Mística")
-            ElseIf HayAram Then
-                Call SendData(SendTarget.toindex, userindex, 0, "||954@Aram")
-            ElseIf mEventoLUZ.evLuz_Activo Then
-                Call SendData(SendTarget.toindex, userindex, 0, "||954@Luz Maligna")
-            Else
-                Call SendData(SendTarget.toindex, userindex, 0, "||955")
-            End If
-            
-            If HayHH Then
-                Call SendData(SendTarget.toindex, userindex, 0, "||956@" & MinutosHH)
-            Else
-                Call SendData(SendTarget.toindex, userindex, 0, "||957")
-            End If
-            
+            SendUserStats (userindex)
+        Exit Sub
+        
+        Case "/PARTICIPAR"
+                Call Aram_Ingresar(userindex)
         Exit Sub
         
         Case "/ONLINE"
-        Dim tmpAlis, tmpHordas, tmpBON As Integer
-        Dim txdasd As String
-        tmpBON = Round(BOnlines / 2)
-        txdasd = ""
+        Dim a As Integer
         
                     'No se envia más la lista completa de usuarios
                     n = 0
-                    tmpAlis = 0
-                    tmpHordas = 0
                     For loopC = 1 To LastUser
                         If UserList(loopC).Name <> "" Then
                             n = n + 1
-                            txdasd = txdasd & "" & UserList(loopC).Name & ", "
-                            
-                            If UserList(loopC).StatusMith.EsStatus = 1 Or UserList(loopC).StatusMith.EsStatus = 3 Then
-                                tmpAlis = tmpAlis + 1
-                            End If
-                            
-                            If UserList(loopC).StatusMith.EsStatus = 2 Or UserList(loopC).StatusMith.EsStatus = 4 Then
-                                tmpHordas = tmpHordas + 1
-                            End If
-                                                        
                         End If
                     Next loopC
                      
-                Call SendData(SendTarget.toindex, userindex, 0, "||332@" & n + BOnlines & "@" & recordusuarios)
+        Call SendData(SendTarget.toindex, userindex, 0, "||332@" & n + BOnlines & "@" & recordusuarios)
+         
+        a = 0
+                    For loopC = 1 To LastUser
+                    
+                        If UserList(userindex).flags.Privilegios > PlayerType.User Then
+                           If UserList(loopC).Name <> "" Then
+                            Dim txdasd As String
+                            txdasd = txdasd & "" & UserList(loopC).Name & ", "
+                           End If
+                        End If
+                    
+                        If UserList(loopC).Name <> "" Then
+                            If UserList(loopC).StatusMith.EsStatus = 1 Or UserList(loopC).StatusMith.EsStatus = 3 Then
+                            a = a + 1
+                        End If
+                        End If
+                    Next loopC
                     
                     If UserList(userindex).flags.Privilegios > PlayerType.User Then
                         Call SendData(SendTarget.toindex, userindex, 0, "||333@" & txdasd)
                     End If
          
-        Call SendData(SendTarget.toindex, userindex, 0, "||334@" & tmpAlis + tmpBON)
+        Call SendData(SendTarget.toindex, userindex, 0, "||334@" & a)
          
          
-        Call SendData(SendTarget.toindex, userindex, 0, "||335@" & tmpHordas + tmpBON)
+        a = 0
+                    For loopC = 1 To LastUser
+                        If UserList(loopC).Name <> "" Then
+                            If UserList(loopC).StatusMith.EsStatus = 2 Or UserList(loopC).StatusMith.EsStatus = 4 Then
+                            a = a + 1
+                        End If
+                        End If
+                    Next loopC
          
-        'a = 0
-                    'For loopC = 1 To LastUser
-                        'If UserList(loopC).Name <> "" Then
-                            'If UserList(loopC).StatusMith.EsStatus = 0 Or UserList(loopC).StatusMith.EsStatus = 20 Then
-                            'a  = a + 1
-                        'End If
-                        'End If
-                    'Next loopC
+        Call SendData(SendTarget.toindex, userindex, 0, "||335@" & a)
          
-        'Call SendData(SendTarget.toindex, userindex, 0, "||336@" & a + BOnlines)
-    Exit Sub
+        a = 0
+                    For loopC = 1 To LastUser
+                        If UserList(loopC).Name <> "" Then
+                            If UserList(loopC).StatusMith.EsStatus = 0 Or UserList(loopC).StatusMith.EsStatus = 20 Then
+                            a = a + 1
+                        End If
+                        End If
+                    Next loopC
+         
+        Call SendData(SendTarget.toindex, userindex, 0, "||336@" & a + BOnlines)
+        Exit Sub
 
 Case "/CERRARCLAN"
-    
-    If MapInfo(UserList(userindex).Pos.Map).Pk = True Then
-        Call SendData(SendTarget.toindex, userindex, 0, "||323")
-    Exit Sub
-    End If
 
-If modGuilds.m_EsGuildSubLeader1(UserList(userindex).Name, UserList(userindex).GuildIndex) = True Or modGuilds.m_EsGuildSubLeader2(UserList(userindex).Name, UserList(userindex).GuildIndex) = True Then
+        If modGuilds.m_EsGuildSubLeader1(UserList(userindex).Name, UserList(userindex).GuildIndex) = True Or modGuilds.m_EsGuildSubLeader2(UserList(userindex).Name, UserList(userindex).GuildIndex) = True Then
             tInt = m_EcharMiembroDeClan(userindex, UserList(userindex).Name)
             
             If tInt > 0 Then
@@ -685,7 +722,12 @@ If modGuilds.m_EsGuildSubLeader1(UserList(userindex).Name, UserList(userindex).G
                 Call SendData(SendTarget.toindex, userindex, 0, "||338")
             End If
         Exit Sub
-End If
+    End If
+    
+    If MapInfo(UserList(userindex).Pos.Map).Pk = True Then
+        Call SendData(SendTarget.toindex, userindex, 0, "||323")
+    Exit Sub
+    End If
                 
 If Not UserList(userindex).GuildIndex >= 1 Then
     Call SendData(SendTarget.toindex, userindex, 0, "||120")
@@ -740,14 +782,14 @@ Exit Sub
 
     Case "/REGRESAR"
             
-        If UserList(userindex).flags.Privilegios = PlayerType.Consejero Or UserList(userindex).flags.Privilegios = PlayerType.Semidios Or UserList(userindex).flags.Privilegios = PlayerType.Dios Then Exit Sub
-                       
+        If UserList(userindex).flags.Privilegios > PlayerType.User And UserList(userindex).flags.Privilegios < PlayerType.Coordination Then Exit Sub
+        
         If UserList(userindex).Pos.Map = 31 Or UserList(userindex).Pos.Map = 32 Or UserList(userindex).Pos.Map = 33 Or UserList(userindex).Pos.Map = 34 Then
                 Call SendData(SendTarget.toindex, userindex, 0, "||342")
             Exit Sub
         End If
         
-        If MapaEspecial(userindex) Then
+        If UserList(userindex).Pos.Map = 100 Or UserList(userindex).Pos.Map = 99 Or UserList(userindex).Pos.Map = 18 Or UserList(userindex).Pos.Map = 166 Then
                 Call SendData(SendTarget.toindex, userindex, 0, "||343")
             Exit Sub
         End If
@@ -762,14 +804,14 @@ Exit Sub
             Exit Sub
         End If
         
-        If (UserList(userindex).flags.EsPremium = 1 Or UserList(userindex).Char.Body = 331) And UserList(userindex).flags.Muerto = 0 Then
+        If UserList(userindex).flags.EsPremium = 1 And UserList(userindex).flags.Muerto = 0 Then
             Call SendData(SendTarget.toindex, userindex, 0, "||346")
             UserList(userindex).UserPremiumMap = 0
             UserList(userindex).Counters.TransportePremium = 5
             Exit Sub
         End If
         
-        If (UserList(userindex).Pos.Map = 121 Or UserList(userindex).Pos.Map = 122 Or UserList(userindex).Pos.Map = 123 Or UserList(userindex).Pos.Map = 19 Or UserList(userindex).Pos.Map = 10 Or UserList(userindex).Pos.Map = 36 Or UserList(userindex).Pos.Map = 43) Then
+        If (UserList(userindex).Pos.Map = 121 Or UserList(userindex).Pos.Map = 94 Or UserList(userindex).Pos.Map = 95 Or UserList(userindex).Pos.Map = 19 Or UserList(userindex).Pos.Map = 10 Or UserList(userindex).Pos.Map = 36 Or UserList(userindex).Pos.Map = 43) Then
             If TieneObjetos(1270, 1, userindex) Then
                 Call QuitarObjetos(1270, 1, userindex)
             Else
@@ -788,38 +830,8 @@ Exit Sub
                         SendUserVariant (userindex)
                         Call OtorgarGranPoder(0)
                     End If
-                    
-                    If UserList(userindex).StatusMith.EsStatus = 1 Or UserList(userindex).StatusMith.EsStatus = 3 Then
-                        Call WarpUserChar(userindex, 29, 50, 90, True)
-                        Call SendData(SendTarget.toindex, userindex, 0, "||348")
-                     Exit Sub
-                    End If
-                    
-                    If UserList(userindex).StatusMith.EsStatus = 2 Or UserList(userindex).StatusMith.EsStatus = 4 Then
-                        Call WarpUserChar(userindex, 27, 47, 48, True)
-                        Call SendData(SendTarget.toindex, userindex, 0, "||348")
-                     Exit Sub
-                    End If
-                    
-                   If UserList(userindex).Hogar = "Thir" Then
-                        Call WarpUserChar(userindex, 25, 74, 44, True)
-                        Call SendData(SendTarget.toindex, userindex, 0, "||348")
-                    Exit Sub
-                   End If
                    
-                   If UserList(userindex).Hogar = "Inthak" Then
-                        Call WarpUserChar(userindex, 130, 52, 56, True)
-                        Call SendData(SendTarget.toindex, userindex, 0, "||348")
-                    Exit Sub
-                   End If
-                   
-                   If UserList(userindex).Hogar = "Ruvendel" Then
-                        Call WarpUserChar(userindex, 26, 51, 52, True)
-                        Call SendData(SendTarget.toindex, userindex, 0, "||348")
-                    Exit Sub
-                   End If
-                   
-                       Call WarpUserChar(userindex, 28, 54, 36, True)
+                       Call WarpUserChar(userindex, 1, 49, 35, True)
                        Call SendData(toindex, userindex, 0, "||348")
             Exit Sub
 
@@ -830,14 +842,7 @@ Exit Sub
                 Exit Sub
             End If
             
-            With UserList(userindex)
-                If .flags.levitando And MapData(.Pos.Map, .Pos.X, .Pos.Y).Blocked = 1 Then
-                     Call SendData(SendTarget.toindex, userindex, 0, "||948")
-                    Exit Sub
-                End If
-            End With
-            
-            If (UserList(userindex).flags.Privilegios = PlayerType.User) And (MapaEspecial(userindex) Or UserList(userindex).Pos.Map = 121 Or UserList(userindex).Pos.Map = 122 Or UserList(userindex).Pos.Map = 123 Or UserList(userindex).Pos.Map = 31 Or UserList(userindex).Pos.Map = 32 Or UserList(userindex).Pos.Map = 33 Or UserList(userindex).Pos.Map = 34) Then Exit Sub
+            If UserList(userindex).Pos.Map = 141 Or UserList(userindex).Pos.Map = 120 Or UserList(userindex).Pos.Map = 121 Or UserList(userindex).Pos.Map = 94 Or UserList(userindex).Pos.Map = 95 Or UserList(userindex).Pos.Map = 31 Or UserList(userindex).Pos.Map = 32 Or UserList(userindex).Pos.Map = 33 Or UserList(userindex).Pos.Map = 34 Or UserList(userindex).Pos.Map = 81 Then Exit Sub
             
             If userindex = GranPoder Then
                 GranPoder = 0
@@ -847,13 +852,13 @@ Exit Sub
                 Call OtorgarGranPoder(0)
             End If
             
-            Call SalirDuelo(userindex)
+            If UserList(userindex).flags.EnDuelo = True Then Call SalirDuelo(userindex)
             
             'casted - pareja 2vs2
-            If UserList(userindex).Pos.Map = 109 Then 'cambiar el 12 por numero de mapa
+            If UserList(userindex).Pos.Map = 72 Then 'cambiar el 12 por numero de mapa
                 If UserList(userindex).flags.EnDesafio = 1 And Desafio.Primero = userindex And Desafio.Segundo <> 0 Then 'cambiar el 12 por numero de mapa
-                    Call WarpUserChar(Desafio.Primero, 28, 54, 36, True) 'mapa donde lleva al creador del desafio
-                    Call WarpUserChar(Desafio.Segundo, 28, 54, 37, True) 'mapa donde llevar al retador
+                    Call WarpUserChar(Desafio.Primero, 1, 49, 35, True) 'mapa donde lleva al creador del desafio
+                    Call WarpUserChar(Desafio.Segundo, 1, 49, 36, True) 'mapa donde llevar al retador
                     UserList(Desafio.Primero).flags.EnDesafio = 0
                     UserList(Desafio.Primero).flags.rondas = 0
                     UserList(Desafio.Segundo).flags.Desafio = 0
@@ -861,14 +866,14 @@ Exit Sub
                     Desafio.Primero = 0
                     Desafio.Segundo = 0
                 ElseIf UserList(userindex).flags.EnDesafio = 1 And Desafio.Primero = userindex And Desafio.Segundo = 0 Then 'cambiar el 12 por numero de mapa Then
-                    Call WarpUserChar(Desafio.Primero, 28, 54, 36, True)
+                    Call WarpUserChar(Desafio.Primero, 1, 49, 37, True)
                     UserList(Desafio.Primero).flags.EnDesafio = 0
                     UserList(Desafio.Primero).flags.rondas = 0
                     Call SendData(SendTarget.ToAll, 0, 0, "||350@" & UserList(Desafio.Primero).Name)
                     Desafio.Primero = 0
                 Else
                     If UserList(userindex).flags.Desafio = 1 And Desafio.Segundo = userindex And Desafio.Primero <> 0 Then 'cambiar el 12 por numero de mapa Then
-                    Call WarpUserChar(Desafio.Segundo, 28, 54, 36, True) 'mapa donde lleva al retador
+                    Call WarpUserChar(Desafio.Segundo, 1, 49, 34, True) 'mapa donde lleva al retador
                     UserList(Desafio.Segundo).flags.Desafio = 0
                     Call SendData(SendTarget.ToAll, 0, 0, "||351@" & UserList(Desafio.Segundo).Name)
                     Desafio.Segundo = 0
@@ -881,7 +886,7 @@ Exit Sub
 
 
             If UserList(userindex).flags.Privilegios = PlayerType.User Then
-                If UserList(userindex).Pos.Map = 122 Or UserList(userindex).Pos.Map = 123 Or UserList(userindex).Pos.Map = 31 Or UserList(userindex).Pos.Map = 32 Or UserList(userindex).Pos.Map = 33 Or UserList(userindex).Pos.Map = 34 Or UserList(userindex).Pos.Map = 106 Or UserList(userindex).Pos.Map = 104 Or UserList(userindex).Pos.Map = 100 Or UserList(userindex).Pos.Map = 107 Or UserList(userindex).Pos.Map = 107 Or UserList(userindex).Pos.Map = 109 Or UserList(userindex).Pos.Map = 108 Or UserList(userindex).Pos.Map = 71 Then
+                If UserList(userindex).Pos.Map = 94 Or UserList(userindex).Pos.Map = 95 Or UserList(userindex).Pos.Map = 31 Or UserList(userindex).Pos.Map = 32 Or UserList(userindex).Pos.Map = 33 Or UserList(userindex).Pos.Map = 34 Or UserList(userindex).Pos.Map = 54 Or UserList(userindex).Pos.Map = 18 Or UserList(userindex).Pos.Map = 100 Or UserList(userindex).Pos.Map = 99 Or UserList(userindex).Pos.Map = 99 Or UserList(userindex).Pos.Map = 72 Or UserList(userindex).Pos.Map = 8 Or UserList(userindex).Pos.Map = 101 Then
                   Call SendData(SendTarget.toindex, userindex, 0, "||317")
                  Exit Sub
                 End If
@@ -898,7 +903,7 @@ Exit Sub
             
             If UserList(userindex).flags.Transformado = 1 Then
                 Call SendData(SendTarget.toindex, userindex, 0, "||353")
-               Call ChangeUserChar(SendTarget.toMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).OrigChar.Body, UserList(userindex).OrigChar.Head, UserList(userindex).Char.Heading, UserList(userindex).Char.WeaponAnim, UserList(userindex).Char.ShieldAnim, UserList(userindex).Char.CascoAnim)
+               Call ChangeUserChar(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).OrigChar.Body, UserList(userindex).OrigChar.Head, UserList(userindex).Char.Heading, UserList(userindex).Char.WeaponAnim, UserList(userindex).Char.ShieldAnim, UserList(userindex).Char.CascoAnim)
                UserList(userindex).flags.Transformado = 0
            End If
         
@@ -936,31 +941,17 @@ Exit Sub
             Exit Sub
             End If
             
-            If UserList(userindex).StatusMith.EligioStatus = 1 Then
-                Call SendData(SendTarget.toindex, userindex, 0, "||942")
-            Exit Sub
-            End If
-            
-            
             If Distancia(Npclist(UserList(userindex).flags.TargetNPC).Pos, UserList(userindex).Pos) > 3 Then
                       Call SendData(SendTarget.toindex, userindex, 0, "||10")
                       Exit Sub
             End If
-            
-            
             
             If Npclist(UserList(userindex).flags.TargetNPC).NPCtype <> Renunciar Then Exit Sub
 
                 If UserList(userindex).StatusMith.EsStatus = 0 Then
                     Call SendData(SendTarget.toindex, userindex, 0, "||324")
                 Else
-                
-                    If (EsHorda(userindex) Or UserList(userindex).StatusMith.EsStatus = 2) Then
-                        UserList(userindex).StatusMith.EsStatus = 1
-                    ElseIf (EsAlianza(userindex) Or UserList(userindex).StatusMith.EsStatus = 1) Then
-                        UserList(userindex).StatusMith.EsStatus = 2
-                    End If
-                        
+                    UserList(userindex).StatusMith.EsStatus = 0
                     UserList(userindex).StatusMith.EligioStatus = 1
                     UserList(userindex).Faccion.CiudadanosMatados = 0
                     UserList(userindex).Faccion.CriminalesMatados = 0
@@ -968,12 +959,11 @@ Exit Sub
                     UserList(userindex).Stats.UsuariosMatados = 0
                     Call SendData(SendTarget.toindex, userindex, 0, "||355")
                     Call SendUserStatux(userindex)
-                    
                     If UserList(userindex).Faccion.ArmadaReal = 1 Then
-                        Call ExpulsarFaccionReal(userindex)
+                    Call ExpulsarFaccionReal(userindex)
                     ElseIf UserList(userindex).Faccion.FuerzasCaos = 1 Then
-                        Call ExpulsarFaccionCaos(userindex)
-                    End If
+                    Call ExpulsarFaccionCaos(userindex)
+                End If
                 End If
         Exit Sub
         Case "/ENTRENAR"
@@ -1067,7 +1057,7 @@ Exit Sub
         UserList(userindex).flags.Desenterrando = 1
         TesoroContando = True
         TiempoTesoro = 30
-        Call MakeObj(SendTarget.toMap, 0, MapaTesoroMap, ObjetoT, MapaTesoroMap, MapaTesoroX, MapaTesoroY)
+        Call MakeObj(SendTarget.ToMap, 0, MapaTesoroMap, ObjetoT, MapaTesoroMap, MapaTesoroX, MapaTesoroY)
         Call SendData(SendTarget.toindex, userindex, 0, "||361")
     Exit Sub
              
@@ -1107,7 +1097,7 @@ If Nombre1 = Nombre2 Then Exit Sub
         Dim pra As Long
         Dim j3 As Integer
         'Dim a As Long
-        Dim a, b As Long
+        Dim b As Long
         Dim dam As Long
         Dim dam2 As Long
         
@@ -1117,14 +1107,14 @@ If Nombre1 = Nombre2 Then Exit Sub
         If Guilds(UserList(userindex).GuildIndex).TieneParaDesafiar = True Then
         For dam = 1 To LastUser
         If UserList(dam).GuildIndex > 0 Then
-            If Guilds(UserList(dam).GuildIndex).GuildName = Nombre1 And UserList(dam).flags.SeguroCVC = True And UserList(dam).Counters.Pena = 0 And UserList(dam).Pos.Map <> 71 And UserList(dam).Pos.Map <> 78 And UserList(dam).Pos.Map <> 104 And UserList(dam).Pos.Map <> 100 And UserList(dam).Pos.Map <> 108 And UserList(dam).Pos.Map <> 109 And UserList(dam).Pos.Map <> 106 And UserList(dam).Pos.Map <> 110 And UserList(dam).Pos.Map <> 141 And TieneItemDiosEquipado(dam) = False Then
+            If Guilds(UserList(dam).GuildIndex).GuildName = Nombre1 And UserList(dam).flags.SeguroCVC = True And UserList(dam).Counters.Pena = 0 And UserList(dam).Pos.Map <> 72 And UserList(dam).Pos.Map <> 78 And UserList(dam).Pos.Map <> 54 And UserList(dam).Pos.Map <> 100 And UserList(dam).Pos.Map <> 99 And UserList(dam).Pos.Map <> 101 And UserList(dam).Pos.Map <> 18 And UserList(dam).Pos.Map <> 19 And UserList(dam).Pos.Map <> 141 And TieneItemDiosEquipado(dam) = False Then
                 UserList(dam).flags.PuedeEntrarCVC = True
                 a = a + 1
             End If
         End If
         
         If UserList(dam).GuildIndex > 0 Then
-            If Guilds(UserList(dam).GuildIndex).GuildName = Nombre2 And UserList(dam).flags.SeguroCVC = True And UserList(dam).Counters.Pena = 0 And UserList(dam).Pos.Map <> 71 And UserList(dam).Pos.Map <> 78 And UserList(dam).Pos.Map <> 104 And UserList(dam).Pos.Map <> 100 And UserList(dam).Pos.Map <> 108 And UserList(dam).Pos.Map <> 109 And UserList(dam).Pos.Map <> 106 And UserList(dam).Pos.Map <> 110 And UserList(dam).Pos.Map <> 141 And TieneItemDiosEquipado(dam) = False Then
+            If Guilds(UserList(dam).GuildIndex).GuildName = Nombre2 And UserList(dam).flags.SeguroCVC = True And UserList(dam).Counters.Pena = 0 And UserList(dam).Pos.Map <> 72 And UserList(dam).Pos.Map <> 78 And UserList(dam).Pos.Map <> 54 And UserList(dam).Pos.Map <> 100 And UserList(dam).Pos.Map <> 99 And UserList(dam).Pos.Map <> 101 And UserList(dam).Pos.Map <> 18 And UserList(dam).Pos.Map <> 19 And UserList(dam).Pos.Map <> 141 And TieneItemDiosEquipado(dam) = False Then
                 UserList(dam).flags.PuedeEntrarCVC = True
                 b = b + 1
             End If
@@ -1142,33 +1132,33 @@ If Nombre1 = Nombre2 Then Exit Sub
         End If
         
         For dam2 = 1 To LastUser
-            If UserList(dam2).GuildIndex > 0 Then
-            If Guilds(UserList(dam2).GuildIndex).GuildName = Nombre1 Then
-               If modGuilds.m_EsGuildLeader(UserList(dam2).Name, UserList(dam2).GuildIndex) Then
-                 If UserList(dam2).Stats.GLD > 200000 Then
-                        UserList(dam2).Stats.GLD = UserList(dam2).Stats.GLD - 200000
-                        Call SendUserGLD(dam2)
-                    Else
-                        SendData SendTarget.toindex, userindex, 0, "||215@200.000"
-                    Exit Sub
-                  End If
-                 End If
-                End If
-            End If
-        
-            If UserList(dam2).GuildIndex > 0 Then
-                    If Guilds(UserList(dam2).GuildIndex).GuildName = Nombre2 Then
-                If modGuilds.m_EsGuildLeader(UserList(dam2).Name, UserList(dam2).GuildIndex) Then
-                    If UserList(dam2).Stats.GLD > 200000 Then
-                        UserList(dam2).Stats.GLD = UserList(dam2).Stats.GLD - 200000
-                        Call SendUserGLD(dam2)
-                    Else
-                        SendData SendTarget.toindex, userindex, 0, "||367"
-                    Exit Sub
-                  End If
-                 End If
-                End If
+        If UserList(dam2).GuildIndex > 0 Then
+        If Guilds(UserList(dam2).GuildIndex).GuildName = Nombre1 Then
+           If modGuilds.m_EsGuildLeader(UserList(dam2).Name, UserList(dam2).GuildIndex) Then
+             If UserList(dam2).Stats.GLD > 100000 Then
+                    UserList(dam2).Stats.GLD = UserList(dam2).Stats.GLD - 100000
+                    Call SendUserGLD(dam2)
+                Else
+                    SendData SendTarget.toindex, userindex, 0, "||215@100.000"
+                Exit Sub
+              End If
              End If
+            End If
+        End If
+        
+   If UserList(dam2).GuildIndex > 0 Then
+                If Guilds(UserList(dam2).GuildIndex).GuildName = Nombre2 Then
+            If modGuilds.m_EsGuildLeader(UserList(dam2).Name, UserList(dam2).GuildIndex) Then
+                If UserList(dam2).Stats.GLD > 100000 Then
+                    UserList(dam2).Stats.GLD = UserList(dam2).Stats.GLD - 100000
+                    Call SendUserGLD(dam2)
+                Else
+                    SendData SendTarget.toindex, userindex, 0, "||367"
+                Exit Sub
+              End If
+             End If
+            End If
+         End If
         Next dam2
         
         modGuilds.UsuariosEnCvcClan2 = 0
@@ -1179,7 +1169,7 @@ If Nombre1 = Nombre2 Then Exit Sub
            For i = 1 To LastUser
             If UserList(i).GuildIndex <> 0 Then
             If UserList(i).flags.SeguroCVC = True Then
-            If Guilds(UserList(i).GuildIndex).GuildName = Nombre1 And UserList(i).flags.PuedeEntrarCVC And Not MapaEspecial(i) And modGuilds.UsuariosEnCvcClan1 < b Then
+            If Guilds(UserList(i).GuildIndex).GuildName = Nombre1 And UserList(i).flags.PuedeEntrarCVC And modGuilds.UsuariosEnCvcClan1 < b Then
    '''''''''''         'Si viene el clan n°1
                 If UserList(i).flags.Muerto = 1 Then
                     Call RevivirUsuario(i)
@@ -1191,12 +1181,12 @@ If Nombre1 = Nombre2 Then Exit Sub
                 UserList(i).ViejaPos.Map = UserList(i).Pos.Map
                 UserList(i).ViejaPos.X = UserList(i).Pos.X
                 UserList(i).ViejaPos.Y = UserList(i).Pos.Y
-                WarpUserChar i, 108, RandomNumber(37, 48), RandomNumber(70, 77), True
+                WarpUserChar i, 8, RandomNumber(37, 48), RandomNumber(70, 77), True
                 UserList(i).EnCvc = True
                 UserList(i).flags.CvcBlue = 1
+                Debug.Print Nombre1 & " entra con " & modGuilds.UsuariosEnCvcClan1 & " usuarios al cvc"
             End If
-            
-            If Guilds(UserList(i).GuildIndex).GuildName = Nombre2 And UserList(i).flags.PuedeEntrarCVC And Not MapaEspecial(i) And modGuilds.UsuariosEnCvcClan2 < a Then
+            If Guilds(UserList(i).GuildIndex).GuildName = Nombre2 And UserList(i).flags.PuedeEntrarCVC And modGuilds.UsuariosEnCvcClan2 < a Then
  '''''''''''''''           'Si tambien viene el 2°
                 If UserList(i).flags.Muerto = 1 Then
                     Call RevivirUsuario(i)
@@ -1208,8 +1198,10 @@ If Nombre1 = Nombre2 Then Exit Sub
                 UserList(i).ViejaPos.Map = UserList(i).Pos.Map
                 UserList(i).ViejaPos.X = UserList(i).Pos.X
                 UserList(i).ViejaPos.Y = UserList(i).Pos.Y
-                WarpUserChar i, 108, RandomNumber(75, 86), RandomNumber(35, 45), True
+                WarpUserChar i, 8, RandomNumber(75, 86), RandomNumber(35, 45), True
                 UserList(i).EnCvc = True
+                UserList(i).flags.CvcRed = 1
+              Debug.Print Nombre2 & " entra con " & modGuilds.UsuariosEnCvcClan2 & " usuarios al cvc"
             End If
         End If
         End If
@@ -1218,11 +1210,13 @@ If Nombre1 = Nombre2 Then Exit Sub
         
         Guilds(UserList(userindex).GuildIndex).TieneParaDesafiar = False
         Guilds(UserList(userindex).GuildIndex).ClanPideDesafio = ""
+        
+        
 
         
         Else
-            SendData SendTarget.toindex, userindex, 0, "||369"
-            Exit Sub
+        SendData SendTarget.toindex, userindex, 0, "||369"
+        Exit Sub
         End If
     Exit Sub
         
@@ -1241,31 +1235,171 @@ If Nombre1 = Nombre2 Then Exit Sub
     
         '########## SISTEMA DE PARTY - FER ###########
         Case "/NUEVAPARTY"
-             Call mdParty.CreateParty(userindex)
+        
+             If UserList(userindex).flags.PartyIndex <> 0 Then
+                  Call SendData(SendTarget.toindex, userindex, 0, "||372")
+               Exit Sub
+             End If
+            
+            UltimaParty = UltimaParty + 1
+            UserList(userindex).flags.PartyIndex = UltimaParty
+            UserList(userindex).flags.PartyLider = 1
+            Call SendData(SendTarget.toindex, userindex, 0, "||373")
         Exit Sub
         
         Case "/PARTY"
             If UserList(userindex).flags.TargetUser > 0 Then
-                Call mdParty.SoliciteParty(userindex, UserList(userindex).flags.TargetUser)
+                If UserList(UserList(userindex).flags.TargetUser).flags.Muerto = 1 Then
+                    Call SendData(SendTarget.toindex, userindex, 0, "||374")
+                    Exit Sub
+                End If
+        
+                If UserList(userindex).flags.TargetUser = userindex Then
+                    Call SendData(SendTarget.toindex, userindex, 0, "||375")
+                    Exit Sub
+                End If
+                
+                If UserList(userindex).flags.PartyIndex = 0 Then
+                    Call SendData(SendTarget.toindex, userindex, 0, "||376")
+                    Exit Sub
+                End If
+                
+                If UserList(userindex).flags.PartyLider = 0 Then
+                    Call SendData(SendTarget.toindex, userindex, 0, "||377")
+                    Exit Sub
+                End If
+                
+                If Distancia(UserList(UserList(userindex).flags.TargetUser).Pos, UserList(userindex).Pos) > 3 Then
+                    Call SendData(SendTarget.toindex, userindex, 0, "||10")
+                    Exit Sub
+                End If
+                
+                If UserList(UserList(userindex).flags.TargetUser).flags.PartySolicitud = UserList(userindex).flags.PartyIndex Then
+                    Call SendData(SendTarget.toindex, userindex, 0, "||378")
+                  Exit Sub
+                End If
+                
+                Dim cantmiemb As Byte
+                For i = 1 To LastUser
+                 If UserList(i).flags.PartyIndex = UserList(userindex).flags.PartyIndex Then
+                    cantmiemb = cantmiemb + 1
+                 End If
+                Next i
+                
+                If cantmiemb >= 5 Then
+                    Call SendData(SendTarget.toindex, userindex, 0, "||379")
+                  Exit Sub
+                End If
+                                
+                If UserList(UserList(userindex).flags.TargetUser).PartyIndex <> 0 Then
+                    Call SendData(SendTarget.toindex, userindex, 0, "||380")
+                  Exit Sub
+                End If
+
+                UserList(UserList(userindex).flags.TargetUser).flags.PartySolicitud = UserList(userindex).flags.PartyIndex
+                Call SendData(SendTarget.toindex, UserList(userindex).flags.TargetUser, 0, "||381@" & UserList(userindex).Name)
+                Call SendData(SendTarget.toindex, userindex, 0, "||382@" & UserList(UserList(userindex).flags.TargetUser).Name)
+                
             Else
                 Call SendData(SendTarget.toindex, userindex, 0, "||9")
             End If
         Exit Sub
         
         Case "/ACEPTAR"
-            Call mdParty.acceptParty(userindex)
+        
+         If UserList(userindex).flags.PartySolicitud = 0 Then
+                Call SendData(SendTarget.toindex, userindex, 0, "||383")
+            Exit Sub
+         End If
+         
+         If UserList(userindex).flags.PartyIndex <> 0 Then
+                Call SendData(SendTarget.toindex, userindex, 0, "||384")
+            Exit Sub
+         End If
+         
+                For i = 1 To LastUser
+                 If UserList(i).flags.PartyIndex = UserList(userindex).flags.PartySolicitud Then
+                    cantmiemb = cantmiemb + 1
+                 End If
+                Next i
+                
+                If cantmiemb >= 5 Then
+                    Call SendData(SendTarget.toindex, userindex, 0, "||385")
+                  Exit Sub
+                End If
+         
+            UserList(userindex).flags.PartyIndex = UserList(userindex).flags.PartySolicitud
+            UserList(userindex).flags.PartyLider = 0
+        
+            Call SendData(SendTarget.ToPartyArea, userindex, 0, "||386@" & UserList(userindex).Name)
+        
         Exit Sub
         
         Case "/CANCELAR"
-            Call mdParty.cancelParty(userindex)
+        
+            If UserList(userindex).flags.PartySolicitud <> 0 Then
+               UserList(userindex).flags.PartySolicitud = 0
+               Call SendData(SendTarget.toindex, userindex, 0, "||387")
+            Else
+                   Call SendData(SendTarget.toindex, userindex, 0, "||383")
+               Exit Sub
+            End If
+         
+            If UserList(userindex).flags.PartyIndex <> 0 Then
+            
+               Call SendData(SendTarget.ToPartyArea, userindex, 0, "||388@" & UserList(userindex).Name)
+            
+               UserList(userindex).flags.PartyIndex = 0
+               UserList(userindex).flags.PartyLider = 0
+               UserList(userindex).flags.PartySolicitud = 0
+               
+            Else
+                   Call SendData(SendTarget.toindex, userindex, 0, "||389")
+               Exit Sub
+            End If
+        
         Exit Sub
         
         Case "/FINPARTY"
-            Call mdParty.closeParty(userindex)
+         If UserList(userindex).flags.PartyIndex = 0 Then
+            Call SendData(SendTarget.toindex, userindex, 0, "||389")
+            Exit Sub
+         ElseIf UserList(userindex).flags.PartyLider = 0 Then
+            Call SendData(SendTarget.toindex, userindex, 0, "||377")
+            Exit Sub
+         End If
+         
+         Call SendData(SendTarget.ToPartyArea, userindex, 0, "||390")
+         
+         For i = 1 To LastUser
+            If UserList(i).flags.PartyIndex = UserList(userindex).flags.PartyIndex Or UserList(i).flags.PartySolicitud = UserList(userindex).flags.PartyIndex Then
+                UserList(i).flags.PartyIndex = 0
+                UserList(i).flags.PartyLider = 0
+                UserList(i).flags.PartySolicitud = 0
+            End If
+         Next i
+         
+         UserList(userindex).flags.PartyIndex = 0
+         UserList(userindex).flags.PartyLider = 0
+         UserList(userindex).flags.PartySolicitud = 0
         Exit Sub
         
         Case "/PINFO"
-            Call mdParty.informationParty(userindex)
+            If UserList(userindex).flags.PartyIndex = 0 Then
+               Call SendData(SendTarget.toindex, userindex, 0, "||377")
+             Exit Sub
+            End If
+            
+            Call SendData(SendTarget.toindex, userindex, 0, "||391")
+            
+            For i = 1 To LastUser
+               If UserList(i).flags.PartyIndex = UserList(userindex).flags.PartyIndex Then
+                   If UserList(i).Name <> "" Then
+                       Call SendData(SendTarget.toindex, userindex, 0, "||392@" & UserList(i).Name & "@" & UserList(i).Stats.ELV & "@" & UserList(i).clase)
+                   End If
+                End If
+            Next i
+         
         Exit Sub
         
         '########## SISTEMA DE PARTY - FER ###########
@@ -1305,38 +1439,38 @@ If Nombre1 = Nombre2 Then Exit Sub
                 UserList(userindex).Counters.tInicioMeditar = GetTickCount() And &H7FFFFFFF
                 
                 UserList(userindex).Char.loops = LoopAdEternum
+                If UserList(userindex).Stats.ELV < 15 Then
+                    Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFX" & UserList(userindex).Char.CharIndex & "," & FXIDs.FXMEDITARCHICO & "," & LoopAdEternum)
+                    UserList(userindex).Char.FX = FXIDs.FXMEDITARCHICO
+                ElseIf UserList(userindex).Stats.ELV < 30 Then
+                    Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFX" & UserList(userindex).Char.CharIndex & "," & FXIDs.FXMEDITARMEDIANO & "," & LoopAdEternum)
+                    UserList(userindex).Char.FX = FXIDs.FXMEDITARMEDIANO
+                ElseIf UserList(userindex).Stats.ELV < 50 Then
+                    Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFX" & UserList(userindex).Char.CharIndex & "," & FXIDs.FXMEDITARGRANDE & "," & LoopAdEternum)
+                    UserList(userindex).Char.FX = FXIDs.FXMEDITARGRANDE
+                ElseIf UserList(userindex).Stats.ELV <= 59 Then
+                    Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFX" & UserList(userindex).Char.CharIndex & "," & FXIDs.FXMEDITARXGRANDE & "," & LoopAdEternum)
+                    UserList(userindex).Char.FX = FXIDs.FXMEDITARXGRANDE
+                ElseIf UserList(userindex).Stats.ELV >= 60 Then
+                  If UserList(userindex).StatusMith.EsStatus = 0 Then
+                    Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFX" & UserList(userindex).Char.CharIndex & "," & FXIDs.FXNUEVATPNEUTRAL & "," & LoopAdEternum)
+                  ElseIf UserList(userindex).StatusMith.EsStatus = 1 Or UserList(userindex).StatusMith.EsStatus = 3 Then
+                    Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFX" & UserList(userindex).Char.CharIndex & "," & FXIDs.FXNUEVATPALIANZA & "," & LoopAdEternum)
+                  ElseIf UserList(userindex).StatusMith.EsStatus = 2 Or UserList(userindex).StatusMith.EsStatus = 4 Then
+                    Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFX" & UserList(userindex).Char.CharIndex & "," & FXIDs.FXNUEVATPHORDA & "," & LoopAdEternum)
+                  End If
+                End If
+                
                 If UserList(userindex).flags.Transformado = 1 Then
                     Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFX" & UserList(userindex).Char.CharIndex & "," & FXIDs.FXMEDITARTRANSFO & "," & LoopAdEternum)
                     UserList(userindex).Char.FX = FXIDs.FXMEDITARTRANSFO
-                Else
-                    If UserList(userindex).Stats.ELV < 15 Then
-                        Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFX" & UserList(userindex).Char.CharIndex & "," & FXIDs.FXMEDITARCHICO & "," & LoopAdEternum)
-                        UserList(userindex).Char.FX = FXIDs.FXMEDITARCHICO
-                    ElseIf UserList(userindex).Stats.ELV < 30 Then
-                        Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFX" & UserList(userindex).Char.CharIndex & "," & FXIDs.FXMEDITARMEDIANO & "," & LoopAdEternum)
-                        UserList(userindex).Char.FX = FXIDs.FXMEDITARMEDIANO
-                    ElseIf UserList(userindex).Stats.ELV < 50 Then
-                        Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFX" & UserList(userindex).Char.CharIndex & "," & FXIDs.FXMEDITARGRANDE & "," & LoopAdEternum)
-                        UserList(userindex).Char.FX = FXIDs.FXMEDITARGRANDE
-                    ElseIf UserList(userindex).Stats.ELV <= 59 Then
-                        Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFX" & UserList(userindex).Char.CharIndex & "," & FXIDs.FXMEDITARXGRANDE & "," & LoopAdEternum)
-                        UserList(userindex).Char.FX = FXIDs.FXMEDITARXGRANDE
-                    ElseIf UserList(userindex).Stats.ELV >= 60 Then
-                      If UserList(userindex).StatusMith.EsStatus = 0 Then
-                        Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFX" & UserList(userindex).Char.CharIndex & "," & FXIDs.FXNUEVATPNEUTRAL & "," & LoopAdEternum)
-                      ElseIf UserList(userindex).StatusMith.EsStatus = 1 Or UserList(userindex).StatusMith.EsStatus = 3 Then
-                        Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFX" & UserList(userindex).Char.CharIndex & "," & FXIDs.FXNUEVATPALIANZA & "," & LoopAdEternum)
-                      ElseIf UserList(userindex).StatusMith.EsStatus = 2 Or UserList(userindex).StatusMith.EsStatus = 4 Then
-                        Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFX" & UserList(userindex).Char.CharIndex & "," & FXIDs.FXNUEVATPHORDA & "," & LoopAdEternum)
-                      End If
-                    End If
-              End If
+                End If
             Else
                 UserList(userindex).Counters.bPuedeMeditar = False
                 
                 UserList(userindex).Char.FX = 0
                 UserList(userindex).Char.loops = 0
-                Call SendData(SendTarget.toMap, userindex, UserList(userindex).Pos.Map, "CFX" & UserList(userindex).Char.CharIndex & "," & 0 & "," & 0)
+                Call SendData(SendTarget.ToMap, userindex, UserList(userindex).Pos.Map, "CFX" & UserList(userindex).Char.CharIndex & "," & 0 & "," & 0)
             End If
             Exit Sub
         Case "/RESUCITAR"
@@ -1370,7 +1504,7 @@ If Nombre1 = Nombre2 Then Exit Sub
            
            If UserList(userindex).flags.Transformado = 1 Then
                Call DarCuerpoDesnudo(userindex)
-               Call ChangeUserChar(SendTarget.toMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.Body, UserList(userindex).OrigChar.Head, UserList(userindex).Char.Heading, UserList(userindex).Char.WeaponAnim, UserList(userindex).Char.ShieldAnim, UserList(userindex).Char.CascoAnim)
+               Call ChangeUserChar(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.Body, UserList(userindex).OrigChar.Head, UserList(userindex).Char.Heading, UserList(userindex).Char.WeaponAnim, UserList(userindex).Char.ShieldAnim, UserList(userindex).Char.CascoAnim)
                Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFX" & UserList(userindex).Char.CharIndex & "," & FXIDs.FXWARP & "," & 0)
                Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "TW" & SND_TRANSF)
                UserList(userindex).flags.Transformado = 0
@@ -1378,7 +1512,7 @@ If Nombre1 = Nombre2 Then Exit Sub
            ElseIf UserList(userindex).flags.CJerarquia = 1 And Criminal(userindex) Then
                 UserList(userindex).Char.Head = 0
                 UserList(userindex).Char.Body = 289
-               Call ChangeUserChar(toMap, 0, UserList(userindex).Pos.Map, userindex, 289, 0, UserList(userindex).Char.Heading, UserList(userindex).Char.WeaponAnim, UserList(userindex).Char.ShieldAnim, UserList(userindex).Char.CascoAnim)
+               Call ChangeUserChar(ToMap, 0, UserList(userindex).Pos.Map, userindex, 289, 0, UserList(userindex).Char.Heading, UserList(userindex).Char.WeaponAnim, UserList(userindex).Char.ShieldAnim, UserList(userindex).Char.CascoAnim)
                Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFX" & UserList(userindex).Char.CharIndex & "," & FXIDs.FXWARP & "," & 0)
                Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "TW" & SND_TRANSF)
                 UserList(userindex).flags.Transformado = 1
@@ -1396,18 +1530,19 @@ If Nombre1 = Nombre2 Then Exit Sub
            
             If UserList(userindex).flags.Transformado = 1 Then
                Call DarCuerpoDesnudo(userindex)
-               Call ChangeUserChar(SendTarget.toMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.Body, UserList(userindex).OrigChar.Head, UserList(userindex).Char.Heading, UserList(userindex).Char.WeaponAnim, UserList(userindex).Char.ShieldAnim, UserList(userindex).Char.CascoAnim)
+               Call ChangeUserChar(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.Body, UserList(userindex).OrigChar.Head, UserList(userindex).Char.Heading, UserList(userindex).Char.WeaponAnim, UserList(userindex).Char.ShieldAnim, UserList(userindex).Char.CascoAnim)
                Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFX" & UserList(userindex).Char.CharIndex & "," & FXIDs.FXWARP & "," & 0)
                Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "TW" & SND_TRANSF)
                UserList(userindex).flags.Transformado = 0
                
            ElseIf UserList(userindex).flags.CJerarquia = 1 And Not Criminal(userindex) Then
-             UserList(userindex).Char.Head = 0
-             UserList(userindex).Char.Body = 288
-             Call ChangeUserChar(toMap, 0, UserList(userindex).Pos.Map, userindex, 288, 0, UserList(userindex).Char.Heading, UserList(userindex).Char.WeaponAnim, UserList(userindex).Char.ShieldAnim, UserList(userindex).Char.CascoAnim)
-             Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFX" & UserList(userindex).Char.CharIndex & "," & FXIDs.FXWARP & "," & 0)
-             Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "TW" & SND_TRANSF)
-             UserList(userindex).flags.Transformado = 1
+            UserList(userindex).Char.Head = 0
+            UserList(userindex).Char.Body = 288
+           Call ChangeUserChar(ToMap, 0, UserList(userindex).Pos.Map, userindex, 288, 0, UserList(userindex).Char.Heading, UserList(userindex).Char.WeaponAnim, UserList(userindex).Char.ShieldAnim, UserList(userindex).Char.CascoAnim)
+           Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "CFX" & UserList(userindex).Char.CharIndex & "," & FXIDs.FXWARP & "," & 0)
+           Call SendData(SendTarget.ToPCArea, userindex, UserList(userindex).Pos.Map, "TW" & SND_TRANSF)
+           UserList(userindex).flags.Transformado = 1
+           
            Exit Sub
            End If
         Case "/CURAR"
@@ -1442,22 +1577,18 @@ If UserList(userindex).Counters.TimeComandos > 0 Then Call SendData(toindex, use
     UserList(userindex).Counters.TimeComandos = 5
     
     If UserList(userindex).flags.EnDuelo Then
-        If UserList(userindex).flags.DueliandoContra = "BOT" Then
-            Call SalirDueloBOT(userindex)
-        Else
-            Call SalirDuelo(userindex)
-        End If
+        Call SalirDuelo(userindex)
     End If
     
     If UserList(userindex).flags.EnGuerra = 1 Then
         Call SendData(SendTarget.toindex, userindex, 0, "||399")
         UserList(userindex).flags.EnGuerra = 0
-        Call WarpUserChar(userindex, 28, 54, 36, True)
+        Call WarpUserChar(userindex, 1, 54, 36, True)
     End If
  
-    If UserList(userindex).Pos.Map = 109 Then
+    If UserList(userindex).Pos.Map = 72 Then
     If UserList(userindex).flags.EnDesafio = 1 And Desafio.Primero = userindex Then  'cambiar el 12 por numero de mapa
-        Call WarpUserChar(Desafio.Primero, 28, 54, 36, True) 'mapa donde lleva al creador del desafio
+        Call WarpUserChar(Desafio.Primero, 1, 54, 36, True) 'mapa donde lleva al creador del desafio
         UserList(Desafio.Primero).flags.EnDesafio = 0
         UserList(Desafio.Primero).flags.rondas = 0
         Call SendData(SendTarget.ToAll, 0, 0, "||400")
@@ -1465,7 +1596,7 @@ If UserList(userindex).Counters.TimeComandos > 0 Then Call SendData(toindex, use
         Desafio.Primero = 0
         
         If Desafio.Segundo <> 0 Then
-            Call WarpUserChar(Desafio.Segundo, 28, 54, 37, True) 'mapa donde llevar al retador
+            Call WarpUserChar(Desafio.Segundo, 1, 54, 37, True) 'mapa donde llevar al retador
             UserList(Desafio.Segundo).flags.Desafio = 0
             Desafio.Segundo = 0
         End If
@@ -1473,7 +1604,7 @@ If UserList(userindex).Counters.TimeComandos > 0 Then Call SendData(toindex, use
     End If
      
     If UserList(userindex).flags.Desafio = 1 And Desafio.Segundo = userindex Then
-        Call WarpUserChar(Desafio.Segundo, 28, 54, 36, True)
+        Call WarpUserChar(Desafio.Segundo, 1, 54, 36, True)
         UserList(Desafio.Segundo).flags.Desafio = 0
         Call SendData(SendTarget.ToAll, 0, 0, "||351@" & UserList(Desafio.Segundo).Name)
         Desafio.Segundo = 0
@@ -1519,45 +1650,7 @@ ElseIf userindex = Desafio.tTercero Or userindex = Desafio.tCuarto Then
     Exit Sub
 End If
 
-    If UserList(userindex).Pos.Map = 110 Then
-        If Desafio2vs2(3) = 0 And Desafio2vs2(4) = 0 Then
-           If Desafio2vs2(1) = userindex Or Desafio2vs2(2) = userindex Then
-            Call SendData(SendTarget.ToAll, 0, 0, "||402@" & UserList(Desafio2vs2(1)).Name & "@" & UserList(Desafio2vs2(2)).Name)
-            Call WarpUserChar(Desafio2vs2(1), TanaTelep.Map, TanaTelep.X, TanaTelep.Y)
-            Call WarpUserChar(Desafio2vs2(2), TanaTelep.Map, TanaTelep.X + 1, TanaTelep.Y)
-            UserList(Desafio2vs2(1)).flags.RondasDesafio2vs2 = 0
-            UserList(Desafio2vs2(2)).flags.RondasDesafio2vs2 = 0
-            Desafio2vs2(1) = 0
-            Desafio2vs2(2) = 0
-           End If
-        End If
-    End If
-           
-    If UserList(userindex).Pos.Map = 110 Then
-        If Desafio2vs2(3) > 0 And Desafio2vs2(4) > 0 Then
-           If Desafio2vs2(1) = userindex Or Desafio2vs2(2) = userindex Then
-            Call SendData(SendTarget.ToAll, 0, 0, "||402@" & UserList(Desafio2vs2(1)).Name & "@" & UserList(Desafio2vs2(2)).Name)
-            Call WarpUserChar(Desafio2vs2(1), TanaTelep.Map, TanaTelep.X, TanaTelep.Y)
-            Call WarpUserChar(Desafio2vs2(2), TanaTelep.Map, TanaTelep.X + 1, TanaTelep.Y)
-            Call WarpUserChar(Desafio2vs2(3), TanaTelep.Map, TanaTelep.X, TanaTelep.Y - 1)
-            Call WarpUserChar(Desafio2vs2(4), TanaTelep.Map, TanaTelep.X + 1, TanaTelep.Y - 1)
-            UserList(Desafio2vs2(1)).flags.RondasDesafio2vs2 = 0
-            UserList(Desafio2vs2(2)).flags.RondasDesafio2vs2 = 0
-            Desafio2vs2(1) = 0
-            Desafio2vs2(2) = 0
-            Desafio2vs2(3) = 0
-            Desafio2vs2(4) = 0
-           End If
-        End If
-    End If
-           
-           
-        If Desafio2vs2(3) = userindex Or Desafio2vs2(4) = userindex Then
-             SendData SendTarget.toindex, userindex, 0, "||239"
-           Exit Sub
-        End If
-
-If UserList(userindex).Pos.Map = 106 Then
+If UserList(userindex).Pos.Map = 54 Then
     If Pareja.Jugador(1) > 0 And Pareja.Jugador(2) > 0 And UserList(userindex).flags.EnPareja = True And Pareja.Jugador(3) = 0 And Pareja.Jugador(4) = 0 Then
             Call WarpUserChar(Pareja.Jugador(1), UserList(Pareja.Jugador(1)).flags.MapaAnterior, UserList(Pareja.Jugador(1)).flags.XAnterior, UserList(Pareja.Jugador(1)).flags.YAnterior, True)
             Call WarpUserChar(Pareja.Jugador(2), UserList(Pareja.Jugador(2)).flags.MapaAnterior, UserList(Pareja.Jugador(2)).flags.XAnterior, UserList(Pareja.Jugador(2)).flags.YAnterior, True)
@@ -1578,25 +1671,25 @@ If UserList(userindex).Pos.Map = 106 Then
         End If
 End If
 
-If UserList(userindex).Pos.Map = 71 And UserList(userindex).flags.EspectadorArena1 = 1 Then
+If UserList(userindex).Pos.Map = 101 And UserList(userindex).flags.EspectadorArena1 = 1 Then
 
     WarpUserChar userindex, UserList(userindex).flags.MapaAnterior, UserList(userindex).flags.XAnterior, UserList(userindex).flags.YAnterior, True
     UserList(userindex).flags.EspectadorArena1 = 0
     EspectadoresEnArena1 = EspectadoresEnArena1 - 1
     
-ElseIf UserList(userindex).Pos.Map = 71 And UserList(userindex).flags.EspectadorArena2 = 1 Then
+ElseIf UserList(userindex).Pos.Map = 101 And UserList(userindex).flags.EspectadorArena2 = 1 Then
 
     WarpUserChar userindex, UserList(userindex).flags.MapaAnterior, UserList(userindex).flags.XAnterior, UserList(userindex).flags.YAnterior, True
     UserList(userindex).flags.EspectadorArena2 = 0
     EspectadoresEnArena2 = EspectadoresEnArena2 - 1
     
-ElseIf UserList(userindex).Pos.Map = 71 And UserList(userindex).flags.EspectadorArena3 = 1 Then
+ElseIf UserList(userindex).Pos.Map = 101 And UserList(userindex).flags.EspectadorArena3 = 1 Then
 
     WarpUserChar userindex, UserList(userindex).flags.MapaAnterior, UserList(userindex).flags.XAnterior, UserList(userindex).flags.YAnterior, True
     UserList(userindex).flags.EspectadorArena3 = 0
     EspectadoresEnArena3 = EspectadoresEnArena3 - 1
     
-ElseIf UserList(userindex).Pos.Map = 71 And UserList(userindex).flags.EspectadorArena4 = 1 Then
+ElseIf UserList(userindex).Pos.Map = 101 And UserList(userindex).flags.EspectadorArena4 = 1 Then
 
     WarpUserChar userindex, UserList(userindex).flags.MapaAnterior, UserList(userindex).flags.XAnterior, UserList(userindex).flags.YAnterior, True
     UserList(userindex).flags.EspectadorArena4 = 0
@@ -1615,23 +1708,29 @@ Exit Sub
             Call SendData(SendTarget.toindex, userindex, 0, "||239")
         Exit Sub
         End If
-
+        
+        If UserList(userindex).Pos.Map = 141 Then Exit Sub
+                
         If MapInfo(UserList(userindex).Pos.Map).Pk = True Then
-            Call SendData(SendTarget.toindex, userindex, 0, "||323")
-        Exit Sub
+        Call SendData(SendTarget.toindex, userindex, 0, "||323")
+            Exit Sub
         End If
+                
+                If UserList(userindex).Pos.Map = 101 Then Exit Sub
+                If UserList(userindex).Pos.Map = 100 Then Exit Sub
+                If UserList(userindex).Pos.Map = 99 Or UserList(userindex).Pos.Map = 118 Then Exit Sub
            
             If UserList(userindex).flags.Muerto = 1 Then
               Call SendData(SendTarget.toindex, userindex, 0, "||3")
                 Exit Sub
             End If
             
-            If UserList(userindex).Stats.GLD < 200000 Then
-              Call SendData(SendTarget.toindex, userindex, 0, "||215@200.000")
+            If UserList(userindex).Stats.GLD < 120000 Then
+              Call SendData(SendTarget.toindex, userindex, 0, "||215@120.000")
                 Exit Sub
             End If
                     
-            If MapaEspecial(userindex) Then 'si esta en la carcel
+            If UserList(userindex).Pos.Map = 78 Or UserList(userindex).Pos.Map = 54 Or UserList(userindex).Pos.Map = 72 Or UserList(userindex).Pos.Map = 8 Or UserList(userindex).Pos.Map = 120 Then 'si esta en la carcel
                 Call SendData(SendTarget.toindex, userindex, 0, "||291")
                 Exit Sub
             End If
@@ -1659,8 +1758,8 @@ Exit Sub
           
             Call SendData(SendTarget.ToAll, 0, 0, "||407@" & UserList(userindex).Name & "@" & UserList(userindex).clase & "@" & UserList(userindex).Stats.ELV)
             
-            Call WarpUserChar(userindex, 109, 52, 32, True) 'Mapa y posicion del mapa de desafio
-            UserList(userindex).Stats.GLD = UserList(userindex).Stats.GLD - 200000
+            Call WarpUserChar(userindex, 72, 52, 32, True) 'Mapa y posicion del mapa de desafio
+            UserList(userindex).Stats.GLD = UserList(userindex).Stats.GLD - 120000
             UserList(userindex).flags.EnDesafio = 1
             Call SendUserGLD(userindex) 'enviamos todo
             Desafio.Primero = userindex
@@ -1699,7 +1798,7 @@ Exit Sub
                 Exit Sub
             End If
             
-            If MapaEspecial(userindex) Then 'si esta en la carcel
+            If UserList(userindex).Pos.Map = 78 Or UserList(userindex).Pos.Map = 8 Or UserList(userindex).Pos.Map = 72 Or UserList(userindex).Pos.Map = 110 Or UserList(userindex).Pos.Map = 100 Or UserList(userindex).Pos.Map = 54 Or UserList(userindex).Pos.Map = 99 Or UserList(userindex).Pos.Map = 118 Or UserList(userindex).Pos.Map = 120 Then 'si esta en la carcel
                 Call SendData(SendTarget.toindex, userindex, 0, "||291")
                 Exit Sub
             End If
@@ -1716,8 +1815,8 @@ Exit Sub
            
             Call SendData(SendTarget.ToAll, 0, 0, "||410@" & UserList(userindex).Name)
             Call SendData(SendTarget.toindex, Desafio.Primero, 0, "||411@" & UserList(userindex).Name & "@" & UserList(userindex).clase & "@" & UserList(userindex).Stats.ELV)
-            Call WarpUserChar(userindex, 109, 52, 48, True) 'mapa y pos del desafio
-            Call WarpUserChar(Desafio.Primero, 109, 52, 32, True)
+            Call WarpUserChar(userindex, 72, 52, 48, True) 'mapa y pos del desafio
+            Call WarpUserChar(Desafio.Primero, 72, 52, 32, True)
             UserList(userindex).Stats.GLD = UserList(userindex).Stats.GLD - 30000
             UserList(userindex).flags.Desafio = 1
             'ATENCION ACA si usas mod twister ponele este signo ' al call senduserstatsbox de aca abajo si usas 0.11.5 poenele 'call enviaroro(userindex) y sacale al senduserstatbox el ''
@@ -1762,7 +1861,7 @@ Exit Sub
             If UserList(userindex).flags.Comerciando Then Exit Sub
             
             
-            If UserList(userindex).flags.Privilegios = PlayerType.Consejero Or UserList(userindex).flags.Privilegios = PlayerType.Semidios Or UserList(userindex).flags.Privilegios = PlayerType.Dios Then Exit Sub
+            If UserList(userindex).flags.Privilegios = PlayerType.Coordination Then Exit Sub
             
             '¿El target es un NPC valido?
             If UserList(userindex).flags.TargetNPC > 0 Then
@@ -1996,7 +2095,7 @@ Exit Sub
             Exit Sub
             End If
         
-                If UserList(userindex).Pos.Map = 100 Or UserList(userindex).Pos.Map = 107 Or UserList(userindex).Pos.Map = 118 Or UserList(userindex).Pos.Map = 110 Or UserList(userindex).Pos.Map = 120 Or UserList(userindex).Pos.Map = 71 Or UserList(userindex).Pos.Map = 106 Or UserList(userindex).Pos.Map = 78 Or UserList(userindex).Pos.Map = 109 Or UserList(userindex).Pos.Map = 108 Then
+                If UserList(userindex).Pos.Map = 100 Or UserList(userindex).Pos.Map = 99 Or UserList(userindex).Pos.Map = 118 Or UserList(userindex).Pos.Map = 110 Or UserList(userindex).Pos.Map = 120 Or UserList(userindex).Pos.Map = 101 Or UserList(userindex).Pos.Map = 54 Or UserList(userindex).Pos.Map = 78 Or UserList(userindex).Pos.Map = 72 Or UserList(userindex).Pos.Map = 8 Then
                     Call SendData(SendTarget.toindex, userindex, 0, "||416")
                     Exit Sub
                 End If
@@ -2007,22 +2106,14 @@ Exit Sub
                     Exit Sub
                 End If
         
-                If UCase$(rData) = "79" Or UCase$(rData) = "103" Or UCase$(rData) = "82" Or UCase$(rData) = "124" Or UCase$(rData) = "139" Or UCase$(rData) = "30" Or UCase$(rData) = "128" Or UCase$(rData) = "123" Or UCase$(rData) = "114" Or UCase$(rData) = "INVOCACIONES" Or UCase$(rData) = "MIFRIT" Or UCase$(rData) = "POSEIDON" Or UCase$(rData) = "EREBROS" Or UCase$(rData) = "TARRASKE" Then
+                If UCase$(rData) = "22" Or UCase$(rData) = "90" Or UCase$(rData) = "17" Or UCase$(rData) = "INVOCACIONES" Then
                     If UserList(userindex).flags.EsPremium = 0 Then
                         Call SendData(SendTarget.toindex, userindex, 0, "||418")
                         Exit Sub
                     End If
                     
                         If UCase$(rData) = "INVOCACIONES" Then
-                            UserList(userindex).UserPremiumMap = 7
-                        ElseIf UCase$(rData) = "MIFRIT" Then
-                            UserList(userindex).UserPremiumMap = 178
-                        ElseIf UCase$(rData) = "POSEIDON" Then
-                            UserList(userindex).UserPremiumMap = 158
-                        ElseIf UCase$(rData) = "TARRASKE" Then
-                            UserList(userindex).UserPremiumMap = 175
-                        ElseIf UCase$(rData) = "EREBROS" Then
-                            UserList(userindex).UserPremiumMap = 172
+                            UserList(userindex).UserPremiumMap = 93
                         Else
                             UserList(userindex).UserPremiumMap = val(rData)
                         End If
@@ -2040,7 +2131,6 @@ Exit Sub
         End If
         
         If UCase$(rData) = "FORTALEZA" Or UCase$(rData) = "35" Then
-        
                 If UCase$(Guilds(UserList(userindex).GuildIndex).GuildName) <> UCase$(Fortaleza) Then
                     Call SendData(SendTarget.toindex, userindex, 0, "||420")
                     Exit Sub
@@ -2073,7 +2163,6 @@ Exit Sub
             mapa = MapCastilloN
         End If
         If UCase$(rData) = "31" Then
-        
                 If UCase$(Guilds(UserList(userindex).GuildIndex).GuildName) <> UCase$(CastilloSur) Then
                     Call SendData(SendTarget.toindex, userindex, 0, "||420")
                     Exit Sub
@@ -2084,7 +2173,6 @@ Exit Sub
             mapa = MapCastilloS
         End If
         If UCase$(rData) = "34" Then
-        
                 If UCase$(Guilds(UserList(userindex).GuildIndex).GuildName) <> UCase$(CastilloEste) Then
                     Call SendData(SendTarget.toindex, userindex, 0, "||420")
                     Exit Sub
@@ -2094,6 +2182,7 @@ Exit Sub
             UserList(userindex).Counters.TransporteCastillos(34) = 2
             mapa = MapCastilloE
         End If
+        
         If UCase$(rData) = "32" Then
         
                 If UCase$(Guilds(UserList(userindex).GuildIndex).GuildName) <> UCase$(CastilloOeste) Then
@@ -2107,7 +2196,6 @@ Exit Sub
         End If
        
         If mapa = 0 Then Exit Sub
-        
                 If userindex = GranPoder Then
                     Call OtorgarGranPoder(0)
                     UserList(userindex).flags.GranPoder = 0
@@ -2123,79 +2211,19 @@ Exit Sub
 If UCase$(Left$(rData, 5)) = "/HORA" Then
     rData = Right$(rData, Len(rData) - 5)
     
-  If UserList(userindex).flags.Privilegios > PlayerType.User Then
-    Call SendData(SendTarget.ToAll, 0, 0, "||853@" & time & "@" & Date)
+  If UserList(userindex).flags.Privilegios > PlayerType.UserSupport Then
+    Call SendData(SendTarget.ToAll, 0, 0, "||853@" & Time & "@" & Date)
   Else
-    Call SendData(SendTarget.toindex, userindex, 0, "||853@" & time & "@" & Date)
+    Call SendData(SendTarget.toindex, userindex, 0, "||853@" & Time & "@" & Date)
   End If
   
     Exit Sub
 End If
 
-If UCase$(Left$(rData, 10)) = "/DESAFIAR " Then
-    rData = Right$(rData, Len(rData) - 10)
-    
-    tIndex = NameIndex(rData)
-    
-    If UserList(userindex).Counters.TimeComandos > 0 Then Call SendData(toindex, userindex, 0, "||290"): Exit Sub
-    UserList(userindex).Counters.TimeComandos = 5
-            
-    If tIndex <= 0 Then
-    Call SendData(SendTarget.toindex, userindex, 0, "||196")
-        Exit Sub
-    ElseIf tIndex = userindex Then
-        Exit Sub
-    ElseIf MapaEspecial(userindex) Or UserList(userindex).EnCvc = True Or UserList(userindex).flags.Muerto = 1 Then
-    Call SendData(SendTarget.toindex, userindex, 0, "||239")
-        Exit Sub
-    ElseIf MapaEspecial(tIndex) Or UserList(tIndex).EnCvc = True Or UserList(tIndex).flags.Muerto = 1 Or UserList(tIndex).flags.Muerto = 1 Then
-    Call SendData(SendTarget.toindex, userindex, 0, "||422")
-        Exit Sub
-    ElseIf MapInfo(MapaDesafio2vs2).NumUsers >= 4 Then 'mapa de desafio
-            Call SendData(SendTarget.toindex, userindex, 0, "||423")
-        Exit Sub
-    ElseIf UserList(userindex).Stats.GLD < 15000 Then
-            Call SendData(SendTarget.toindex, userindex, 0, "||215@15.000")
-        Exit Sub
-    ElseIf UserList(tIndex).clase = UserList(userindex).clase Then
-            Call SendData(SendTarget.toindex, userindex, 0, "||424")
-        Exit Sub
-    ElseIf Desafio2vs2(3) <> 0 Or Desafio2vs2(4) <> 0 Then
-            Call SendData(SendTarget.toindex, userindex, 0, "||425")
-        Exit Sub
-    End If
-              
-    If UserList(tIndex).flags.MandoDesafioA = userindex Then
-        Desafio2vs2(3) = userindex
-        Desafio2vs2(4) = tIndex
-        UserList(userindex).Stats.GLD = UserList(userindex).Stats.GLD - 15000
-        UserList(tIndex).Stats.GLD = UserList(tIndex).Stats.GLD - 15000
-        SendUserGLD (tIndex)
-        SendUserGLD (userindex)
-        SendData SendTarget.ToAll, 0, 0, "||426"
-        Call WarpUserChar(Desafio2vs2(1), MapaDesafio2vs2, 51, 32, True) 'Mapa y posicion del mapa de desafio
-        Call WarpUserChar(Desafio2vs2(2), MapaDesafio2vs2, 53, 32, True) 'Mapa y posicion del mapa de desafio
-        Call WarpUserChar(userindex, MapaDesafio2vs2, 51, 48, True) 'Mapa y posicion del mapa de desafio
-        Call WarpUserChar(tIndex, MapaDesafio2vs2, 53, 48, True) 'Mapa y posicion del mapa de desafio
-        SendData SendTarget.toindex, Desafio2vs2(1), 0, "||427@" & UserList(userindex).Name & "@" & UserList(userindex).clase & "@" & UserList(userindex).Stats.ELV & "@" & UserList(tIndex).Name & "@" & UserList(tIndex).clase & "@" & UserList(tIndex).Stats.ELV
-        SendData SendTarget.toindex, Desafio2vs2(2), 0, "||427@" & UserList(userindex).Name & "@" & UserList(userindex).clase & "@" & UserList(userindex).Stats.ELV & "@" & UserList(tIndex).Name & "@" & UserList(tIndex).clase & "@" & UserList(tIndex).Stats.ELV
-        UserList(userindex).flags.MandoDesafioA = 0
-        UserList(userindex).flags.TieneDesafioDe = 0
-        UserList(tIndex).flags.MandoDesafioA = 0
-        UserList(tIndex).flags.TieneDesafioDe = 0
-    Else
-        UserList(userindex).flags.MandoDesafioA = tIndex
-        UserList(tIndex).flags.TieneDesafioDe = userindex
-        SendData SendTarget.toindex, tIndex, 0, "||428@" & UserList(userindex).Name
-    End If
-    
- Exit Sub
-End If
-
     'Mensaje del servidor a GMs - Lo ubico aqui para que no se confunda con /GM [Gonzalo]
     If UCase$(Left$(rData, 6)) = "/GMSG " And UserList(userindex).flags.Privilegios > PlayerType.User Then
         rData = Right$(rData, Len(rData) - 6)
-        Call LogGM(UserList(userindex).Name, "Mensaje a Gms:" & rData, (UserList(userindex).flags.Privilegios = PlayerType.Consejero))
+        Call LogGM(UserList(userindex).Name, "Mensaje a Gms:" & rData, False)
         If rData <> "" Then
             Call SendData(SendTarget.ToAdmins, 0, 0, "||429@" & UserList(userindex).Name & "@" & rData)
         End If
@@ -2211,7 +2239,7 @@ End If
             Print #n,
             Print #n, "########################################################################"
             Print #n, "########################################################################"
-            Print #n, "Usuario:" & UserList(userindex).Name & "  Fecha:" & Date & "    Hora:" & time
+            Print #n, "Usuario:" & UserList(userindex).Name & "  Fecha:" & Date & "    Hora:" & Time
             Print #n, "########################################################################"
             Print #n, "BUG:"
             Print #n, Right$(rData, Len(rData) - 5)
@@ -2247,7 +2275,7 @@ End If
             rData = Right$(rData, Len(rData) - 6)
             tIndex = NameIndex(rData)
             
-            If EsAdministrador(rData) = True Or EsSubAdministrador(rData) = True Or EsDeveloper(rData) = True Or EsDirector(rData) = True Or EsGranDios(rData) = True Or EsDios(rData) = True Or EsSemiDios(rData) = True Or EsEventMaster(rData) = True Or EsConsejero(rData) = True Then
+            If (IsAdministrator(rData)) Or (IsDevelopment(rData)) Or (IsCoordination(rData)) Or (IsTournamentManager(rData)) Or (IsEventManager(rData)) Or (IsUserSupport(rData)) Then
                 Call SendData(SendTarget.toindex, userindex, 0, "||433")
             Exit Sub
             End If
@@ -2279,14 +2307,14 @@ End If
     
     If UCase$(Left$(rData, 7)) = "/NOADV " Then
         Name = Right$(rData, Len(rData) - 7)
-                If Name = "" Then Exit Sub
+            If Name = "" Then Exit Sub
        
             Name = Replace(Name, "\", "")
             Name = Replace(Name, "/", "")
        
             tIndex = NameIndex(rData)
      
-        If UserList(userindex).flags.Privilegios < PlayerType.Semidios Then Exit Sub
+        If UserList(userindex).flags.Privilegios > PlayerType.User And UserList(userindex).flags.Privilegios < PlayerType.Coordination Then Exit Sub
      
         If FileExist(CharPath & UCase$(Name) & ".chr", vbNormal) = False Then
         SendData SendTarget.toindex, userindex, 0, "||440"
@@ -2307,14 +2335,14 @@ End If
         End If
  
 If UCase$(Left$(rData, 9)) = "/LIBERAR " Then
-If UserList(userindex).flags.Privilegios < PlayerType.Semidios Then Exit Sub
+If UserList(userindex).flags.Privilegios > PlayerType.User And UserList(userindex).flags.Privilegios < PlayerType.Coordination Then Exit Sub
 rData = Right$(rData, Len(rData) - 9)
 tIndex = NameIndex(rData)
 
     If tIndex <= 0 Then
     Call SendData(SendTarget.toindex, userindex, 0, "||442")
     Else
-        Call WarpUserChar(tIndex, 28, 54, 36, True)
+        Call WarpUserChar(tIndex, 1, 54, 36, True)
         UserList(tIndex).Counters.Pena = 0
         Call SendData(SendTarget.ToAdmins, 0, 0, "||443@" & UserList(userindex).Name & "@" & UserList(tIndex).Name)
         Call SendData(SendTarget.toindex, tIndex, 0, "||444")
@@ -2326,7 +2354,7 @@ If UCase$(Left$(rData, 7)) = "/PENAS " Then
         Name = Right$(rData, Len(rData) - 7)
         If Name = "" Then Exit Sub
         
-        If UserList(userindex).flags.Privilegios < PlayerType.Semidios Then Exit Sub
+        If UserList(userindex).flags.Privilegios < PlayerType.UserSupport Then Exit Sub
    
         Name = Replace(Name, "\", "")
         Name = Replace(Name, "/", "")
@@ -2366,12 +2394,14 @@ If UCase$(Left$(rData, 7)) = "/PENAS " Then
         Exit Sub
         End If
         
-        If UserList(userindex).Stats.GLD < 300000 Then
-            Call SendData(SendTarget.toindex, userindex, 0, "||215@300.000")
+        If UserList(userindex).Pos.Map = 141 Then Exit Sub
+        
+        If UserList(userindex).Stats.GLD < 120000 Then
+            Call SendData(SendTarget.toindex, userindex, 0, "||215@120.000")
         Exit Sub
         End If
         
-        If UserList(tIndex).Stats.GLD < 300000 Then
+        If UserList(tIndex).Stats.GLD < 120000 Then
             Call SendData(SendTarget.toindex, userindex, 0, "||446")
         Exit Sub
         End If
@@ -2384,7 +2414,7 @@ If UCase$(Left$(rData, 7)) = "/PENAS " Then
         If tIndex = userindex Then Exit Sub
         
         'Si la pareja no puede participar
-        If UserList(tIndex).EnCvc = True Or UserList(tIndex).flags.Muerto = 1 Or TieneItemDiosEquipado(tIndex) = True Or UserList(tIndex).cComercio.cComercia = True Or MapaEspecial(tIndex) Then
+        If UserList(tIndex).EnCvc = True Or UserList(tIndex).flags.Muerto = 1 Or TieneItemDiosEquipado(tIndex) = True Or UserList(tIndex).cComercio.cComercia = True Or UserList(tIndex).Pos.Map = 101 Or UserList(tIndex).Pos.Map = 54 Or UserList(tIndex).Pos.Map = 8 Or UserList(tIndex).Pos.Map = 72 Or UserList(tIndex).Pos.Map = 78 Or UserList(tIndex).Pos.Map = 100 Or UserList(tIndex).Pos.Map = 110 Or UserList(tIndex).Pos.Map = 120 Then
             Call SendData(SendTarget.toindex, userindex, 0, "||447")
         Exit Sub
         End If
@@ -2404,7 +2434,7 @@ If UCase$(Left$(rData, 7)) = "/PENAS " Then
             Exit Sub
         End If
         
-        If MapaEspecial(userindex) Then
+        If UserList(userindex).Pos.Map = 101 Or UserList(userindex).Pos.Map = 54 Or UserList(userindex).Pos.Map = 8 Or UserList(userindex).Pos.Map = 72 Or UserList(userindex).Pos.Map = 78 Or UserList(userindex).Pos.Map = 100 Or UserList(userindex).Pos.Map = 99 Or UserList(userindex).Pos.Map = 120 Or UserList(userindex).Pos.Map = 110 Then
             Call SendData(SendTarget.toindex, userindex, 0, "||291")
         Exit Sub
         End If
@@ -2443,10 +2473,10 @@ If UCase$(Left$(rData, 7)) = "/PENAS " Then
             UserList(Pareja.Jugador(2)).flags.YAnterior = UserList(Pareja.Jugador(2)).Pos.Y
             
             
-            Call WarpUserChar(Pareja.Jugador(1), 106, 41, 55) 'mapa 2vs2, posicion jugador numero 1
-            Call WarpUserChar(Pareja.Jugador(2), 106, 43, 57) 'mapa 2vs2, posicion jugador numero 2
-            UserList(Pareja.Jugador(1)).Stats.GLD = UserList(Pareja.Jugador(1)).Stats.GLD - 300000
-            UserList(Pareja.Jugador(2)).Stats.GLD = UserList(Pareja.Jugador(2)).Stats.GLD - 300000
+            Call WarpUserChar(Pareja.Jugador(1), 54, 41, 55) 'mapa 2vs2, posicion jugador numero 1
+            Call WarpUserChar(Pareja.Jugador(2), 54, 43, 57) 'mapa 2vs2, posicion jugador numero 2
+            UserList(Pareja.Jugador(1)).Stats.GLD = UserList(Pareja.Jugador(1)).Stats.GLD - 120000
+            UserList(Pareja.Jugador(2)).Stats.GLD = UserList(Pareja.Jugador(2)).Stats.GLD - 120000
             SendUserGLD (Pareja.Jugador(1))
             SendUserGLD (Pareja.Jugador(2))
             Call SendData(SendTarget.ToAll, 0, 0, "||450@" & UserList(userindex).Name & "@" & UserList(tIndex).Name)
@@ -2478,12 +2508,12 @@ If UCase$(Left$(rData, 7)) = "/PENAS " Then
                 UserList(Pareja.Jugador(4)).flags.XAnterior = UserList(Pareja.Jugador(4)).Pos.X
                 UserList(Pareja.Jugador(4)).flags.YAnterior = UserList(Pareja.Jugador(4)).Pos.Y
                 
-                Call WarpUserChar(Pareja.Jugador(1), 106, 41, 55) 'mapa 2vs2, posicion jugador numero 1
-                Call WarpUserChar(Pareja.Jugador(2), 106, 43, 57) 'mapa 2vs2, posicion jugador numero 2
-                Call WarpUserChar(Pareja.Jugador(3), 106, 60, 40) 'mapa 2vs2, posicion jugador numero 3
-                Call WarpUserChar(Pareja.Jugador(4), 106, 62, 42) 'mapa 2vs2, posicion jugador numero 4
-                UserList(Pareja.Jugador(3)).Stats.GLD = UserList(Pareja.Jugador(3)).Stats.GLD - 300000
-                UserList(Pareja.Jugador(4)).Stats.GLD = UserList(Pareja.Jugador(4)).Stats.GLD - 300000
+                Call WarpUserChar(Pareja.Jugador(1), 54, 41, 55) 'mapa 2vs2, posicion jugador numero 1
+                Call WarpUserChar(Pareja.Jugador(2), 54, 43, 57) 'mapa 2vs2, posicion jugador numero 2
+                Call WarpUserChar(Pareja.Jugador(3), 54, 60, 40) 'mapa 2vs2, posicion jugador numero 3
+                Call WarpUserChar(Pareja.Jugador(4), 54, 62, 42) 'mapa 2vs2, posicion jugador numero 4
+                UserList(Pareja.Jugador(3)).Stats.GLD = UserList(Pareja.Jugador(3)).Stats.GLD - 120000
+                UserList(Pareja.Jugador(4)).Stats.GLD = UserList(Pareja.Jugador(4)).Stats.GLD - 120000
                 SendUserGLD (Pareja.Jugador(3))
                 SendUserGLD (Pareja.Jugador(4))
                 Call SendData(SendTarget.ToAll, 0, 0, "||451@" & UserList(userindex).Name & "@" & UserList(tIndex).Name)

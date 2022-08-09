@@ -1,5 +1,4 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "mscomctl.ocx"
 Begin VB.Form frmProcesos 
    BackColor       =   &H00E0E0E0&
    BorderStyle     =   4  'Fixed ToolWindow
@@ -8,48 +7,29 @@ Begin VB.Form frmProcesos
    ClientLeft      =   1050
    ClientTop       =   4260
    ClientWidth     =   9630
-   Icon            =   "frmProcesos.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   5400
    ScaleWidth      =   9630
    StartUpPosition =   2  'CenterScreen
-   Begin MSComctlLib.ListView Procesos 
+   Begin VB.ListBox Captions 
+      BackColor       =   &H8000000F&
       Height          =   3735
+      IntegralHeight  =   0   'False
       Left            =   120
       TabIndex        =   5
       Top             =   600
       Width           =   9360
-      _ExtentX        =   16510
-      _ExtentY        =   6588
-      View            =   3
-      LabelEdit       =   1
-      LabelWrap       =   0   'False
-      HideSelection   =   -1  'True
-      _Version        =   393217
-      ForeColor       =   0
-      BackColor       =   -2147483633
-      Appearance      =   1
-      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-         Name            =   "Tahoma"
-         Size            =   9.75
-         Charset         =   0
-         Weight          =   400
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      NumItems        =   2
-      BeginProperty ColumnHeader(1) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
-         Text            =   "Archivo"
-         Object.Width           =   13231
-      EndProperty
-      BeginProperty ColumnHeader(2) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
-         SubItemIndex    =   1
-         Text            =   "Peso"
-         Object.Width           =   3176
-      EndProperty
+   End
+   Begin VB.ListBox Procesos 
+      BackColor       =   &H8000000F&
+      Height          =   3735
+      IntegralHeight  =   0   'False
+      Left            =   120
+      TabIndex        =   4
+      Top             =   600
+      Width           =   9360
    End
    Begin VB.CommandButton Command1 
       Caption         =   "<<<<<<<<<"
@@ -82,15 +62,6 @@ Begin VB.Form frmProcesos
       Text            =   "Text1"
       Top             =   120
       Width           =   9375
-   End
-   Begin VB.ListBox Captions 
-      BackColor       =   &H8000000F&
-      Height          =   3735
-      IntegralHeight  =   0   'False
-      Left            =   120
-      TabIndex        =   4
-      Top             =   600
-      Width           =   9360
    End
 End
 Attribute VB_Name = "frmProcesos"
@@ -185,4 +156,3 @@ Command2.Enabled = False
 Procesos.Visible = False
 Captions.Visible = True
 End Sub
-

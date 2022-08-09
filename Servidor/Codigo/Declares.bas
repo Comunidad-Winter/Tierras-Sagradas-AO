@@ -31,37 +31,40 @@ Attribute VB_Name = "Declaraciones"
 
 Option Explicit
 
-Public prgRun As Boolean
-Public Const tCmd = 40
-Public enviarDatos As Boolean
-
 Declare Function ShellExecute Lib "shell32.dll" Alias _
     "ShellExecuteA" (ByVal hWnd As Long, ByVal lpOperation As String, ByVal lpFile As String, _
     ByVal lpParameters As String, ByVal lpDirectory As String, ByVal nShowCmd As Long) As Long
     
-Public EventosAutomaticos As Byte
-Public textoNoticia As String
-
-Public mapaCarrera As Byte
-    
 Public ObjSlot1 As Byte
 Public ObjSlot2 As Byte
 
-Public numMVP As Integer
-
 Public BOnlines As Integer
 Public aDos As New clsAntiDoss
-Public topeUser As Long
 
 'Portales de dioses
-Public MinutosPortalesDios As Byte
-Public PortalAbierto As Boolean
-Public PortalMap As Byte
-Public AvatarInvocado As Integer
-Public DiosInvocado As Integer
-Public GuardiaInvocado(1 To 2) As Integer
-Public GuardiasActivos As Boolean
 Public AlmasNecesarias As Long
+
+'Misiones diarias perrito
+Public MisionesDiarias() As tMDiarias
+Public ArrayExp(1 To 59) As Long
+
+Public Type tMDiarias
+    Nombre As String
+    Info As String
+    Dia As Byte
+    Tipo As Byte
+    Cantidad As Long
+    QuestNumber As Byte
+    NumNPC As Integer
+    PTS As Integer
+    pOro As Long
+    pObjetoIndex As Integer
+    pObjetoAmount As Integer
+    pPuntos As Long
+    ConteoUser As Long
+    NumeroMision As Byte
+    Completada As Byte
+End Type
 
 'Mensaje automatico
 Public MinutitosMensaje As Integer
@@ -69,8 +72,6 @@ Public MensajeAutomatico As Boolean
 Public TextoMensajeAutomatico As String
 Public TiempoMensajeAutomatico As Integer
 
-Public Const MapaDesafio2vs2 As Byte = 110
-Public Desafio2vs2(1 To 4) As Integer
 Public TanaTelep As WorldPos
 
 'Guerras
@@ -78,18 +79,14 @@ Public HayGuerraAnvil As Boolean
 Public HayGuerraKhalim As Boolean
 Public Minus As Byte
 
-'HappyHour
-Public HayHH As Boolean
-Public MinutosHH As Byte
-
 Public CofresAzar() As AzarCofres
+
 Public Type AzarCofres
     'Cofres random
     CantObjs As Integer
     ObjIndex() As Integer
     ObjAmount() As Integer
     ObjProbability() As Integer
-    Random As Byte
 End Type
     
 'Donaciones
@@ -99,13 +96,15 @@ Public Type tDonaciones
     ObjValor As Integer
     NumObjs As Byte
     Body As Integer
-    BodyB As Integer
     Arma As Integer
     Escudo As Integer
     Casco As Integer
     Aura As Byte
     GrhIndex As Integer
-    Desc As String
+    Tuniquita As String
+    Tuniquita2 As String
+    Tuniquita3 As String
+    Tuniquita4 As String
 End Type
 
 Public ReyGuerraIndex As Integer
@@ -127,7 +126,7 @@ Type tMensajesSos
     Autor As String
     Contenido As String
 End Type
-Public MensajesSOS(1 To 10000) As tMensajesSos
+Public MensajesSOS(1 To 50) As tMensajesSos
 Public MensajesNumber As Integer
 
 '/FORTALEZA
@@ -149,7 +148,6 @@ Public GuardianesAlianza As Byte
 
 Public CronologiaParticipantes(1 To 64) As String
 Public CronologiaParticipantesList(1 To 64) As String
-Public Rondasdosvdos As Integer
 
 'Duelos
 Public EspectadoresEnArena1 As Byte
@@ -187,11 +185,11 @@ Public itemsubasta As Byte
 Public orosubasta As Long
 Public cantsubasta As Integer
 Public OroOfrecido As Long
-Public OroOfrecidox As String
+Public OroOfrecidox As Long
 Public UltimoOfertador As String
 Public MinutinSubasta As Byte
 Public Subastador As String
-Public objetosubastado As obj
+Public objetosubastado As Obj
 
 'Torneos
 Public TiroCuentaDM As Boolean
@@ -214,6 +212,7 @@ Public ReyON As Byte
 Public MurioDragon As Byte
 Public GuardiasRey As Byte
 
+Public UltimaParty As Long
 Public TiempoDuelo(1 To 4) As Byte
 Public PremiosCastis As Byte
 Public VerPrivados As Boolean
@@ -221,15 +220,15 @@ Public VerClanes As Boolean
 
 Public InvocoBicho As Boolean
 Public SegundosInvo As Byte
-Public Const mapainvo = 152
-Public Const mapainvoX1 = 46
-Public Const mapainvoY1 = 31
-Public Const mapainvoX2 = 50
-Public Const mapainvoY2 = 34
-Public Const mapainvoX3 = 54
-Public Const mapainvoY3 = 31
-Public Const mapainvoX4 = 50
-Public Const mapainvoY4 = 28
+Public Const mapainvo = 93
+Public Const mapainvoX1 = 29
+Public Const mapainvoY1 = 26
+Public Const mapainvoX2 = 26
+Public Const mapainvoY2 = 29
+Public Const mapainvoX3 = 32
+Public Const mapainvoY3 = 29
+Public Const mapainvoX4 = 29
+Public Const mapainvoY4 = 32
 
 ' TODO: Y ESTO ? LO CONOCE GD ?
 Public Nombre1 As String
@@ -258,7 +257,7 @@ Public MixedKey As Long
 Public ServerIp As String
 Public CrcSubKey As String
 
-Public cuentaRegresiva As Long
+Public CuentaRegresiva As Long
 Public MapaCont As Byte
 
 Public CastilloNorte As String
@@ -310,15 +309,12 @@ End Enum
 
 Public Enum PlayerType
     User = 0
-    Consejero = 1
-    Semidios = 2
-    EventMaster = 3
-    Dios = 4
-    GranDios = 8
-    Director = 9
-    Developer = 10
-    SubAdministrador = 11
-    Administrador = 12
+    UserSupport = 1
+    EventManager = 2
+    TournamentManager = 3
+    Coordination = 4
+    Development = 5
+    Administrator = 6
 End Enum
 
 Public Const LimiteNewbie As Byte = 9
@@ -377,7 +373,6 @@ Public Enum eTrigger
     ZONASEGURA = 4
     ANTIPIQUETE = 5
     ZONAPELEA = 6
-    SINELE = 7
 End Enum
 
 ''
@@ -499,7 +494,6 @@ Public Enum eNPCType
     QuestNoble = 17
     NpcDioses = 18
     cirujano = 19
-    NpcBargomaud = 20
     QuintaJera = 21
     BoveClan = 22
     Correos = 23
@@ -668,7 +662,7 @@ Public Const MAX_INVENTORY_OBJS As Integer = 10000
 
 ''
 ' Cantidad de "slots" en el inventario
-Public Const MAX_INVENTORY_SLOTS As Byte = 25
+Public Const MAX_INVENTORY_SLOTS As Byte = 35
 
 ' CATEGORIAS PRINCIPALES
 Public Enum eOBJType
@@ -712,18 +706,8 @@ Public Enum eOBJType
     otFragmento = 45
     otPocionResu = 46
     otCofreAzar = 47
-    otMontura = 48
-    otCofreJDH = 49
-    otScroll = 50
-    otSacos = 51
-    otRenunciaH = 52
-    otSubeClan6 = 53
-    otSubeClan7 = 54
-    otRenunciaA = 55
     otCualquiera = 1000
 End Enum
-
-Public diosAbierto As String
 
 'Texto
 Public Const FONTTYPE_GANAR As String = "~240~240~50~1~0"
@@ -738,7 +722,6 @@ Public Const FONTTYPE_TSUBASTA As String = "~255~255~255~0~0"
 Public Const FONTTYPE_TDSUBASTA As String = "~255~255~255~1~0"
 Public Const FONTTYPE_SUBASTA As String = "~48~128~255~0~0"
 Public Const FONTTYPE_NPCS As String = "~86~87~89~0~0"
-Public Const FONTTYPE_NPCSX As String = "~255~83~255~0~0"
 Public Const FONTTYPE_ATNPC As String = "~114~0~4~1~0"
 Public Const FONTTYPE_GANAORO As String = "~145~9~179~0~0"
 Public Const FONTTYPE_DIOSES As String = "~100~0~255~0~0"
@@ -772,18 +755,7 @@ Public Const FONTTYPE_GLOBALUSUARIO As String = "~173~170~255~0~0"
 Public Const FONTTYPE_GLOBALNOBLE As String = "~255~255~0~0~0"
 Public Const FONTTYPE_GLOBALGM As String = "~0~255~128~0~0"
 
-'Colores Comunes
-Public Const FONTTYPE_BLANCO As String = "~255~255~255~0~0"
-Public Const FONTTYPE_BORDO As String = "~128~0~0~0~0"
-Public Const FONTTYPE_VERDE As String = "~0~255~0~0~0"
-Public Const FONTTYPE_AZUL As String = "~0~0~255~0~0"
-Public Const FONTTYPE_VIOLETA As String = "~128~0~128~0~0"
-Public Const FONTTYPE_AMARILLO As String = "~255~255~0~0~0"
-Public Const FONTTYPE_CELESTE As String = "~128~255~255~0~0"
-Public Const FONTTYPE_GRIS As String = "~130~130~130~0~0"
-
 'Colores en negrita
-Public Const FONTTYPE_BLANCON As String = "~255~255~255~1~0"
 Public Const FONTTYPE_BORDON As String = "~128~0~0~1~0"
 Public Const FONTTYPE_VERDEN As String = "~0~255~0~1~0"
 Public Const FONTTYPE_OLIVE As String = "~107~142~35~1~0"
@@ -795,7 +767,6 @@ Public Const FONTTYPE_DON As String = "~255~0~0~0~1"
 Public Const FONTTYPE_AZULC As String = "~0~64~128~1~0"
 
 'Colores en cursiva & negrita
-Public Const FONTTYPE_BLANCOCN As String = "~255~255~255~1~1"
 Public Const FONTTYPE_BORDOCN As String = "~128~0~0~1~1"
 Public Const FONTTYPE_VERDECN As String = "~0~255~0~1~1"
 Public Const FONTTYPE_ROJOCN As String = "~255~0~0~1~1"
@@ -814,6 +785,8 @@ Public Const FONTTYPE_CELESTEC As String = "~128~255~255~0~1"
 Public Const FONTTYPE_GRISC As String = "~130~130~130~0~1"
 Public Const FONTTYPE_VERDEL As String = "~0~185~0~1~0"
 
+
+
 'Estadisticas
 Public Const STAT_MAXELV As Byte = 70
 Public Const STAT_MAXSTA As Integer = 30000
@@ -821,8 +794,6 @@ Public Const STAT_MAXMAN As Integer = 30000
 Public Const STAT_MAXHIT_UNDER36 As Byte = 99
 Public Const STAT_MAXHIT_OVER36 As Integer = 999
 Public Const STAT_MAXDEF As Byte = 99
-
-Public ArrayExp(1 To STAT_MAXELV) As Long
 
 
 ' **************************************************************
@@ -911,7 +882,7 @@ Public Type tHechizo
     Telepo As Byte
     
     Invoca As Byte
-    numNPC As Integer
+    NumNPC As Integer
     Cant As Integer
     
     Materializa As Byte
@@ -960,6 +931,12 @@ Public Type Inventario
     NroItems As Integer
 End Type
 
+Public Type tPartyData
+    pIndex As Integer
+    RemXP As Double 'La exp. en el server se cuenta con Doubles
+    TargetUser As Integer 'Para las invitaciones
+End Type
+
 Public Type Position
     X As Integer
     Y As Integer
@@ -975,11 +952,6 @@ Public Type FXdata
     Nombre As String
     GrhIndex As Integer
     Delay As Integer
-End Type
-
-Public Type tSkins
-    numObj As Integer
-    newGraf As Integer
 End Type
 
 'Datos de user o npc
@@ -1033,7 +1005,6 @@ Public Type ObjData
     Municion As Integer
     
     Inmoviliza As Byte
-    probInmov As Byte
     
     Crucial As Byte
     AntiLimpieza As Byte
@@ -1055,12 +1026,6 @@ Public Type ObjData
     MinSkill As Integer
     LingoteIndex As Integer
     
-    typeScroll As Byte
-    timeScroll As Byte
-    multScroll As Integer
-    
-    cantCredits As Integer
-    
     MinHIT As Integer 'Minimo golpe
     MaxHIT As Integer 'Maximo golpe
     
@@ -1076,10 +1041,6 @@ Public Type ObjData
     MaxDef As Integer ' Armaduras
     
     Ropaje As Integer 'Indice del grafico del ropaje
-    RopajeB As Integer
-    
-    esVoladora As Byte
-    razaDoble As Byte
     
     WeaponAnim As Integer ' Apunta a una anim de armas
     ShieldAnim As Integer ' Apunta a una anim de escudo
@@ -1099,7 +1060,6 @@ Public Type ObjData
     IndexCerradaLlave As Integer
     
     TipoCofre As Byte
-    cofreLlave As Integer
     
     RazaEnana As Byte
     Mujer As Byte
@@ -1119,7 +1079,7 @@ Public Type ObjData
     SkHerreria As Integer
     SkCarpinteria As Integer
     
-    texto As String
+    Texto As String
     
     'Clases que no tienen permitido usar este obj
     ClaseProhibida(1 To NUMCLASES) As String
@@ -1140,7 +1100,7 @@ Public Type ObjData
     Refuerzo As Byte
 End Type
 
-Public Type obj
+Public Type Obj
     ObjIndex As Integer
     Amount As Integer
 End Type
@@ -1274,11 +1234,8 @@ Public Type sRanking
     TOPFrags(1 To 3) As String
     TOPTorneos(1 To 3) As String
     TOPRondas(1 To 3) As String
-    TOPReputacion(1 To 3) As String
+    TOPEvents(1 To 3) As String
 End Type
-
-Public AodefConv As AoDefenderConverter
-Public SuperClave As String
 
 Public Type UserCofres
     'Dioses
@@ -1286,52 +1243,34 @@ Public Type UserCofres
     Cant As String
 End Type
 
-Public Type userScroll
-    timeScroll As Integer
-    time As Integer
-    multScroll As Byte
-End Type
-
 'Flags
 Public Type UserFlags
-    levitando As Byte
-    bCheat As Boolean
-    tieneMacro As Byte
-    enBatalla As Boolean
-    teamNumber As Byte
-    batDeads As Integer
-    batSeconds As Integer
-    NotMove As Byte
-    evLuz As Boolean
-    EnJDH As Boolean
-    tmpPos As WorldPos
-    EventoFacc As Boolean
+    TimeDeads As Byte
+    CantDeads As Byte
     EnAram As Boolean
     AramRojo As Boolean
     AramAzul As Boolean
     AramDeads As Integer
     AramSeconds As Integer
-    AntiAFK As Boolean
-    tieneRanking As Boolean
-    cantAmigos As Byte
+    AntiAFK As Long
+    TieneRanking As Boolean
+    PosRanking As Byte
     NombreAmigo(1 To 20) As String
+    AmigoDesadmitido(1 To 20) As Byte
     PuedeEntrarCVC As Boolean
     UltimoMatado As String
-    Probabilidades(1 To 200) As Byte
     NumCorreos As Byte
     NueCorreos(1 To 30) As String
     Correo(1 To 30) As String
-    itemsCorreo(1 To 30) As String
     PuedeRetirarOro As Byte
     PuedeRetirarObj As Byte
     OroQueOferto As Long
-    RondasDesafio2vs2 As Integer
     MandoDesafioA As Integer
     TieneDesafioDe As Integer
     TiempoOnlineHoy As Long
-    TiempoParaCofres As Byte
+    TiempoParaCofres As Long
     Voto As Boolean
-    VotoPorLaOpcion As Integer
+    VotoPorLaOpcion(1 To 5) As Integer
     EnGuerra As Byte
     JerarquiaDios As Byte
     SirvienteDeDios As String
@@ -1360,15 +1299,18 @@ Public Type UserFlags
     ApuestaOro As Long
     MascotinIndex As Integer
     InvocoMascota As Byte
-    partyIndex As Long
+    PartyIndex As Long
     PartySolicitud As Byte
+    PartyLider As Byte
     TeniaElDon As Byte
     Stopped As Byte
     DefensaBurbu             As Integer
     IntervaloBurbu           As Integer
     SubeManaG As Byte
     SubeVidaG As Byte
-    activoScroll(1 To 4) As Boolean
+    ActivoGema As Byte
+    GemaActivada As String
+    TimeGema As Byte
     ConsultaEnviada As Boolean
     NumeroConsulta As Long
     EnCvc As Boolean
@@ -1386,7 +1328,6 @@ Public Type UserFlags
     UltimoEnMandarDuelo As String
     EnDuelo As Boolean
     DueliandoContra As String
-    NroBOT As Byte
     EnQueArena As Byte
     GranPoder As Byte
     Desenterrando As Byte
@@ -1395,7 +1336,7 @@ Public Type UserFlags
     VencePremium As String
     EsNoble As Byte
     estado As Byte
-    MuereQuest As Long
+    MuereQuest(1 To 3) As Long
     Questeando As Byte
     UserNumQuest As Byte
     TimeRevivir As Integer
@@ -1504,7 +1445,6 @@ End Type
 Public Type UserCounters
     TiempoElemental As Byte
     InmoManopla As Byte
-    usoPotaRemo As Byte
     TransportePremium As Byte
     TransporteCastillos(31 To 35) As Byte
     Seguimiento As Intervalos
@@ -1526,8 +1466,8 @@ Public Type UserCounters
     Pena As Long
     SendMapCounter As WorldPos
     Pasos As Integer
+    ConquistandoCS As Byte
      TimeComandos As Byte
-    timeSilenciado As Byte
     '[Gonzalo]
     Saliendo As Boolean
     Salir As Integer
@@ -1563,7 +1503,7 @@ Public Type tFacciones
 End Type
 
 Public Type cFlagComer
-    cObj(20)    As obj
+    cObj(20)    As Obj
     cComercia   As Boolean
     cQuien      As Integer
     cOfrecio    As Boolean
@@ -1573,7 +1513,7 @@ Public Type cFlagComer
 End Type
 
 Public Type cFlagCorreo
-    cObj(20)    As obj
+    cObj(20)    As Obj
     cComercia   As Boolean
     cQuien      As Integer
     cOfrecio    As Boolean
@@ -1619,6 +1559,8 @@ Public Type User
     Genero As String
     email As String
     Hogar As String
+    
+    InventorySlots As Byte
         
     Invent As Inventario
     
@@ -1638,16 +1580,14 @@ Public Type User
     '[/KEVIN]
     
     Counters As UserCounters
-    cantSkins As Byte
-    Skin(1 To 10) As tSkins
     
     MascotasIndex(1 To MAXMASCOTAS) As Integer
     MascotasType(1 To MAXMASCOTAS) As Integer
     NroMacotas As Integer
     
-    Scrolls(1 To 4) As userScroll
     Stats As UserStats
     flags As UserFlags
+    Misiones As tMDiarias
     CofreDios As UserCofres
     ConsejoInfo As UserConsejos
     StatusMith As UserMithStatus
@@ -1670,6 +1610,9 @@ Public Type User
     GuildIndex As Integer   'puntero al array global de guilds
     FundandoGuildAlineacion As ALINEACION_GUILD     'esto esta aca hasta que se parchee el cliente y se pongan cadenas de datos distintas para cada alineacion
     EscucheClan As Integer
+    
+    PartyIndex As Integer   'index a la party q es miembro
+    PartySolicitud As Integer   'index a la party q solicito
     
     AreasInfo As AreaInfo
 End Type
@@ -1701,7 +1644,6 @@ Public Type NpcCounters
 End Type
 
 Public Type NPCFlags
-    esVoladora As Byte
     AfectaParalisis As Byte
     AfectaRelampago As Byte
     GolpeExacto As Byte
@@ -1806,9 +1748,6 @@ Public Type npc
     GiveGLDMin As Long
     GiveGLDMax As Long
     
-    'GiveEXPMin As Long
-    'GiveEXPMax As Long
-    
     Cristales As Byte
     CristalesPequesMin As Byte
     CristalesPequesMax As Byte
@@ -1852,17 +1791,18 @@ End Type
 '**********************************************************
 'Tile
 Public Type MapBlock
+    base_light(0 To 3) As Integer 'Indica si el tile tiene luz propia.
+    light_value(0 To 3) As Long
     particle_group_index As Integer
-    range_light As Integer
-    rgb_light(1 To 3) As Integer
     Blocked As Byte
     Graphic(1 To 4) As Integer
     userindex As Integer
     NpcIndex As Integer
-    OBJInfo As obj
+    OBJInfo As Obj
     TileExit As WorldPos
     trigger As eTrigger
     BotIndex As Long
+    Cofre As Integer
 End Type
 
 'Info del mapa
@@ -1946,7 +1886,6 @@ Public PuedeCrearPersonajes As Integer
 Public ServerSoloGMs As Integer
 
 Public EnPausa As Boolean
-Public EnTesting As Boolean
 
 
 '*****************ARRAYS PUBLICOS*************************
@@ -1970,6 +1909,14 @@ Public BanIps As New Collection
 Public Tanaris As WorldPos
 Public Prision As WorldPos
 Public Libertad As WorldPos
+
+Public ControllerIPs(1 To 600) As IPControl
+
+Public Type IPControl
+    NumIP As String
+    CantConnect As Long
+    CantPackets As Long
+End Type
 
 Public SonidosMapas As New SoundMapInfo
 

@@ -1,4 +1,4 @@
-Línea 150: la clase RichTextLib.RichTextBox del control RecTxt no era una clase de control cargada.
-Línea 184: la clase RichTextLib.RichTextBox del control PrivatesConsole no era una clase de control cargada.
-Línea 263: la clase RichTextLib.RichTextBox del control ClanConsole no era una clase de control cargada.
-Línea 316: la clase RichTextLib.RichTextBox del control GlobalConsole no era una clase de control cargada.
+Línea 219: la clase RichTextLib.RichTextBox del control GlobalConsole no era una clase de control cargada.
+Línea 246: la clase RichTextLib.RichTextBox del control RecTxt no era una clase de control cargada.
+Línea 344: la clase RichTextLib.RichTextBox del control ClanConsole no era una clase de control cargada.
+Línea 371: la clase RichTextLib.RichTextBox del control PrivatesConsole no era una clase de control cargada.

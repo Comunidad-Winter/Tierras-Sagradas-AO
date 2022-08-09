@@ -18,9 +18,9 @@ Private cTempRead2  As String
 Private iCom        As Long
 Private cOferto     As Boolean
 Private cRecivi     As Boolean
-Public Sub comIniciar(rData As String)
-cNombre = ReadField(1, rData, Asc("$"))
-cTempRead = ReadField(2, rData, Asc("$"))
+Public Sub comIniciar(Rdata As String)
+cNombre = ReadField(1, Rdata, Asc("$"))
+cTempRead = ReadField(2, Rdata, Asc("$"))
     For iCom = 1 To 20
         With cItem(iCom)
             cTempRead2 = ReadField(iCom, cTempRead, Asc(","))
@@ -108,21 +108,37 @@ comCarga
 frmNuevoComercio.TusItems.ListIndex = cFo - 1
 End Sub
 Public Sub comEnviarOferta()
-    If cOferto = True Then Exit Sub
-cOferto = True
-Dim cTempPa As String
-    For iCom = 1 To 20
-        cTempPa = cTempPa & iCom & "-" & cItem(iCom).iOfrece & ","
-    Next iCom
-SendData "UOR" & uOro
-SendData "UOC" & cTempPa
+        If cOferto = True Then Exit Sub
+    cOferto = True
+    Dim cTempPa As String
+        For iCom = 1 To 20
+            cTempPa = cTempPa & iCom & "-" & cItem(iCom).iOfrece & ","
+        Next iCom
+        
+    SendData "UOR" & uOro
+    SendData "UOC" & cTempPa
+    
+    'Bloqueamos todo
+    frmNuevoComercio.Can.Enabled = False
+    frmNuevoComercio.cmdAgregarOro.Enabled = False
+    frmNuevoComercio.Command3.Enabled = False
+    frmNuevoComercio.Command2.Enabled = False
+    frmNuevoComercio.Command1.Enabled = False
+    frmNuevoComercio.Command3.Picture = LoadPicture(App.Path & "\Data\Graficos\Principal\ComercioPJ_Ofrecer_Bloqueado.jpg")
+    
 End Sub
-Public Sub comReciviOferta(rData As String)
+Public Sub comReciviOferta(Rdata As String)
 If rOro <> 0 Then frmNuevoComercio.lblOro.Caption = PonerPuntos(rOro)
+
+frmNuevoComercio.Res(1).Enabled = True
+frmNuevoComercio.Res(2).Enabled = True
+
+frmNuevoComercio.Res(2).Picture = General_Load_Interface_Picture("ComercioPJ_Aceptar.jpg")
+frmNuevoComercio.Res(1).Picture = General_Load_Interface_Picture("ComercioPJ_Rechazar.jpg")
 
     For iCom = 1 To 20
         With cOferta(iCom)
-            cTempRead = ReadField(iCom, rData, Asc(","))
+            cTempRead = ReadField(iCom, Rdata, Asc(","))
             .iGrhIndex = ReadField(1, cTempRead, Asc("-"))
             .iCantidad = ReadField(2, cTempRead, Asc("-"))
             .iNombre = ReadField(3, cTempRead, Asc("-"))

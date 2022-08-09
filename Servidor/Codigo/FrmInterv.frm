@@ -663,10 +663,10 @@ IntervaloParaConexion = val(txtIntervaloParaConexion.Text)
 
 IntervaloUserPuedeCastear = val(txtIntervaloLanzaHechizo.Text)
 IntervaloNpcPuedeAtacar = val(txtNPCPuedeAtacar.Text)
-frmMain.TIMER_AI.interval = val(txtAI.Text)
+frmMain.TIMER_AI.Interval = val(txtAI.Text)
 IntervaloUserPuedeTrabajar = val(txtTrabajo.Text)
 IntervaloUserPuedeAtacar = val(txtPuedeAtacar.Text)
-'frmMain.CmdExec.interval = val(txtCmdExec.Text)
+frmMain.CmdExec.Interval = val(txtCmdExec.Text)
 
 
 End Sub
@@ -699,11 +699,11 @@ Call WriteVar(IniPath & "Server.ini", "INTERVALOS", "IntervaloParaConexion", str
 '&&&&&&&&&&&&&&&&&&&&& TIMERS &&&&&&&&&&&&&&&&&&&&&&&
 
 Call WriteVar(IniPath & "Server.ini", "INTERVALOS", "IntervaloLanzaHechizo", str(IntervaloUserPuedeCastear))
-Call WriteVar(IniPath & "Server.ini", "INTERVALOS", "IntervaloNpcAI", frmMain.TIMER_AI.interval)
+Call WriteVar(IniPath & "Server.ini", "INTERVALOS", "IntervaloNpcAI", frmMain.TIMER_AI.Interval)
 Call WriteVar(IniPath & "Server.ini", "INTERVALOS", "IntervaloNpcPuedeAtacar", IntervaloNpcPuedeAtacar)
 Call WriteVar(IniPath & "Server.ini", "INTERVALOS", "IntervaloTrabajo", str(IntervaloUserPuedeTrabajar))
 Call WriteVar(IniPath & "Server.ini", "INTERVALOS", "IntervaloUserPuedeAtacar", str(IntervaloUserPuedeAtacar))
-'Call WriteVar(IniPath & "Server.ini", "INTERVALOS", "IntervaloTimerExec", frmMain.CmdExec.interval)
+Call WriteVar(IniPath & "Server.ini", "INTERVALOS", "IntervaloTimerExec", frmMain.CmdExec.Interval)
 
 MsgBox "Los intervalos se han guardado sin problemas"
 

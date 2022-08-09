@@ -35,8 +35,8 @@ Private Declare Function DestroyWindow Lib "user32" (ByVal hWnd As Long) As Long
 Private Const WS_CHILD = &H40000000
 Public Const GWL_WNDPROC = (-4)
 
-Private Const SIZE_RCVBUF As Long = 4096
-Private Const SIZE_SNDBUF As Long = 4096
+Private Const SIZE_RCVBUF As Long = 8192
+Private Const SIZE_SNDBUF As Long = 8192
 
 ''
 'Esto es para agilizar la busqueda del slot a partir de un socket dado,
@@ -403,7 +403,7 @@ On Error GoTo Errhandler
 Dim nfile As Integer
 nfile = FreeFile ' obtenemos un canal
 Open App.Path & "\logs\custom.log" For Append Shared As #nfile
-Print #nfile, Date & " " & time & "(" & Timer & ") " & str
+Print #nfile, Date & " " & Time & "(" & Timer & ") " & str
 Close #nfile
 
 Exit Sub
@@ -446,9 +446,6 @@ Public Sub EventoSockAccept(ByVal SockID As Long)
 #If UsarQueSocket = 1 Then
 '==========================================================
 'USO DE LA API DE WINSOCK
-'========================
-
-    Static LastTick(1 To 2) As Long
     
     Dim NewIndex As Integer
     Dim Ret As Long
@@ -479,12 +476,6 @@ Public Sub EventoSockAccept(ByVal SockID As Long)
         Exit Sub
     End If
     
-    'No dejamos que abran sockets ilimitadamente
-    If GetTickCount() - LastTick(2) < 150 Then
-       Call WSApiCloseSocket(NuevoSock)
-      Exit Sub
-    End If
-
     'If Ret = INVALID_SOCKET Then
     '    If Err.LastDllError = 11002 Then
     '        ' We couldn't decide if to accept or reject the connection
@@ -515,9 +506,6 @@ Public Sub EventoSockAccept(ByVal SockID As Long)
     End If
 
     If False Then
-    'If SecurityIp.IPSecuritySuperaLimiteConexiones(sa.sin_addr) Then
-        tStr = "ERRLimite de conexiones para su IP alcanzado." & ENDC
-        Call send(ByVal NuevoSock, ByVal tStr, ByVal Len(tStr), ByVal 0)
         Call WSApiCloseSocket(NuevoSock)
         Exit Sub
     End If
@@ -533,15 +521,10 @@ Public Sub EventoSockAccept(ByVal SockID As Long)
     
     If NewIndex <= MaxUsers Then
         
-        If (NewIndex > topeUser - (5 + BOnlines)) Then topeUser = NewIndex + (5 + BOnlines)
         UserList(NewIndex).ip = GetAscIP(sa.sin_addr)
         'Busca si esta banneada la ip
         For i = 1 To BanIps.Count
             If BanIps.Item(i) = UserList(NewIndex).ip Then
-                'Call apiclosesocket(NuevoSock)
-                tStr = "ERRSu IP se encuentra bloqueada en este servidor." & ENDC
-                Call send(ByVal NuevoSock, ByVal tStr, ByVal Len(tStr), ByVal 0)
-                'Call SecurityIp.IpRestarConexion(sa.sin_addr)
                 Call WSApiCloseSocket(NuevoSock)
                 Exit Sub
             End If
@@ -558,14 +541,8 @@ Public Sub EventoSockAccept(ByVal SockID As Long)
         Call AgregaSlotSock(NuevoSock, NewIndex)
         
     Else
-        tStr = "ERRServer lleno." & ENDC
-        Dim AAA As Long
-        AAA = send(ByVal NuevoSock, ByVal tStr, ByVal Len(tStr), ByVal 0)
-        'Call SecurityIp.IpRestarConexion(sa.sin_addr)
         Call WSApiCloseSocket(NuevoSock)
     End If
-    
-    LastTick(2) = GetTickCount() And &H7FFFFFFF
     
 #End If
 End Sub
@@ -575,18 +552,18 @@ Public Sub EventoSockRead(ByVal Slot As Integer, ByRef Datos As String)
 
 Dim T() As String
 Dim loopC As Long
+Dim k As Long
 
-If Len(Datos) > 1500 And Not (UserList(Slot).flags.bCheat) And Not UserList(Slot).flags.UserLogged Then
-    Call SendData(SendTarget.ToAdmins, 0, 0, "N|Seguridad>> IP: " & UserList(Slot).ip & " baneada por intentar enviar paquetes extensos.~255~255~0~0~0")
-    Call LogError("IP Baneada por enviar un paquete mayor a 1000 caracteres: " & UserList(Slot).ip)
+If Len(Datos) > 400 Then
+    Call LogError("IP Baneada por enviar un paquete mayor a 400 caracteres: " & UserList(Slot).ip)
     Call LogError("Paquete enviado: " & Datos)
     Call BanIpAgrega(UserList(Slot).ip)
     Call CloseSocket(Slot)
 End If
 
-Debug.Print Datos
-
 UserList(Slot).RDBuffer = UserList(Slot).RDBuffer & Datos
+
+Debug.Print "Dato: " & Datos & " en el UI " & Slot
 
 T = Split(UserList(Slot).RDBuffer, ENDC)
 If UBound(T) > 0 Then
@@ -696,3 +673,4 @@ Public Function CondicionSocket(ByRef lpCallerId As WSABUF, ByRef lpCallerData A
     CondicionSocket = CF_ACCEPT 'En realdiad es al pedo, porque CondicionSocket se inicializa a 0, pero así es más claro....
 #End If
 End Function
+

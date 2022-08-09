@@ -15,7 +15,6 @@ Begin VB.Form frmUserRequest
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   Icon            =   "frmUserRequest.frx":0000
    LinkTopic       =   "Form1"
    ScaleHeight     =   2430
    ScaleWidth      =   4650

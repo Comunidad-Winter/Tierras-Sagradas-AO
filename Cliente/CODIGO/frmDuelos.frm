@@ -2,14 +2,14 @@ VERSION 5.00
 Begin VB.Form frmDuelos 
    BorderStyle     =   0  'None
    Caption         =   "Form1"
-   ClientHeight    =   9060
+   ClientHeight    =   4485
    ClientLeft      =   0
    ClientTop       =   0
-   ClientWidth     =   5520
+   ClientWidth     =   8985
    LinkTopic       =   "Form1"
    Picture         =   "frmDuelos.frx":0000
-   ScaleHeight     =   9060
-   ScaleWidth      =   5520
+   ScaleHeight     =   4485
+   ScaleWidth      =   8985
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
    Begin VB.Label Jugador8 
@@ -25,12 +25,12 @@ Begin VB.Form frmDuelos
          Italic          =   -1  'True
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H0000FFFF&
+      ForeColor       =   &H00FFFFFF&
       Height          =   375
-      Left            =   3120
+      Left            =   6980
       TabIndex        =   7
-      Top             =   7680
-      Width           =   1335
+      Top             =   3300
+      Width           =   1215
    End
    Begin VB.Label Jugador7 
       Alignment       =   2  'Center
@@ -45,12 +45,12 @@ Begin VB.Form frmDuelos
          Italic          =   -1  'True
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H0000FFFF&
-      Height          =   375
-      Left            =   1080
+      ForeColor       =   &H00FFFFFF&
+      Height          =   315
+      Left            =   4920
       TabIndex        =   6
-      Top             =   7680
-      Width           =   1335
+      Top             =   3300
+      Width           =   1215
    End
    Begin VB.Label Jugador6 
       Alignment       =   2  'Center
@@ -65,11 +65,11 @@ Begin VB.Form frmDuelos
          Italic          =   -1  'True
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H0000FFFF&
-      Height          =   375
-      Left            =   3120
+      ForeColor       =   &H00FFFFFF&
+      Height          =   360
+      Left            =   6880
       TabIndex        =   5
-      Top             =   6120
+      Top             =   1455
       Width           =   1335
    End
    Begin VB.Label Jugador5 
@@ -85,12 +85,12 @@ Begin VB.Form frmDuelos
          Italic          =   -1  'True
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H0000FFFF&
+      ForeColor       =   &H00FFFFFF&
       Height          =   375
-      Left            =   1080
+      Left            =   4920
       TabIndex        =   4
-      Top             =   6120
-      Width           =   1335
+      Top             =   1440
+      Width           =   1215
    End
    Begin VB.Label Jugador4 
       Alignment       =   2  'Center
@@ -105,11 +105,11 @@ Begin VB.Form frmDuelos
          Italic          =   -1  'True
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H0000FFFF&
+      ForeColor       =   &H00FFFFFF&
       Height          =   375
-      Left            =   3120
+      Left            =   2880
       TabIndex        =   3
-      Top             =   4320
+      Top             =   3300
       Width           =   1335
    End
    Begin VB.Label Jugador3 
@@ -125,11 +125,11 @@ Begin VB.Form frmDuelos
          Italic          =   -1  'True
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H0000FFFF&
-      Height          =   375
-      Left            =   1150
+      ForeColor       =   &H00FFFFFF&
+      Height          =   315
+      Left            =   840
       TabIndex        =   2
-      Top             =   4320
+      Top             =   3300
       Width           =   1335
    End
    Begin VB.Label Jugador2 
@@ -145,11 +145,11 @@ Begin VB.Form frmDuelos
          Italic          =   -1  'True
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H0000FFFF&
+      ForeColor       =   &H00FFFFFF&
       Height          =   375
-      Left            =   3120
+      Left            =   2880
       TabIndex        =   1
-      Top             =   2520
+      Top             =   1460
       Width           =   1335
    End
    Begin VB.Label Jugador1 
@@ -165,46 +165,46 @@ Begin VB.Form frmDuelos
          Italic          =   -1  'True
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H0000FFFF&
-      Height          =   375
-      Left            =   1080
+      ForeColor       =   &H00FFFFFF&
+      Height          =   360
+      Left            =   840
       TabIndex        =   0
-      Top             =   2520
+      Top             =   1455
       Width           =   1335
    End
    Begin VB.Image Image1 
-      Height          =   375
-      Left            =   5040
+      Height          =   495
+      Left            =   8520
       Top             =   0
-      Width           =   495
+      Width           =   375
    End
    Begin VB.Image Ingresar 
-      Height          =   480
+      Height          =   450
       Index           =   3
-      Left            =   1880
-      Top             =   8150
-      Width           =   1785
+      Left            =   5680
+      Top             =   3820
+      Width           =   1755
    End
    Begin VB.Image Ingresar 
-      Height          =   480
+      Height          =   450
       Index           =   2
-      Left            =   1900
-      Top             =   6580
-      Width           =   1785
+      Left            =   5680
+      Top             =   1940
+      Width           =   1755
    End
    Begin VB.Image Ingresar 
-      Height          =   480
+      Height          =   450
       Index           =   1
-      Left            =   1950
-      Top             =   4740
-      Width           =   1785
+      Left            =   1660
+      Top             =   3815
+      Width           =   1755
    End
    Begin VB.Image Ingresar 
-      Height          =   480
+      Height          =   450
       Index           =   0
-      Left            =   1900
-      Top             =   3000
-      Width           =   1785
+      Left            =   1660
+      Top             =   1940
+      Width           =   1755
    End
 End
 Attribute VB_Name = "frmDuelos"

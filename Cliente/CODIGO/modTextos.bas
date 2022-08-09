@@ -475,7 +475,7 @@ Public Sub InitFonts()
     With FontTypes(FontTypeNames.FONTTYPE_AZULC)
         .g = 64
         .b = 128
-        .bold = True
+        .italic = True
     End With
     
     With FontTypes(FontTypeNames.FONTTYPE_BLANCOCN)
@@ -666,4 +666,3 @@ For i = 1 To amountMessages
 Next i
  
 End Sub
-

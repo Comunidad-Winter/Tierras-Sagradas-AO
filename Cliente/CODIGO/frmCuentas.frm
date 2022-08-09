@@ -197,6 +197,11 @@ If InStr(1, Mail, "@", vbTextCompare) = 0 Or InStr(1, Mail2, "@", vbTextCompare)
     Exit Sub
 End If
 
+If InStr(1, Pass, "ñ") > 0 Or InStr(1, Pass, "Ñ") > 0 Then
+        Mensaje.Escribir "No puedes utilizar la letra ñ en la contraseña."
+    Exit Sub
+End If
+
 If Check1.Value = vbChecked Then
 '   Call OpenBrowser("http://" & Cliente.ForumURL & "/register.php?", 4)
 End If

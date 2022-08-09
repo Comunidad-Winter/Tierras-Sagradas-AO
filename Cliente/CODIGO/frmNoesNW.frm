@@ -3,37 +3,36 @@ Begin VB.Form frmNoesNW
    BackColor       =   &H00FF8080&
    BorderStyle     =   0  'None
    Caption         =   "Elegí tu alineación"
-   ClientHeight    =   2580
+   ClientHeight    =   4500
    ClientLeft      =   0
    ClientTop       =   0
    ClientWidth     =   6450
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   Picture         =   "frmNoesNW.frx":0000
-   ScaleHeight     =   2580
+   ScaleHeight     =   4500
    ScaleWidth      =   6450
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.Image Image3 
-      Height          =   660
-      Left            =   480
+      Height          =   2100
+      Left            =   420
       MousePointer    =   99  'Custom
-      Top             =   1800
+      Top             =   2190
       Width           =   1455
    End
    Begin VB.Image Image2 
-      Height          =   660
+      Height          =   2100
       Left            =   2520
       MousePointer    =   99  'Custom
-      Top             =   1800
+      Top             =   2185
       Width           =   1455
    End
    Begin VB.Image Image1 
-      Height          =   660
-      Left            =   4680
+      Height          =   2100
+      Left            =   4600
       MousePointer    =   99  'Custom
-      Top             =   1800
+      Top             =   2185
       Width           =   1455
    End
 End

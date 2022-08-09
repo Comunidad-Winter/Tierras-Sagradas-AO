@@ -16,7 +16,6 @@ Begin VB.Form frmMSG
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   Icon            =   "frmMSG.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -36,7 +35,7 @@ Begin VB.Form frmMSG
       EndProperty
       Height          =   405
       Left            =   180
-      MouseIcon       =   "frmMSG.frx":000C
+      MouseIcon       =   "frmMSG.frx":0000
       MousePointer    =   99  'Custom
       TabIndex        =   2
       Top             =   2685
@@ -159,14 +158,14 @@ List1.Clear
 
 End Sub
 
-Private Sub List1_Click()
+Private Sub list1_Click()
 Dim ind As Integer
 ind = Val(ReadField(2, List1.List(List1.ListIndex), Asc("-")))
 End Sub
 
 Private Sub List1_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
 If Button = vbRightButton Then
-    PopupMenu menU_usuario
+    PopUpMenu menU_usuario
 End If
 
 End Sub

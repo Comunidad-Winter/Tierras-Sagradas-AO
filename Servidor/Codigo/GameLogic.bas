@@ -52,7 +52,7 @@ If InMapBounds(Map, X, Y) Then
     
     If MapData(Map, X, Y).TileExit.Map > 0 Then
     
-                    If (MapData(Map, X, Y).TileExit.Map = 31 Or MapData(Map, X, Y).TileExit.Map = 32 Or MapData(Map, X, Y).TileExit.Map = 33 Or MapData(Map, X, Y).TileExit.Map = 34 Or MapData(Map, X, Y).TileExit.Map = 167) And UserList(userindex).flags.Privilegios = PlayerType.User Then
+                    If (MapData(Map, X, Y).TileExit.Map = 31 Or MapData(Map, X, Y).TileExit.Map = 32 Or MapData(Map, X, Y).TileExit.Map = 33 Or MapData(Map, X, Y).TileExit.Map = 34 Or MapData(Map, X, Y).TileExit.Map = 81) And UserList(userindex).flags.Privilegios = PlayerType.User Then
                          If Not UserList(userindex).GuildIndex <> 0 Then
                                 Call SendData(SendTarget.toindex, userindex, 0, "||86")
                                 Call ClosestStablePos(UserList(userindex).Pos, nPos)
@@ -62,56 +62,7 @@ If InMapBounds(Map, X, Y) Then
                              Exit Sub
                          End If
                     End If
-                    
-                    Dim loopC As Long
-                    Dim UsersEnCastillo As Byte
-                    UsersEnCastillo = 0
-                    
-                    'No pueden entrar si son más de 6.
-                    If MapData(Map, X, Y).TileExit.Map = 31 Then
-                            For loopC = 1 To LastUser
-                                If UserList(loopC).GuildIndex > 0 Then
-                                    If UserList(loopC).Pos.Map = 31 And UCase$(Guilds(UserList(loopC).GuildIndex).GuildName) = UCase$(Guilds(UserList(userindex).GuildIndex).GuildName) Then
-                                        UsersEnCastillo = UsersEnCastillo + 1
-                                    End If
-                                End If
-                            Next loopC
-                    ElseIf MapData(Map, X, Y).TileExit.Map = 32 Then
-                            For loopC = 1 To LastUser
-                                If UserList(loopC).GuildIndex > 0 Then
-                                    If UserList(loopC).Pos.Map = 32 And UCase$(Guilds(UserList(loopC).GuildIndex).GuildName) = UCase$(Guilds(UserList(userindex).GuildIndex).GuildName) Then
-                                        UsersEnCastillo = UsersEnCastillo + 1
-                                    End If
-                                End If
-                            Next loopC
-                    ElseIf MapData(Map, X, Y).TileExit.Map = 33 Then
-                            For loopC = 1 To LastUser
-                                If UserList(loopC).GuildIndex > 0 Then
-                                    If UserList(loopC).Pos.Map = 33 And UCase$(Guilds(UserList(loopC).GuildIndex).GuildName) = UCase$(Guilds(UserList(userindex).GuildIndex).GuildName) Then
-                                        UsersEnCastillo = UsersEnCastillo + 1
-                                    End If
-                                End If
-                            Next loopC
-                    ElseIf MapData(Map, X, Y).TileExit.Map = 34 Then
-                            For loopC = 1 To LastUser
-                                If UserList(loopC).GuildIndex > 0 Then
-                                    If UserList(loopC).Pos.Map = 34 And UCase$(Guilds(UserList(loopC).GuildIndex).GuildName) = UCase$(Guilds(UserList(userindex).GuildIndex).GuildName) Then
-                                        UsersEnCastillo = UsersEnCastillo + 1
-                                    End If
-                                End If
-                            Next loopC
-                    End If
-                            
-                            If UsersEnCastillo >= 6 Then
-                                Call SendData(SendTarget.toindex, userindex, 0, "||87")
-                                Call ClosestStablePos(UserList(userindex).Pos, nPos)
-                                
-                                If nPos.X <> 0 And nPos.Y <> 0 Then
-                                   Call WarpUserChar(userindex, nPos.Map, nPos.X, nPos.Y, True)
-                                End If
-                              Exit Sub
-                             End If
-    
+        
         '¿Es mapa de newbies?
         If UCase$(MapInfo(MapData(Map, X, Y).TileExit.Map).Restringir) = "SI" Then
             '¿El usuario es un newbie?
@@ -227,35 +178,35 @@ Sub ClosestLegalPos(Pos As WorldPos, ByRef nPos As WorldPos)
 '*****************************************************************
 
 Dim Notfound As Boolean
-Dim loopC As Integer
+Dim LoopC As Integer
 Dim tX As Integer
 Dim tY As Integer
 
 nPos.Map = Pos.Map
 
 Do While Not LegalPos(Pos.Map, nPos.X, nPos.Y)
-    If loopC > 12 Then
+    If LoopC > 12 Then
         Notfound = True
         Exit Do
     End If
     
-    For tY = Pos.Y - loopC To Pos.Y + loopC
-        For tX = Pos.X - loopC To Pos.X + loopC
+    For tY = Pos.Y - LoopC To Pos.Y + LoopC
+        For tX = Pos.X - LoopC To Pos.X + LoopC
             
             If LegalPos(nPos.Map, tX, tY) Then
                 nPos.X = tX
                 nPos.Y = tY
                 '¿Hay objeto?
                 
-                tX = Pos.X + loopC
-                tY = Pos.Y + loopC
+                tX = Pos.X + LoopC
+                tY = Pos.Y + LoopC
   
             End If
         
         Next tX
     Next tY
     
-    loopC = loopC + 1
+    LoopC = LoopC + 1
     
 Loop
 
@@ -272,36 +223,35 @@ Sub ClosestStablePos(Pos As WorldPos, ByRef nPos As WorldPos)
 '*****************************************************************
 
 Dim Notfound As Boolean
-Dim loopC As Integer
+Dim LoopC As Integer
 Dim tX As Integer
 Dim tY As Integer
 
 nPos.Map = Pos.Map
 
 Do While Not LegalPos(Pos.Map, nPos.X, nPos.Y)
-    If loopC > 12 Then
+    If LoopC > 12 Then
         Notfound = True
         Exit Do
     End If
     
-    For tY = Pos.Y - loopC To Pos.Y + loopC
-        For tX = Pos.X - loopC To Pos.X + loopC
+    For tY = Pos.Y - LoopC To Pos.Y + LoopC
+        For tX = Pos.X - LoopC To Pos.X + LoopC
             
             If LegalPos(nPos.Map, tX, tY) And MapData(nPos.Map, tX, tY).TileExit.Map = 0 Then
                 nPos.X = tX
                 nPos.Y = tY
                 '¿Hay objeto?
                 
-                tX = Pos.X + loopC
-                tY = Pos.Y + loopC
+                tX = Pos.X + LoopC
+                tY = Pos.Y + LoopC
   
             End If
         
         Next tX
     Next tY
     
-    loopC = loopC + 1
-    
+    LoopC = LoopC + 1
 Loop
 
 If Notfound = True Then
@@ -322,6 +272,7 @@ End If
 Name = Replace(Name, "+", " ")
 
 userindex = 1
+
 Do Until UCase$(UserList(userindex).Name) = UCase$(Name)
     
     userindex = userindex + 1
@@ -330,7 +281,6 @@ Do Until UCase$(UserList(userindex).Name) = UCase$(Name)
         NameIndex = 0
         Exit Function
     End If
-    
 Loop
  
 NameIndex = userindex
@@ -366,23 +316,23 @@ End Function
 
 
 Function CheckForSameIP(ByVal userindex As Integer, ByVal UserIP As String) As Boolean
-Dim loopC As Integer
-For loopC = 1 To MaxUsers
-    If UserList(loopC).flags.UserLogged = True Then
-        If UserList(loopC).ip = UserIP And userindex <> loopC Then
+Dim LoopC As Integer
+For LoopC = 1 To MaxUsers
+    If UserList(LoopC).flags.UserLogged = True Then
+        If UserList(LoopC).ip = UserIP And userindex <> LoopC Then
             CheckForSameIP = True
             Exit Function
         End If
     End If
-Next loopC
+Next LoopC
 CheckForSameIP = False
 End Function
 
 Function CheckForSameName(ByVal userindex As Integer, ByVal Name As String) As Boolean
 'Controlo que no existan usuarios con el mismo nombre
-Dim loopC As Long
-For loopC = 1 To MaxUsers
-    If UserList(loopC).flags.UserLogged Then
+Dim LoopC As Long
+For LoopC = 1 To MaxUsers
+    If UserList(LoopC).flags.UserLogged Then
         
         'If UCase$(UserList(LoopC).Name) = UCase$(Name) And UserList(LoopC).ConnID <> -1 Then
         'OJO PREGUNTAR POR EL CONNID <> -1 PRODUCE QUE UN PJ EN DETERMINADO
@@ -390,12 +340,12 @@ For loopC = 1 To MaxUsers
         'ESE EVENTO NO DISPARA UN SAVE USER, LO QUE PUEDE SER UTILIZADO PARA DUPLICAR ITEMS
         'ESTE BUG EN ALKON PRODUJO QUE EL SERVIDOR ESTE CAIDO DURANTE 3 DIAS. ATENTOS.
         
-        If UCase$(UserList(loopC).Name) = UCase$(Name) Then
+        If UCase$(UserList(LoopC).Name) = UCase$(Name) Then
             CheckForSameName = True
             Exit Function
         End If
     End If
-Next loopC
+Next LoopC
 CheckForSameName = False
 End Function
 
@@ -438,41 +388,27 @@ Pos.Y = nY
 
 End Sub
 
-Function LegalPos(ByVal Map As Integer, ByVal X As Integer, ByVal Y As Integer, Optional ByVal PuedeAgua As Boolean = False, Optional userindex As Integer = 0) As Boolean
+Function LegalPos(ByVal Map As Integer, ByVal X As Integer, ByVal Y As Integer, Optional ByVal PuedeAgua As Boolean = False) As Boolean
 
-Dim tmpBlock As Boolean
-If Map = 158 Or Map = 159 Or Map = 160 Then PuedeAgua = True
+If Map = 158 Or Map = 160 Then PuedeAgua = True
 
 '¿Es un mapa valido?
 If (Map <= 0 Or Map > NumMaps) Or _
    (X < MinXBorder Or X > MaxXBorder Or Y < MinYBorder Or Y > MaxYBorder) Then
             LegalPos = False
 Else
-
-    If userindex <> 0 Then
-        If UserList(userindex).flags.levitando And GranPoder = userindex And MapData(Map, X, Y).Blocked = 1 Then
-            Call SendData(SendTarget.toindex, userindex, 0, "||949")
-            tmpBlock = False
-        Else
-            tmpBlock = (MapData(Map, X, Y).Blocked <> 1 Or UserList(userindex).flags.levitando) And MapData(Map, X, Y).userindex = 0 And (MapData(Map, X, Y).NpcIndex = 0)
-        End If
-    Else
-        If Not PuedeAgua Then
-            tmpBlock = (MapData(Map, X, Y).Blocked <> 1) And _
-                           (MapData(Map, X, Y).userindex = 0) And _
-                           (MapData(Map, X, Y).NpcIndex = 0) And _
-                             (Not HayAgua(Map, X, Y))
-        Else
-            tmpBlock = (MapData(Map, X, Y).Blocked <> 1) And _
-                             (MapData(Map, X, Y).userindex = 0) And _
-                             (MapData(Map, X, Y).NpcIndex = 0) And _
-                             (HayAgua(Map, X, Y))
-        End If
-    End If
-    
-    
-    LegalPos = tmpBlock
-
+  
+  If Not PuedeAgua Then
+        LegalPos = (MapData(Map, X, Y).Blocked <> 1) And _
+                   (MapData(Map, X, Y).userindex = 0) And _
+                   (MapData(Map, X, Y).NpcIndex = 0) And _
+                   (Not HayAgua(Map, X, Y))
+  Else
+        LegalPos = (MapData(Map, X, Y).Blocked <> 1) And _
+                   (MapData(Map, X, Y).userindex = 0) And _
+                   (MapData(Map, X, Y).NpcIndex = 0) And _
+                   (HayAgua(Map, X, Y))
+  End If
    
 End If
 
@@ -806,7 +742,7 @@ ElseIf MapData(Map, X - 2, Y + 2).OBJInfo.ObjIndex > 0 Then
     'Reaccion al personaje
     If FoundChar = 1 Then '  ¿Encontro un Usuario?
             
-       If UserList(TempCharIndex).flags.AdminInvisible = 0 Or UserList(userindex).flags.Privilegios = PlayerType.Dios Then
+       If UserList(TempCharIndex).flags.AdminInvisible = 0 Then
                  
                 If EsNewbie(TempCharIndex) Then
                     Stat = Stat & " <NEWBIE>"
@@ -865,7 +801,7 @@ ElseIf MapData(Map, X - 2, Y + 2).OBJInfo.ObjIndex > 0 Then
                     Stat = Stat & " - " & UserList(TempCharIndex).Desc
                 End If
                 
-                If UserList(TempCharIndex).flags.Privilegios = PlayerType.Administrador Then
+                If UserList(TempCharIndex).flags.Privilegios = PlayerType.Administrator Then
                     Stat = Stat & " [Creator]"
                 ElseIf UserList(TempCharIndex).flags.Privilegios > 0 Then
                     Stat = Stat & " [Inmortal]"
@@ -915,25 +851,19 @@ ElseIf MapData(Map, X - 2, Y + 2).OBJInfo.ObjIndex > 0 Then
                     Stat = Stat & " [Campeon de " & UserList(TempCharIndex).flags.SirvienteDeDios & "]"
                 End If
 
-               ' *******************Jerarquia By Azthenwok****************
-                If UserList(TempCharIndex).flags.Privilegios > 11 Then
+               
+                If UserList(TempCharIndex).flags.Privilegios = PlayerType.Administrator Then
                   Stat = Stat & " <Administrador> ~255~255~255~1~0"
-                    ElseIf UserList(TempCharIndex).flags.Privilegios > 10 Then
-                        Stat = Stat & " <Sub Administrador> ~255~198~0~1~0"
-                    ElseIf UserList(TempCharIndex).flags.Privilegios > 9 Then
-                        Stat = Stat & " <Developer> ~128~255~128~1~0"
-                    ElseIf UserList(TempCharIndex).flags.Privilegios > 8 Then
-                        Stat = Stat & " <Director de Game Master> ~123~155~0~1~0"
-                    ElseIf UserList(TempCharIndex).flags.Privilegios > 7 Then
-                        Stat = Stat & " <Game Master> <Gran Dios> ~0~225~128~1~0"
-                    ElseIf UserList(TempCharIndex).flags.Privilegios > 3 Then
-                        Stat = Stat & " <Game Master> <Dios> ~120~250~250~1~0"
-                    ElseIf UserList(TempCharIndex).flags.Privilegios > 2 Then
-                        Stat = Stat & " <Event Master> ~128~128~64~1~0"
-                    ElseIf UserList(TempCharIndex).flags.Privilegios > 1 Then
-                        Stat = Stat & " <Game Master> <Semi Dios> ~0~170~190~1~0"
-                    ElseIf UserList(TempCharIndex).flags.Privilegios > 0 Then
-                        Stat = Stat & " <Game Master> <Consejero> ~0~185~0~1~0"
+                    ElseIf UserList(TempCharIndex).flags.Privilegios = PlayerType.Development Then
+                        Stat = Stat & " <Development Team> ~128~255~128~1~0"
+                    ElseIf UserList(TempCharIndex).flags.Privilegios = PlayerType.Coordination Then
+                        Stat = Stat & " <Coordination Of GMs> ~123~155~0~1~0"
+                    ElseIf UserList(TempCharIndex).flags.Privilegios = PlayerType.TournamentManager Then
+                        Stat = Stat & " <Game Master> <Tournament Manager> ~120~250~250~1~0"
+                    ElseIf UserList(TempCharIndex).flags.Privilegios = PlayerType.EventManager Then
+                        Stat = Stat & " <Game Master> <Event Manager> ~0~170~190~1~0"
+                    ElseIf UserList(TempCharIndex).flags.Privilegios = PlayerType.UserSupport Then
+                        Stat = Stat & " <Game Master> <User Support> ~0~185~0~1~0"
               ' *******************Jerarquia By Azthenwok****************
               ElseIf EsNewbie(TempCharIndex) Then
                         Stat = Stat & " ~255~255~202~1~0"
@@ -984,10 +914,10 @@ ElseIf MapData(Map, X - 2, Y + 2).OBJInfo.ObjIndex > 0 Then
             Dim estatus As String
             
               If UserList(userindex).flags.Privilegios > User Then
-                 Call SendData(SendTarget.toindex, userindex, 0, "N|Nombre : " & Npclist(TempCharIndex).Name & " / " & " Vida : " & Npclist(TempCharIndex).Stats.MinHP & "/" & Npclist(TempCharIndex).Stats.MaxHP & " Numero de NPC : " & Npclist(TempCharIndex).Numero & "~255~113~255~0~0")
+                 Call SendData(SendTarget.toindex, userindex, 0, "N|Nombre : " & Npclist(TempCharIndex).Name & " / " & " Vida : " & Npclist(TempCharIndex).Stats.MinHP & "/" & Npclist(TempCharIndex).Stats.MaxHP & " Numero de NPC : " & Npclist(TempCharIndex).Numero & " Indíce: " & TempCharIndex & "~255~113~255~0~0")
              End If
                  
-            If UserList(userindex).flags.Privilegios >= PlayerType.Semidios Then
+            If UserList(userindex).flags.Privilegios >= PlayerType.UserSupport Then
                 estatus = Npclist(TempCharIndex).Stats.MinHP & "/" & Npclist(TempCharIndex).Stats.MaxHP
             Else
                 If UserList(userindex).Stats.UserSkills(eSkill.Supervivencia) >= 0 And UserList(userindex).Stats.UserSkills(eSkill.Supervivencia) <= 10 Then
@@ -1049,12 +979,7 @@ ElseIf MapData(Map, X - 2, Y + 2).OBJInfo.ObjIndex > 0 Then
                 Call SendData(SendTarget.toindex, userindex, 0, "||673@" & Npclist(TempCharIndex).Stats.MinHP & "@" & Npclist(TempCharIndex).Stats.MaxHP)
             Else
                 If Len(Npclist(TempCharIndex).Desc) > 1 Then
-                 If UserList(userindex).flags.Privilegios >= PlayerType.Semidios Then
-                    Call SendData(SendTarget.toindex, userindex, 0, "N|Nombre: " & Npclist(TempCharIndex).Name & " Vida: " & Npclist(TempCharIndex).Stats.MinHP & "/" & Npclist(TempCharIndex).Stats.MaxHP & " Numero de NPC: " & Npclist(TempCharIndex).Numero & " Indíce: " & TempCharIndex & "" & FONTTYPE_NPCSX)
                     Call SendData(SendTarget.toindex, userindex, 0, "N|" & vbWhite & "°" & Npclist(TempCharIndex).Desc & "°" & Npclist(TempCharIndex).Char.CharIndex & FONTTYPE_INFO)
-                 Else
-                    Call SendData(SendTarget.toindex, userindex, 0, "N|" & vbWhite & "°" & Npclist(TempCharIndex).Desc & "°" & Npclist(TempCharIndex).Char.CharIndex & FONTTYPE_INFO)
-                 End If
                 ElseIf TempCharIndex = CentinelaNPCIndex Then
                     'Enviamos nuevamente el texto del centinela según quien pregunta
                     Call modCentinela.CentinelaSendClave(userindex)

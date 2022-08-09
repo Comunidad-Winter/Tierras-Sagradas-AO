@@ -16,20 +16,60 @@ Begin VB.Form frmEstadisticas
    ScaleWidth      =   375
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
-   Begin VB.PictureBox picInv 
-      BackColor       =   &H00000000&
+   Begin VB.PictureBox picOBJ 
+      BackColor       =   &H80000012&
       BorderStyle     =   0  'None
-      Height          =   2100
-      Left            =   300
-      ScaleHeight     =   2100
-      ScaleWidth      =   1740
-      TabIndex        =   69
-      Top             =   1080
-      Width           =   1740
+      Height          =   495
+      Left            =   4320
+      ScaleHeight     =   495
+      ScaleWidth      =   495
+      TabIndex        =   53
+      Top             =   4320
+      Width           =   495
+   End
+   Begin VB.PictureBox picNPC 
+      BackColor       =   &H80000012&
+      BorderStyle     =   0  'None
+      Height          =   495
+      Index           =   0
+      Left            =   1560
+      Picture         =   "FrmEstadisticas.frx":030A
+      ScaleHeight     =   495
+      ScaleWidth      =   495
+      TabIndex        =   47
+      Top             =   3255
+      Width           =   495
+   End
+   Begin VB.PictureBox picNPC 
+      BackColor       =   &H80000012&
+      BorderStyle     =   0  'None
+      Height          =   495
+      Index           =   1
+      Left            =   2520
+      Picture         =   "FrmEstadisticas.frx":0F4C
+      ScaleHeight     =   495
+      ScaleWidth      =   495
+      TabIndex        =   46
+      Top             =   3255
+      Width           =   495
+   End
+   Begin VB.PictureBox picNPC 
+      BackColor       =   &H80000012&
+      BorderStyle     =   0  'None
+      Height          =   495
+      Index           =   2
+      Left            =   3480
+      Picture         =   "FrmEstadisticas.frx":1B8E
+      ScaleHeight     =   495
+      ScaleWidth      =   495
+      TabIndex        =   45
+      Top             =   3240
+      Width           =   495
    End
    Begin VB.TextBox txtQuestDescription 
       BackColor       =   &H00000000&
       BorderStyle     =   0  'None
+      Enabled         =   0   'False
       BeginProperty Font 
          Name            =   "Tahoma"
          Size            =   9.75
@@ -41,24 +81,122 @@ Begin VB.Form frmEstadisticas
       EndProperty
       ForeColor       =   &H00C0FFFF&
       Height          =   1575
-      Left            =   360
+      Left            =   285
       MultiLine       =   -1  'True
       TabIndex        =   18
       Top             =   1080
       Visible         =   0   'False
-      Width           =   4935
+      Width           =   5055
    End
-   Begin VB.Image Image1 
-      Height          =   255
-      Left            =   5160
-      Top             =   120
-      Width           =   375
-   End
-   Begin VB.Label lblCerrar 
+   Begin VB.Label lblCantOBJ 
+      Alignment       =   2  'Center
       BackStyle       =   0  'Transparent
-      Caption         =   "X"
+      Caption         =   "x5"
       BeginProperty Font 
-         Name            =   "MS Sans Serif"
+         Name            =   "Lucida Sans"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H0080FFFF&
+      Height          =   255
+      Left            =   4800
+      TabIndex        =   54
+      Top             =   4455
+      Width           =   495
+   End
+   Begin VB.Label lblPTS 
+      Alignment       =   2  'Center
+      BackStyle       =   0  'Transparent
+      Caption         =   "2.500"
+      ForeColor       =   &H8000000E&
+      Height          =   255
+      Left            =   1800
+      TabIndex        =   52
+      Top             =   4545
+      Width           =   615
+   End
+   Begin VB.Label lblORO 
+      BackStyle       =   0  'Transparent
+      Caption         =   "10.000.000"
+      ForeColor       =   &H8000000E&
+      Height          =   255
+      Left            =   720
+      TabIndex        =   51
+      Top             =   4350
+      Width           =   975
+   End
+   Begin VB.Label lblCantNPC 
+      Alignment       =   2  'Center
+      BackStyle       =   0  'Transparent
+      Caption         =   "01/10"
+      BeginProperty Font 
+         Name            =   "Lucida Sans"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H0080FFFF&
+      Height          =   255
+      Index           =   0
+      Left            =   1560
+      TabIndex        =   50
+      Top             =   3750
+      Width           =   495
+   End
+   Begin VB.Label lblCantNPC 
+      Alignment       =   2  'Center
+      BackStyle       =   0  'Transparent
+      Caption         =   "1/5"
+      BeginProperty Font 
+         Name            =   "Lucida Sans"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H0080FFFF&
+      Height          =   255
+      Index           =   1
+      Left            =   2520
+      TabIndex        =   49
+      Top             =   3750
+      Width           =   495
+   End
+   Begin VB.Label lblCantNPC 
+      Alignment       =   2  'Center
+      BackStyle       =   0  'Transparent
+      Caption         =   "0/10"
+      BeginProperty Font 
+         Name            =   "Lucida Sans"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H0080FFFF&
+      Height          =   255
+      Index           =   2
+      Left            =   3480
+      TabIndex        =   48
+      Top             =   3750
+      Width           =   495
+   End
+   Begin VB.Label lblCounters 
+      BackStyle       =   0  'Transparent
+      Caption         =   "1723"
+      BeginProperty Font 
+         Name            =   "Tahoma"
          Size            =   9.75
          Charset         =   0
          Weight          =   700
@@ -66,12 +204,20 @@ Begin VB.Form frmEstadisticas
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H00FFFFFF&
+      ForeColor       =   &H0000FFFF&
       Height          =   255
-      Left            =   5280
-      TabIndex        =   70
-      Top             =   165
-      Width           =   255
+      Index           =   20
+      Left            =   4440
+      TabIndex        =   44
+      Top             =   3000
+      Visible         =   0   'False
+      Width           =   2295
+   End
+   Begin VB.Image Image1 
+      Height          =   255
+      Left            =   5160
+      Top             =   120
+      Width           =   375
    End
    Begin VB.Label lblCounters 
       BackStyle       =   0  'Transparent
@@ -88,9 +234,9 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H0000FFFF&
       Height          =   255
       Index           =   25
-      Left            =   2520
-      TabIndex        =   68
-      Top             =   5533
+      Left            =   2160
+      TabIndex        =   43
+      Top             =   5535
       Visible         =   0   'False
       Width           =   2415
    End
@@ -109,9 +255,9 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H0000FFFF&
       Height          =   255
       Index           =   23
-      Left            =   2626
-      TabIndex        =   67
-      Top             =   4870
+      Left            =   2400
+      TabIndex        =   42
+      Top             =   4860
       Visible         =   0   'False
       Width           =   2415
    End
@@ -130,9 +276,9 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H0000FFFF&
       Height          =   255
       Index           =   24
-      Left            =   2975
-      TabIndex        =   66
-      Top             =   5201
+      Left            =   2880
+      TabIndex        =   41
+      Top             =   5205
       Visible         =   0   'False
       Width           =   2895
    End
@@ -151,8 +297,8 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H0000FFFF&
       Height          =   255
       Index           =   22
-      Left            =   1680
-      TabIndex        =   65
+      Left            =   1320
+      TabIndex        =   40
       Top             =   4515
       Visible         =   0   'False
       Width           =   2415
@@ -172,8 +318,8 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H0000FFFF&
       Height          =   255
       Index           =   21
-      Left            =   2520
-      TabIndex        =   64
+      Left            =   2160
+      TabIndex        =   39
       Top             =   4185
       Visible         =   0   'False
       Width           =   2295
@@ -192,31 +338,10 @@ Begin VB.Form frmEstadisticas
       EndProperty
       ForeColor       =   &H0000FFFF&
       Height          =   255
-      Index           =   20
-      Left            =   4080
-      TabIndex        =   63
-      Top             =   3074
-      Visible         =   0   'False
-      Width           =   2295
-   End
-   Begin VB.Label lblCounters 
-      BackStyle       =   0  'Transparent
-      Caption         =   "1723"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   9.75
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H0000FFFF&
-      Height          =   255
       Index           =   19
-      Left            =   2520
-      TabIndex        =   62
-      Top             =   2730
+      Left            =   2400
+      TabIndex        =   38
+      Top             =   2640
       Visible         =   0   'False
       Width           =   2895
    End
@@ -235,9 +360,9 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H0000FFFF&
       Height          =   255
       Index           =   18
-      Left            =   2760
-      TabIndex        =   61
-      Top             =   2385
+      Left            =   2520
+      TabIndex        =   37
+      Top             =   2370
       Visible         =   0   'False
       Width           =   3255
    End
@@ -256,8 +381,8 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H0000FFFF&
       Height          =   255
       Index           =   17
-      Left            =   2640
-      TabIndex        =   60
+      Left            =   2520
+      TabIndex        =   36
       Top             =   2085
       Visible         =   0   'False
       Width           =   2775
@@ -277,9 +402,9 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H0000FFFF&
       Height          =   255
       Index           =   16
-      Left            =   1560
-      TabIndex        =   59
-      Top             =   1725
+      Left            =   1440
+      TabIndex        =   35
+      Top             =   1770
       Visible         =   0   'False
       Width           =   2295
    End
@@ -298,27 +423,27 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H0000FFFF&
       Height          =   255
       Index           =   15
-      Left            =   1440
-      TabIndex        =   58
-      Top             =   1402
+      Left            =   1320
+      TabIndex        =   34
+      Top             =   1440
       Visible         =   0   'False
       Width           =   2295
    End
    Begin VB.Image imgHoja 
       Height          =   450
       Index           =   2
-      Left            =   4530
-      Top             =   480
+      Left            =   4920
+      Top             =   720
       Visible         =   0   'False
-      Width           =   840
+      Width           =   480
    End
    Begin VB.Image imgHoja 
-      Height          =   450
+      Height          =   405
       Index           =   1
-      Left            =   3555
-      Top             =   480
+      Left            =   4920
+      Top             =   720
       Visible         =   0   'False
-      Width           =   840
+      Width           =   480
    End
    Begin VB.Label lblCounters 
       BackStyle       =   0  'Transparent
@@ -335,9 +460,9 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H0000FFFF&
       Height          =   255
       Index           =   14
-      Left            =   3240
-      TabIndex        =   57
-      Top             =   5834
+      Left            =   3120
+      TabIndex        =   33
+      Top             =   5880
       Visible         =   0   'False
       Width           =   2415
    End
@@ -356,9 +481,9 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H0000FFFF&
       Height          =   255
       Index           =   10
-      Left            =   3120
-      TabIndex        =   56
-      Top             =   4823
+      Left            =   3000
+      TabIndex        =   32
+      Top             =   4860
       Visible         =   0   'False
       Width           =   2415
    End
@@ -377,9 +502,9 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H0000FFFF&
       Height          =   255
       Index           =   8
-      Left            =   3240
-      TabIndex        =   55
-      Top             =   4488
+      Left            =   3000
+      TabIndex        =   31
+      Top             =   4500
       Visible         =   0   'False
       Width           =   2415
    End
@@ -398,9 +523,9 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H0000FFFF&
       Height          =   255
       Index           =   13
-      Left            =   2490
-      TabIndex        =   54
-      Top             =   5834
+      Left            =   2235
+      TabIndex        =   30
+      Top             =   5865
       Visible         =   0   'False
       Width           =   2295
    End
@@ -419,8 +544,8 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H0000FFFF&
       Height          =   255
       Index           =   12
-      Left            =   3360
-      TabIndex        =   53
+      Left            =   3240
+      TabIndex        =   29
       Top             =   5520
       Visible         =   0   'False
       Width           =   2295
@@ -440,9 +565,9 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H0000FFFF&
       Height          =   255
       Index           =   11
-      Left            =   2280
-      TabIndex        =   52
-      Top             =   5160
+      Left            =   1920
+      TabIndex        =   28
+      Top             =   5175
       Visible         =   0   'False
       Width           =   2295
    End
@@ -461,9 +586,9 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H0000FFFF&
       Height          =   255
       Index           =   9
-      Left            =   2244
-      TabIndex        =   51
-      Top             =   4823
+      Left            =   1920
+      TabIndex        =   27
+      Top             =   4845
       Visible         =   0   'False
       Width           =   2895
    End
@@ -482,9 +607,9 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H0000FFFF&
       Height          =   255
       Index           =   7
-      Left            =   2280
-      TabIndex        =   50
-      Top             =   4488
+      Left            =   2160
+      TabIndex        =   26
+      Top             =   4515
       Visible         =   0   'False
       Width           =   2415
    End
@@ -503,9 +628,9 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H0000FFFF&
       Height          =   255
       Index           =   6
-      Left            =   2400
-      TabIndex        =   49
-      Top             =   4150
+      Left            =   2280
+      TabIndex        =   25
+      Top             =   4185
       Visible         =   0   'False
       Width           =   2295
    End
@@ -524,9 +649,9 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H0000FFFF&
       Height          =   255
       Index           =   5
-      Left            =   2370
-      TabIndex        =   48
-      Top             =   3071
+      Left            =   2160
+      TabIndex        =   24
+      Top             =   3090
       Visible         =   0   'False
       Width           =   2295
    End
@@ -545,9 +670,9 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H0000FFFF&
       Height          =   255
       Index           =   4
-      Left            =   2280
-      TabIndex        =   47
-      Top             =   2730
+      Left            =   1920
+      TabIndex        =   23
+      Top             =   2760
       Visible         =   0   'False
       Width           =   2895
    End
@@ -566,8 +691,8 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H0000FFFF&
       Height          =   255
       Index           =   3
-      Left            =   2040
-      TabIndex        =   46
+      Left            =   1800
+      TabIndex        =   22
       Top             =   2400
       Visible         =   0   'False
       Width           =   3255
@@ -587,9 +712,9 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H0000FFFF&
       Height          =   255
       Index           =   2
-      Left            =   2400
-      TabIndex        =   45
-      Top             =   2040
+      Left            =   2160
+      TabIndex        =   21
+      Top             =   2070
       Visible         =   0   'False
       Width           =   2775
    End
@@ -608,9 +733,9 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H0000FFFF&
       Height          =   255
       Index           =   1
-      Left            =   3480
-      TabIndex        =   44
-      Top             =   1717
+      Left            =   3600
+      TabIndex        =   20
+      Top             =   1755
       Visible         =   0   'False
       Width           =   2295
    End
@@ -629,577 +754,21 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H0000FFFF&
       Height          =   255
       Index           =   0
-      Left            =   2880
-      TabIndex        =   43
-      Top             =   1402
+      Left            =   2640
+      TabIndex        =   19
+      Top             =   1440
       Visible         =   0   'False
       Width           =   2295
    End
-   Begin VB.Label Skills 
-      Alignment       =   2  'Center
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   "100"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   9
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H0000FF00&
-      Height          =   210
-      Index           =   22
-      Left            =   4950
-      TabIndex        =   42
-      Top             =   5040
-      Visible         =   0   'False
-      Width           =   360
-   End
-   Begin VB.Label Skills 
-      Alignment       =   2  'Center
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   "100"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   9
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H0000FF00&
-      Height          =   210
-      Index           =   21
-      Left            =   4950
-      TabIndex        =   41
-      Top             =   4701
-      Visible         =   0   'False
-      Width           =   360
-   End
-   Begin VB.Label Skills 
-      Alignment       =   2  'Center
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   "100"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   9
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H0000FF00&
-      Height          =   210
-      Index           =   20
-      Left            =   4950
-      TabIndex        =   40
-      Top             =   4365
-      Visible         =   0   'False
-      Width           =   360
-   End
-   Begin VB.Label Skills 
-      Alignment       =   2  'Center
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   "100"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   9
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H0000FF00&
-      Height          =   210
-      Index           =   19
-      Left            =   4950
-      TabIndex        =   39
-      Top             =   4040
-      Visible         =   0   'False
-      Width           =   360
-   End
-   Begin VB.Label Skills 
-      Alignment       =   2  'Center
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   "100"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   9
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H0000FF00&
-      Height          =   210
-      Index           =   18
-      Left            =   4950
-      TabIndex        =   38
-      Top             =   3701
-      Visible         =   0   'False
-      Width           =   360
-   End
-   Begin VB.Label Skills 
-      Alignment       =   2  'Center
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   "100"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   9
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H0000FF00&
-      Height          =   210
-      Index           =   17
-      Left            =   4950
-      TabIndex        =   37
-      Top             =   3355
-      Visible         =   0   'False
-      Width           =   360
-   End
-   Begin VB.Label Skills 
-      Alignment       =   2  'Center
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   "100"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   9
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H0000FF00&
-      Height          =   210
-      Index           =   16
-      Left            =   4950
-      TabIndex        =   36
-      Top             =   3000
-      Visible         =   0   'False
-      Width           =   360
-   End
-   Begin VB.Label Skills 
-      Alignment       =   2  'Center
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   "100"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   9
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H0000FF00&
-      Height          =   210
-      Index           =   15
-      Left            =   4950
-      TabIndex        =   35
-      Top             =   2662
-      Visible         =   0   'False
-      Width           =   360
-   End
-   Begin VB.Label Skills 
-      Alignment       =   2  'Center
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   "100"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   9
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H0000FF00&
-      Height          =   210
-      Index           =   14
-      Left            =   4950
-      TabIndex        =   34
-      Top             =   2323
-      UseMnemonic     =   0   'False
-      Visible         =   0   'False
-      Width           =   360
-   End
-   Begin VB.Label Skills 
-      Alignment       =   2  'Center
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   "100"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   9
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H0000FF00&
-      Height          =   210
-      Index           =   13
-      Left            =   4950
-      TabIndex        =   33
-      Top             =   2002
-      Visible         =   0   'False
-      Width           =   360
-   End
-   Begin VB.Label Skills 
-      Alignment       =   2  'Center
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   "100"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   9
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H0000FF00&
-      Height          =   210
-      Index           =   12
-      Left            =   4950
-      TabIndex        =   32
-      Top             =   1680
-      Visible         =   0   'False
-      Width           =   360
-   End
-   Begin VB.Label Skills 
-      Alignment       =   2  'Center
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   "100"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   9
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H0000FF00&
-      Height          =   210
-      Index           =   1
-      Left            =   2340
-      TabIndex        =   31
-      Top             =   1680
-      Visible         =   0   'False
-      Width           =   360
-   End
-   Begin VB.Label Skills 
-      Alignment       =   2  'Center
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   "100"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   9
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H0000FF00&
-      Height          =   210
-      Index           =   2
-      Left            =   2340
-      TabIndex        =   30
-      Top             =   2002
-      Visible         =   0   'False
-      Width           =   360
-   End
-   Begin VB.Label Skills 
-      Alignment       =   2  'Center
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   "100"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   9
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H0000FF00&
-      Height          =   210
-      Index           =   3
-      Left            =   2340
-      TabIndex        =   29
-      Top             =   2323
-      Visible         =   0   'False
-      Width           =   360
-   End
-   Begin VB.Label Skills 
-      Alignment       =   2  'Center
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   "100"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   9
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H0000FF00&
-      Height          =   210
-      Index           =   4
-      Left            =   2340
-      TabIndex        =   28
-      Top             =   2662
-      Visible         =   0   'False
-      Width           =   360
-   End
-   Begin VB.Label Skills 
-      Alignment       =   2  'Center
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   "100"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   9
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H0000FF00&
-      Height          =   210
-      Index           =   5
-      Left            =   2340
-      TabIndex        =   27
-      Top             =   3000
-      Visible         =   0   'False
-      Width           =   360
-   End
-   Begin VB.Label Skills 
-      Alignment       =   2  'Center
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   "100"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   9
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H0000FF00&
-      Height          =   210
-      Index           =   6
-      Left            =   2340
-      TabIndex        =   26
-      Top             =   3355
-      Visible         =   0   'False
-      Width           =   360
-   End
-   Begin VB.Label Skills 
-      Alignment       =   2  'Center
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   "100"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   9
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H0000FF00&
-      Height          =   210
-      Index           =   7
-      Left            =   2340
-      TabIndex        =   25
-      Top             =   3701
-      Visible         =   0   'False
-      Width           =   360
-   End
-   Begin VB.Label Skills 
-      Alignment       =   2  'Center
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   "100"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   9
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H0000FF00&
-      Height          =   210
-      Index           =   8
-      Left            =   2340
-      TabIndex        =   24
-      Top             =   4040
-      Visible         =   0   'False
-      Width           =   360
-   End
-   Begin VB.Label Skills 
-      Alignment       =   2  'Center
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   "100"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   9
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H0000FF00&
-      Height          =   210
-      Index           =   9
-      Left            =   2340
-      TabIndex        =   23
-      Top             =   4365
-      UseMnemonic     =   0   'False
-      Visible         =   0   'False
-      Width           =   360
-   End
-   Begin VB.Label Skills 
-      Alignment       =   2  'Center
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   "100"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   9
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H0000FF00&
-      Height          =   210
-      Index           =   10
-      Left            =   2340
-      TabIndex        =   22
-      Top             =   4701
-      Visible         =   0   'False
-      Width           =   360
-   End
-   Begin VB.Label Skills 
-      Alignment       =   2  'Center
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   "100"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   9
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H0000FF00&
-      Height          =   210
-      Index           =   11
-      Left            =   2340
-      TabIndex        =   21
-      Top             =   5040
-      Visible         =   0   'False
-      Width           =   360
-   End
-   Begin VB.Label imgQuestVal2 
-      Alignment       =   2  'Center
-      BackStyle       =   0  'Transparent
-      Caption         =   "0"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   14.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H00C0FFFF&
-      Height          =   375
-      Left            =   3960
-      TabIndex        =   20
-      Top             =   4920
-      Visible         =   0   'False
-      Width           =   1335
-   End
-   Begin VB.Label imgQuestVal1 
-      Alignment       =   2  'Center
-      BackStyle       =   0  'Transparent
-      Caption         =   "0"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   14.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H00C0FFFF&
-      Height          =   375
-      Left            =   3960
-      TabIndex        =   19
-      Top             =   3850
-      Visible         =   0   'False
-      Width           =   1335
-   End
    Begin VB.Image imgQuestAbandonar 
       Height          =   540
-      Left            =   320
-      Top             =   5924
+      Left            =   330
+      Top             =   5400
       Visible         =   0   'False
       Width           =   4980
    End
-   Begin VB.Image imgQuestType 
-      Height          =   1515
-      Left            =   360
-      Top             =   3750
-      Visible         =   0   'False
-      Width           =   4230
-   End
    Begin VB.Label lblAtri 
+      Alignment       =   2  'Center
       BackStyle       =   0  'Transparent
       Caption         =   "21"
       BeginProperty Font 
@@ -1214,12 +783,13 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H00C0FFFF&
       Height          =   255
       Index           =   5
-      Left            =   4005
+      Left            =   4170
       TabIndex        =   17
-      Top             =   4740
-      Width           =   495
+      Top             =   5130
+      Width           =   615
    End
    Begin VB.Label lblAtri 
+      Alignment       =   2  'Center
       BackStyle       =   0  'Transparent
       Caption         =   "21"
       BeginProperty Font 
@@ -1234,12 +804,13 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H00C0FFFF&
       Height          =   255
       Index           =   4
-      Left            =   2085
+      Left            =   1770
       TabIndex        =   16
-      Top             =   4740
-      Width           =   495
+      Top             =   5130
+      Width           =   615
    End
    Begin VB.Label lblAtri 
+      Alignment       =   2  'Center
       BackStyle       =   0  'Transparent
       Caption         =   "21"
       BeginProperty Font 
@@ -1254,12 +825,13 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H00C0FFFF&
       Height          =   255
       Index           =   3
-      Left            =   4560
+      Left            =   4845
       TabIndex        =   15
-      Top             =   4425
-      Width           =   495
+      Top             =   4755
+      Width           =   615
    End
    Begin VB.Label lblAtri 
+      Alignment       =   2  'Center
       BackStyle       =   0  'Transparent
       Caption         =   "21"
       BeginProperty Font 
@@ -1274,9 +846,9 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H00C0FFFF&
       Height          =   255
       Index           =   2
-      Left            =   2805
+      Left            =   2745
       TabIndex        =   14
-      Top             =   4425
+      Top             =   4755
       Width           =   495
    End
    Begin VB.Label lblBonificadores 
@@ -1291,12 +863,12 @@ Begin VB.Form frmEstadisticas
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H00000000&
+      ForeColor       =   &H0080FFFF&
       Height          =   255
       Index           =   3
-      Left            =   720
+      Left            =   480
       TabIndex        =   13
-      Top             =   6271
+      Top             =   6240
       Width           =   4575
    End
    Begin VB.Label lblBonificadores 
@@ -1311,10 +883,10 @@ Begin VB.Form frmEstadisticas
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H00000000&
+      ForeColor       =   &H0080FFFF&
       Height          =   255
       Index           =   2
-      Left            =   720
+      Left            =   480
       TabIndex        =   12
       Top             =   6000
       Width           =   4575
@@ -1331,15 +903,16 @@ Begin VB.Form frmEstadisticas
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H00000000&
+      ForeColor       =   &H0080FFFF&
       Height          =   255
       Index           =   1
-      Left            =   720
+      Left            =   480
       TabIndex        =   11
-      Top             =   5702
+      Top             =   5760
       Width           =   4575
    End
    Begin VB.Label lblAtri 
+      Alignment       =   2  'Center
       BackStyle       =   0  'Transparent
       Caption         =   "21"
       BeginProperty Font 
@@ -1354,10 +927,10 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H00C0FFFF&
       Height          =   255
       Index           =   1
-      Left            =   1455
+      Left            =   975
       TabIndex        =   10
-      Top             =   4425
-      Width           =   480
+      Top             =   4755
+      Width           =   600
    End
    Begin VB.Label lblNombre 
       BackStyle       =   0  'Transparent
@@ -1373,10 +946,10 @@ Begin VB.Form frmEstadisticas
       EndProperty
       ForeColor       =   &H00C0FFFF&
       Height          =   255
-      Left            =   1200
+      Left            =   1680
       TabIndex        =   9
-      Top             =   655
-      Width           =   1935
+      Top             =   675
+      Width           =   3375
    End
    Begin VB.Label lblPuntosDonador 
       Alignment       =   2  'Center
@@ -1394,10 +967,10 @@ Begin VB.Form frmEstadisticas
       ForeColor       =   &H00C0FFFF&
       Height          =   255
       Left            =   3600
-      MouseIcon       =   "FrmEstadisticas.frx":030A
+      MouseIcon       =   "FrmEstadisticas.frx":27D0
       MousePointer    =   99  'Custom
       TabIndex        =   8
-      Top             =   3647
+      Top             =   3915
       Width           =   1215
    End
    Begin VB.Label lblPuntosTorneo 
@@ -1415,11 +988,11 @@ Begin VB.Form frmEstadisticas
       EndProperty
       ForeColor       =   &H00C0FFFF&
       Height          =   255
-      Left            =   720
-      MouseIcon       =   "FrmEstadisticas.frx":0614
+      Left            =   900
+      MouseIcon       =   "FrmEstadisticas.frx":2ADA
       MousePointer    =   99  'Custom
       TabIndex        =   7
-      Top             =   3647
+      Top             =   3915
       Width           =   1215
    End
    Begin VB.Label lblMail 
@@ -1436,9 +1009,9 @@ Begin VB.Form frmEstadisticas
       EndProperty
       ForeColor       =   &H00C0FFFF&
       Height          =   255
-      Left            =   3000
+      Left            =   1560
       TabIndex        =   6
-      Top             =   2978
+      Top             =   2850
       Width           =   2535
    End
    Begin VB.Label lblHogar 
@@ -1455,9 +1028,9 @@ Begin VB.Form frmEstadisticas
       EndProperty
       ForeColor       =   &H00C0FFFF&
       Height          =   255
-      Left            =   3120
+      Left            =   1560
       TabIndex        =   5
-      Top             =   2670
+      Top             =   2475
       Width           =   2175
    End
    Begin VB.Label lblGenero 
@@ -1474,9 +1047,9 @@ Begin VB.Form frmEstadisticas
       EndProperty
       ForeColor       =   &H00C0FFFF&
       Height          =   255
-      Left            =   3240
+      Left            =   1680
       TabIndex        =   4
-      Top             =   2288
+      Top             =   1395
       Width           =   1935
    End
    Begin VB.Label lblClase 
@@ -1493,9 +1066,9 @@ Begin VB.Form frmEstadisticas
       EndProperty
       ForeColor       =   &H00C0FFFF&
       Height          =   255
-      Left            =   3000
+      Left            =   1350
       TabIndex        =   3
-      Top             =   2002
+      Top             =   1755
       Width           =   2295
    End
    Begin VB.Label lblRaza 
@@ -1512,9 +1085,9 @@ Begin VB.Form frmEstadisticas
       EndProperty
       ForeColor       =   &H00C0FFFF&
       Height          =   255
-      Left            =   3000
+      Left            =   1245
       TabIndex        =   2
-      Top             =   1720
+      Top             =   1050
       Width           =   2295
    End
    Begin VB.Label lblReputacion 
@@ -1531,21 +1104,17 @@ Begin VB.Form frmEstadisticas
       EndProperty
       ForeColor       =   &H00C0FFFF&
       Height          =   255
-      Left            =   3480
+      Left            =   0
       TabIndex        =   1
-      Top             =   1331
+      Top             =   2.45745e5
+      Visible         =   0   'False
       Width           =   1935
    End
    Begin VB.Image imgExtras 
       Height          =   630
-      Left            =   4343
-      Top             =   6644
-      Width           =   1140
-   End
-   Begin VB.Image imgHabilidades 
-      Height          =   630
-      Left            =   1560
-      Top             =   6645
+      Left            =   3690
+      Picture         =   "FrmEstadisticas.frx":2DE4
+      Top             =   6555
       Width           =   1440
    End
    Begin VB.Label lblLvl 
@@ -1562,21 +1131,23 @@ Begin VB.Form frmEstadisticas
       EndProperty
       ForeColor       =   &H00C0FFFF&
       Height          =   255
-      Left            =   2835
+      Left            =   1440
       TabIndex        =   0
-      Top             =   1035
+      Top             =   2145
       Width           =   735
    End
    Begin VB.Image imgQuests 
       Height          =   630
-      Left            =   3280
-      Top             =   6644
-      Width           =   1020
+      Left            =   2100
+      Picture         =   "FrmEstadisticas.frx":7BE0
+      Top             =   6555
+      Width           =   1440
    End
    Begin VB.Image imgGeneral 
       Height          =   630
-      Left            =   135
-      Top             =   6644
+      Left            =   525
+      Picture         =   "FrmEstadisticas.frx":CBFE
+      Top             =   6555
       Width           =   1440
    End
 End
@@ -1593,7 +1164,7 @@ form_Moviment.Initialize Me
 
 Me.Picture = General_Load_Interface_Picture("Estadisticas_1_Main.jpg")
 imgGeneral.Picture = General_Load_Interface_Picture("Estadisticas_1_Principal_N.jpg")
-imgHabilidades.Picture = General_Load_Interface_Picture("Estadisticas_1_Habilidades_N.jpg")
+'imgHabilidades.Picture = General_Load_Interface_Picture("Estadisticas_1_Habilidades_N.jpg")
 imgQuests.Picture = General_Load_Interface_Picture("Estadisticas_1_Quest_N.jpg")
 imgExtras.Picture = General_Load_Interface_Picture("Estadisticas_1_Extras_N.jpg")
 
@@ -1611,7 +1182,7 @@ lblPuntosDonador.Visible = True
 lblBonificadores(1).Visible = True
 lblBonificadores(2).Visible = True
 lblBonificadores(3).Visible = True
-picInv.Visible = True
+'picInv.Visible = True
 For i = 1 To NUMATRIBUTOS
     lblAtri(i).Visible = True
 Next
@@ -1620,18 +1191,21 @@ Next
 For i = 0 To 25
 lblCounters(i).Visible = False
 Next
-For i = 1 To NUMSKILLS
-Skills(i).Visible = False
-Next
 imgHoja(1).Visible = False
 imgHoja(2).Visible = False
 
-'Vaciamos la pagina "quest"
-txtQuestDescription.Visible = False
-imgQuestVal1.Visible = False
-imgQuestVal2.Visible = False
-imgQuestAbandonar.Visible = False
-imgQuestType.Visible = False
+    lblPTS.Visible = False
+    lblOro.Visible = False
+    txtQuestDescription.Visible = False
+    imgQuestAbandonar.Visible = False
+    picNPC(0).Visible = False
+    lblCantNPC(0).Visible = False
+    picNPC(1).Visible = False
+    lblCantNPC(1).Visible = False
+    picNPC(2).Visible = False
+    lblCantNPC(2).Visible = False
+    picOBJ.Visible = False
+    lblCantOBJ.Visible = False
 
 Call Iniciar_Labels
 End Sub
@@ -1639,11 +1213,9 @@ Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y A
 
 'Volvemos las imagenes a la normalidad
 imgGeneral.Picture = General_Load_Interface_Picture("Estadisticas_1_Principal_N.jpg")
-imgHabilidades.Picture = General_Load_Interface_Picture("Estadisticas_1_Habilidades_N.jpg")
+'imgHabilidades.Picture = General_Load_Interface_Picture("Estadisticas_1_Habilidades_N.jpg")
 imgQuests.Picture = General_Load_Interface_Picture("Estadisticas_1_Quest_N.jpg")
 imgExtras.Picture = General_Load_Interface_Picture("Estadisticas_1_Extras_N.jpg")
-imgHoja(1).Picture = Nothing
-imgHoja(2).Picture = Nothing
 imgQuestAbandonar.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Estadisticas_2_AbandonarQuest_N.jpg")
 
 End Sub
@@ -1653,18 +1225,11 @@ Public Sub Iniciar_Labels()
 For i = 1 To NUMATRIBUTOS
     lblAtri(i).Caption = UserAtributos(i)
 Next
-For i = 1 To NUMSKILLS
-    Skills(i).Caption = UserSkills(i)
-Next
 
 '### PRIMERA HOJA
 lblNombre.Caption = UserEstadisticas.Nombre
 
-If UserEstadisticas.Nivel > 50 Then
-lblLvl.Caption = "50 + " & UserEstadisticas.Nivel - 50 & ""
-Else
 lblLvl.Caption = UserEstadisticas.Nivel
-End If
 
 lblRaza.Caption = UserEstadisticas.Raza
 lblClase.Caption = UserEstadisticas.Clase
@@ -1719,10 +1284,6 @@ lblCounters(24).Caption = "0"
 lblCounters(25).Caption = UserEstadisticas.MVPMatados
 
 '### HOJA QUEST
-txtQuestDescription.text = "Tipo " & UserEstadisticas.TipoQuest & ": " & UserEstadisticas.DescQuest & " Premio: " & PonerPuntos(UserEstadisticas.PremioOro) & " monedas y " & UserEstadisticas.PremioPuntis & " puntos de torneo."
-imgQuestVal1.Caption = UserEstadisticas.CantidadNPCs
-imgQuestVal2.Caption = UserEstadisticas.CantidadNPCs - UserEstadisticas.YaMatados
-imgQuestType.Picture = General_Load_Interface_Picture("Estadisticas_2_Criaturas.jpg")
 imgQuestAbandonar.Picture = General_Load_Interface_Picture("Estadisticas_2_AbandonarQuest_N.jpg")
  
 End Sub
@@ -1746,7 +1307,7 @@ lblPuntosDonador.Visible = True
 lblBonificadores(1).Visible = True
 lblBonificadores(2).Visible = True
 lblBonificadores(3).Visible = True
-picInv.Visible = True
+'picInv.Visible = True
 For i = 1 To NUMATRIBUTOS
     lblAtri(i).Visible = True
 Next
@@ -1755,59 +1316,128 @@ Next
 For i = 0 To 25
 lblCounters(i).Visible = False
 Next
-For i = 1 To NUMSKILLS
-Skills(i).Visible = False
-Next
 imgHoja(1).Visible = False
 imgHoja(2).Visible = False
 
 'Vaciamos la pagina "quest"
-txtQuestDescription.Visible = False
-imgQuestVal1.Visible = False
-imgQuestVal2.Visible = False
-imgQuestAbandonar.Visible = False
-imgQuestType.Visible = False
+    lblPTS.Visible = False
+    lblOro.Visible = False
+    txtQuestDescription.Visible = False
+    imgQuestAbandonar.Visible = False
+    picNPC(0).Visible = False
+    lblCantNPC(0).Visible = False
+    picNPC(1).Visible = False
+    lblCantNPC(1).Visible = False
+    picNPC(2).Visible = False
+    lblCantNPC(2).Visible = False
+    picOBJ.Visible = False
+    lblCantOBJ.Visible = False
 End Sub
-Private Sub imgHabilidades_Click()
-Me.Picture = General_Load_Interface_Picture("Estadisticas_3_Main.jpg")
+Public Sub InformarQuests(ByVal Data As String)
 
-'Vaciamos toda la primera pagina.
-lblNombre.Visible = False
-lblLvl.Visible = False
-lblRaza.Visible = False
-lblClase.Visible = False
-lblGenero.Visible = False
-lblHogar.Visible = False
-lblMail.Visible = False
-lblReputacion.Visible = False
-lblPuntosTorneo.Visible = False
-lblPuntosDonador.Visible = False
-lblBonificadores(1).Visible = False
-lblBonificadores(2).Visible = False
-lblBonificadores(3).Visible = False
-picInv.Visible = False
-For i = 1 To NUMATRIBUTOS
-    lblAtri(i).Visible = False
-Next
+    Dim NroQuest As Byte
+    Dim MuerteNPC(1 To 3) As Byte
+    NroQuest = ReadField(1, Data, 44)
+    
+    MuerteNPC(1) = ReadField(2, Data, 44)
+    MuerteNPC(2) = ReadField(3, Data, 44)
+    MuerteNPC(3) = ReadField(4, Data, 44)
+    
+    picNPC(0).Visible = False
+    lblCantNPC(0).Visible = False
+    picNPC(1).Visible = False
+    lblCantNPC(1).Visible = False
+    picNPC(2).Visible = False
+    lblCantNPC(2).Visible = False
+    
+    If NroQuest = 0 Then
+        txtQuestDescription.text = "No estás haciendo ninguna quest."
+    Exit Sub
+    End If
 
-'Vaciamos toda la pagina "extra" y ponemos visible "habilidades"
-For i = 0 To 25
-lblCounters(i).Visible = False
-Next
-For i = 1 To NUMSKILLS
-Skills(i).Visible = True
-Next
-imgHoja(1).Visible = False
-imgHoja(2).Visible = False
-
-'Vaciamos la pagina "quest"
-txtQuestDescription.Visible = False
-imgQuestVal1.Visible = False
-imgQuestVal2.Visible = False
-imgQuestAbandonar.Visible = False
-imgQuestType.Visible = False
+    txtQuestDescription.text = "Nombre: " & InfoQuests(NroQuest).Nombre & vbCrLf & "Información: " & InfoQuests(NroQuest).Info & vbCrLf & "Dificultad: " & InfoQuests(NroQuest).Dificultad & vbCrLf
+    
+    'invisibles
+    picNPC(0).Visible = False
+    lblCantNPC(0).Visible = False
+    picNPC(1).Visible = False
+    lblCantNPC(1).Visible = False
+    picNPC(2).Visible = False
+    lblCantNPC(2).Visible = False
+    
+    If InfoQuests(NroQuest).NPCs = 1 Then
+        picNPC(0).Visible = True
+        lblCantNPC(0).Visible = True
+        picNPC(0).left = 168
+        lblCantNPC(0).left = 168
+        
+        picNPC(0).Picture = LoadPicture(App.Path & "\Data\INIT\Miniaturas\" & InfoQuests(NroQuest).NumNPC(1) & ".jpg")
+        lblCantNPC(0).Caption = MuerteNPC(1) & "/" & InfoQuests(NroQuest).CantNPC(1)
+    ElseIf InfoQuests(NroQuest).NPCs = 2 Then
+        picNPC(0).Visible = True
+        lblCantNPC(0).Visible = True
+        picNPC(1).Visible = True
+        lblCantNPC(1).Visible = True
+        
+        picNPC(0).left = 144
+        lblCantNPC(0).left = 144
+        picNPC(1).left = 200
+        lblCantNPC(1).left = 200
+        
+        picNPC(0).Picture = LoadPicture(App.Path & "\Data\INIT\Miniaturas\" & InfoQuests(NroQuest).NumNPC(1) & ".jpg")
+        lblCantNPC(0).Caption = MuerteNPC(1) & "/" & InfoQuests(NroQuest).CantNPC(1)
+        
+        picNPC(1).Picture = LoadPicture(App.Path & "\Data\INIT\Miniaturas\" & InfoQuests(NroQuest).NumNPC(2) & ".jpg")
+        lblCantNPC(1).Caption = MuerteNPC(2) & "/" & InfoQuests(NroQuest).CantNPC(2)
+    ElseIf InfoQuests(NroQuest).NPCs = 3 Then
+        picNPC(0).Visible = True
+        lblCantNPC(0).Visible = True
+        picNPC(1).Visible = True
+        lblCantNPC(1).Visible = True
+        picNPC(2).Visible = True
+        lblCantNPC(2).Visible = True
+        
+        picNPC(0).left = 104
+        lblCantNPC(0).left = 104
+        picNPC(1).left = 168
+        lblCantNPC(1).left = 168
+        picNPC(2).left = 232
+        lblCantNPC(2).left = 232
+        
+        picNPC(0).Picture = LoadPicture(App.Path & "\Data\INIT\Miniaturas\" & InfoQuests(NroQuest).NumNPC(1) & ".jpg")
+        lblCantNPC(0).Caption = MuerteNPC(1) & "/" & InfoQuests(NroQuest).CantNPC(1)
+        
+        picNPC(1).Picture = LoadPicture(App.Path & "\Data\INIT\Miniaturas\" & InfoQuests(NroQuest).NumNPC(2) & ".jpg")
+        lblCantNPC(1).Caption = MuerteNPC(2) & "/" & InfoQuests(NroQuest).CantNPC(2)
+        
+        picNPC(2).Picture = LoadPicture(App.Path & "\Data\INIT\Miniaturas\" & InfoQuests(NroQuest).NumNPC(3) & ".jpg")
+        lblCantNPC(2).Caption = MuerteNPC(3) & "/" & InfoQuests(NroQuest).CantNPC(3)
+    End If
+    
+    imgQuestAbandonar.Visible = True
+    lblPTS.Caption = PonerPuntos(InfoQuests(NroQuest).puntos)
+    lblOro.Caption = PonerPuntos(InfoQuests(NroQuest).Oro)
+    lblPTS.Visible = True
+    lblOro.Visible = True
+    
+    If InfoQuests(NroQuest).IndexOBJ > 0 Then
+        Dim SR As RECT
+        SR.left = 0
+        SR.top = 0
+        SR.Right = 32
+        SR.bottom = 32
+        
+        picOBJ.Visible = True
+        lblCantOBJ.Visible = True
+    
+        picOBJ.Refresh
+        Call engine.DrawGrhtoHdc(InfoQuests(NroQuest).IndexOBJ, SR, picOBJ)
+        lblCantOBJ.Caption = "x" & InfoQuests(NroQuest).CantOBJ
+    End If
 End Sub
 Private Sub imgQuests_Click()
+
+    SendData "KEST"
 Me.Picture = General_Load_Interface_Picture("Estadisticas_2_Main.jpg")
 
 'Vaciamos toda la primera pagina.
@@ -1824,42 +1454,24 @@ lblPuntosDonador.Visible = False
 lblBonificadores(1).Visible = False
 lblBonificadores(2).Visible = False
 lblBonificadores(3).Visible = False
-picInv.Visible = False
 For i = 1 To NUMATRIBUTOS
     lblAtri(i).Visible = False
 Next
+
+txtQuestDescription.Visible = True
 
 'Vaciamos toda la pagina "extra" y "habilidades"
 For i = 0 To 25
 lblCounters(i).Visible = False
 Next
-For i = 1 To NUMSKILLS
-Skills(i).Visible = False
-Next
 imgHoja(1).Visible = False
 imgHoja(2).Visible = False
-
-'Mostramos pagina "quest"
-If UserEstadisticas.TipoQuest = 0 Then
-txtQuestDescription.Visible = True
-txtQuestDescription.text = "No estás haciendo ninguna quest."
-imgQuestVal1.Visible = False
-imgQuestVal2.Visible = False
-imgQuestAbandonar.Visible = False
-imgQuestType.Visible = False
-Else
-txtQuestDescription.Visible = True
-imgQuestVal1.Visible = True
-imgQuestVal2.Visible = True
-imgQuestAbandonar.Visible = True
-imgQuestType.Visible = True
-End If
 
 End Sub
 Private Sub imgExtras_Click()
 Me.Picture = General_Load_Interface_Picture("Estadisticas_4_1_Main.jpg")
-imgHoja(1).Picture = Nothing
-imgHoja(2).Picture = Nothing
+imgHoja(2).Visible = True
+imgHoja(1).Visible = False
 
 'Vaciamos toda la primera pagina.
 lblNombre.Visible = False
@@ -1875,7 +1487,6 @@ lblPuntosDonador.Visible = False
 lblBonificadores(1).Visible = False
 lblBonificadores(2).Visible = False
 lblBonificadores(3).Visible = False
-picInv.Visible = False
 For i = 1 To NUMATRIBUTOS
     lblAtri(i).Visible = False
 Next
@@ -1887,25 +1498,26 @@ Next
 For i = 15 To 25
 lblCounters(i).Visible = False
 Next
-For i = 1 To NUMSKILLS
-Skills(i).Visible = False
-Next
-
-imgHoja(1).Visible = True
-imgHoja(2).Visible = True
 
 'Vaciamos la pagina "quest"
-txtQuestDescription.Visible = False
-imgQuestVal1.Visible = False
-imgQuestVal2.Visible = False
-imgQuestAbandonar.Visible = False
-imgQuestType.Visible = False
+    lblPTS.Visible = False
+    lblOro.Visible = False
+    txtQuestDescription.Visible = False
+    imgQuestAbandonar.Visible = False
+    picNPC(0).Visible = False
+    lblCantNPC(0).Visible = False
+    picNPC(1).Visible = False
+    lblCantNPC(1).Visible = False
+    picNPC(2).Visible = False
+    lblCantNPC(2).Visible = False
+    picOBJ.Visible = False
+    lblCantOBJ.Visible = False
 End Sub
 Private Sub imgHoja_Click(Index As Integer)
 If Index = 1 Then
 Me.Picture = General_Load_Interface_Picture("Estadisticas_4_1_Main.jpg")
-imgHoja(1).Picture = Nothing
-imgHoja(2).Picture = Nothing
+imgHoja(2).Visible = True
+imgHoja(1).Visible = False
 
 'Vaciamos toda la primera pagina.
 lblNombre.Visible = False
@@ -1921,7 +1533,6 @@ lblPuntosDonador.Visible = False
 lblBonificadores(1).Visible = False
 lblBonificadores(2).Visible = False
 lblBonificadores(3).Visible = False
-picInv.Visible = False
 For i = 1 To NUMATRIBUTOS
     lblAtri(i).Visible = False
 Next
@@ -1933,23 +1544,25 @@ Next
 For i = 15 To 25
 lblCounters(i).Visible = False
 Next
-For i = 1 To NUMSKILLS
-Skills(i).Visible = False
-Next
-imgHoja(1).Visible = True
-imgHoja(2).Visible = True
 
 'Vaciamos la pagina "quest"
-txtQuestDescription.Visible = False
-imgQuestVal1.Visible = False
-imgQuestVal2.Visible = False
-imgQuestAbandonar.Visible = False
-imgQuestType.Visible = False
+    lblPTS.Visible = False
+    lblOro.Visible = False
+    txtQuestDescription.Visible = False
+    imgQuestAbandonar.Visible = False
+    picNPC(0).Visible = False
+    lblCantNPC(0).Visible = False
+    picNPC(1).Visible = False
+    lblCantNPC(1).Visible = False
+    picNPC(2).Visible = False
+    lblCantNPC(2).Visible = False
+    picOBJ.Visible = False
+    lblCantOBJ.Visible = False
 
 ElseIf Index = 2 Then
 Me.Picture = General_Load_Interface_Picture("Estadisticas_4_2_Main.jpg")
-imgHoja(1).Picture = Nothing
-imgHoja(2).Picture = Nothing
+imgHoja(2).Visible = False
+imgHoja(1).Visible = True
 
 'Vaciamos toda la primera pagina.
 lblNombre.Visible = False
@@ -1964,7 +1577,6 @@ lblPuntosDonador.Visible = False
 lblBonificadores(1).Visible = False
 lblBonificadores(2).Visible = False
 lblBonificadores(3).Visible = False
-picInv.Visible = False
 For i = 1 To NUMATRIBUTOS
     lblAtri(i).Visible = False
 Next
@@ -1976,38 +1588,31 @@ Next
 For i = 15 To 25
 lblCounters(i).Visible = True
 Next
-For i = 1 To NUMSKILLS
-Skills(i).Visible = False
-Next
-imgHoja(1).Visible = True
-imgHoja(2).Visible = True
 
 'Vaciamos la pagina "quest"
-txtQuestDescription.Visible = False
-imgQuestVal1.Visible = False
-imgQuestVal2.Visible = False
-imgQuestAbandonar.Visible = False
-imgQuestType.Visible = False
+    lblPTS.Visible = False
+    lblOro.Visible = False
+    txtQuestDescription.Visible = False
+    imgQuestAbandonar.Visible = False
+    picNPC(0).Visible = False
+    lblCantNPC(0).Visible = False
+    picNPC(1).Visible = False
+    lblCantNPC(1).Visible = False
+    picNPC(2).Visible = False
+    lblCantNPC(2).Visible = False
+    picOBJ.Visible = False
+    lblCantOBJ.Visible = False
 End If
 
 End Sub
 Private Sub imgQuestAbandonar_Click()
 Call SendData("/NOQUEST")
 End Sub
-Private Sub lblCerrar_Click()
-Unload Me
-End Sub
 Private Sub imgGeneral_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
 imgGeneral.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Estadisticas_1_Principal_I.jpg")
 End Sub
 Private Sub imgGeneral_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
 imgGeneral.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Estadisticas_1_Principal_A.jpg")
-End Sub
-Private Sub imgHabilidades_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-imgHabilidades.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Estadisticas_1_Habilidades_I.jpg")
-End Sub
-Private Sub imgHabilidades_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
-imgHabilidades.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Estadisticas_1_Habilidades_A.jpg")
 End Sub
 Private Sub imgQuests_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
 imgQuests.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Estadisticas_1_Quest_I.jpg")
@@ -2027,9 +1632,9 @@ End Sub
 Private Sub imgQuestAbandonar_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
 imgQuestAbandonar.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Estadisticas_2_AbandonarQuest_A.jpg")
 End Sub
-Private Sub imgHoja_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
-If Index = 1 Then imgHoja(1).Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Estadisticas_4_Hoja1_I.jpg")
-If Index = 2 Then imgHoja(2).Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Estadisticas_4_Hoja2_I.jpg")
+Private Sub lblPuntosDonador_Click()
+frmMercadoTS.Timer1.Enabled = True
+Call SendData("DCANJE")
 End Sub
 Private Sub lblPuntosTorneo_Click()
 Call SendData("CCANJE")

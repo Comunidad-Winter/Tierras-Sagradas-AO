@@ -7,7 +7,6 @@ Begin VB.Form frmSpawnList
    ClientTop       =   330
    ClientWidth     =   3300
    ControlBox      =   0   'False
-   Icon            =   "frmSpawnList.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -28,7 +27,7 @@ Begin VB.Form frmSpawnList
       EndProperty
       Height          =   390
       Left            =   345
-      MouseIcon       =   "frmSpawnList.frx":000C
+      MouseIcon       =   "frmSpawnList.frx":0000
       MousePointer    =   99  'Custom
       TabIndex        =   2
       Top             =   2985
@@ -47,7 +46,7 @@ Begin VB.Form frmSpawnList
       EndProperty
       Height          =   390
       Left            =   2025
-      MouseIcon       =   "frmSpawnList.frx":015E
+      MouseIcon       =   "frmSpawnList.frx":0152
       MousePointer    =   99  'Custom
       TabIndex        =   1
       Top             =   2985

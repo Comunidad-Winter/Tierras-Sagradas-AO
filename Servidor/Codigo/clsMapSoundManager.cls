@@ -68,26 +68,6 @@ Dim MAPFILE As String
     Next i
 End Sub
 
-
-Public Sub ReproducirSonidosDeMapas()
-Dim i As Integer
-Dim SonidosMapa As Byte
-Dim SonidoMapa As Byte
-
-    For i = 1 To UBound(p_Mapas)
-        If p_Mapas(i).Cantidad > 0 Then
-            SonidoMapa = RandomNumber(1, p_Mapas(i).Cantidad)
-            If RandomNumber(1, 100) <= p_Mapas(i).Probabilidad(SonidoMapa) Then
-                'tocarlo
-                    If p_Mapas(i).flags(SonidoMapa) Xor p_eSoundFlags.ninguna Then
-                        Call SendData(SendTarget.ToMap, 0, i, "TW" & p_Mapas(i).SoundIndex(SonidoMapa))
-                    End If
-            End If
-        End If
-    Next i
-    
-End Sub
-
-Public Sub ReproducirSonido(ByVal Destino As Byte, ByVal UserIndex As Integer, ByVal mapa As Integer, ByVal SoundIndex As Integer)
-    Call SendData(Destino, UserIndex, mapa, "TW" & SoundIndex)
+Public Sub ReproducirSonido(ByVal Destino As Byte, ByVal userindex As Integer, ByVal mapa As Integer, ByVal SoundIndex As Integer)
+    Call SendData(Destino, userindex, mapa, "TW" & SoundIndex)
 End Sub

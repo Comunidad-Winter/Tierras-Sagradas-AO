@@ -7,7 +7,6 @@ Begin VB.Form frmMenuMascota
    ClientLeft      =   0
    ClientTop       =   0
    ClientWidth     =   1785
-   Icon            =   "frmMenuMascota.frx":0000
    LinkTopic       =   "Form1"
    ScaleHeight     =   1545
    ScaleWidth      =   1785

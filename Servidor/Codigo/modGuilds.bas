@@ -260,7 +260,7 @@ Dim GI          As Integer
              Call WriteVar(GUILDINFOFILE, "GUILD" & GI, "SubLider2", "Fermin")
             End If
             
-            If UserList(userindex).Pos.Map = 71 Or UserList(userindex).Pos.Map = 108 Or UserList(userindex).Pos.Map = 109 Or UserList(userindex).Pos.Map = 110 Or UserList(userindex).Pos.Map = 106 Or UserList(userindex).Pos.Map = 120 Then Exit Function
+            If UserList(userindex).Pos.Map = 101 Or UserList(userindex).Pos.Map = 8 Or UserList(userindex).Pos.Map = 72 Or UserList(userindex).Pos.Map = 110 Or UserList(userindex).Pos.Map = 54 Or UserList(userindex).Pos.Map = 120 Then Exit Function
             
             If m_EsGuildLeader(Expulsado, GI) Then Guilds(GI).SetLeader (Guilds(GI).Fundador)
                 Call Guilds(GI).DesConectarMiembro(userindex)
@@ -481,11 +481,6 @@ Public Function PuedeFundarUnClan(ByVal userindex As Integer, ByVal Alineacion A
         Case ALINEACION_GUILD.ALINEACION_LEGION
             If UserList(userindex).Faccion.FuerzasCaos <> 1 Then
                 refError = "Para fundar un clan del mal debes pertenecer a la legión oscura"
-                Exit Function
-            End If
-        Case ALINEACION_GUILD.ALINEACION_MASTER
-            If UserList(userindex).flags.Privilegios < PlayerType.Dios Then
-                refError = "Para fundar un clan sin alineación debes ser un dios."
                 Exit Function
             End If
         Case ALINEACION_GUILD.ALINEACION_NEUTRO
@@ -750,7 +745,7 @@ Dim i As Integer
         i = Guilds(GuildIndex).m_Iterador_ProximoUserIndex
         While i > 0
             'No mostramos dioses y admins
-            If i <> userindex And (UserList(i).flags.Privilegios < PlayerType.Dios Or UserList(userindex).flags.Privilegios >= PlayerType.Dios) Then _
+            If i <> userindex And (UserList(i).flags.Privilegios < PlayerType.EventManager Or UserList(userindex).flags.Privilegios >= PlayerType.EventManager) Then _
                 m_ListaDeMiembrosOnline = m_ListaDeMiembrosOnline & UserList(i).Name & ","
             i = Guilds(GuildIndex).m_Iterador_ProximoUserIndex
         Wend
@@ -759,13 +754,14 @@ Dim i As Integer
         m_ListaDeMiembrosOnline = Left$(m_ListaDeMiembrosOnline, Len(m_ListaDeMiembrosOnline) - 1)
     End If
 End Function
-Public Function SendFriendList(ByVal userindex As Integer, Optional NombreAmigo As String = "(NADIE)") As String
+Public Function SendFriendList(ByVal userindex As Integer, Optional UsuarioDeslogeo As String = "(NADIE)") As String
 Dim tStr As String
 Dim tInt As Integer
 
-    tStr = UserList(userindex).flags.cantAmigos & ","
-    For tInt = 1 To UserList(userindex).flags.cantAmigos
-        If (NameIndex(UserList(userindex).flags.NombreAmigo(tInt)) = 0) Or (UCase$(UserList(userindex).flags.NombreAmigo(tInt)) = UCase$(NombreAmigo)) Then
+    tStr = 20 & ","
+    For tInt = 1 To 20
+        If UserList(userindex).flags.NombreAmigo(tInt) = "" Or UserList(userindex).flags.NombreAmigo(tInt) = " " Or UserList(userindex).flags.NombreAmigo(tInt) = "(NADIE)" Then UserList(userindex).flags.NombreAmigo(tInt) = "(Nadie)"
+        If NameIndex(UserList(userindex).flags.NombreAmigo(tInt)) = 0 Or UCase$(UserList(userindex).flags.NombreAmigo(tInt)) = UCase$(UsuarioDeslogeo) Then
                 tStr = tStr & UserList(userindex).flags.NombreAmigo(tInt) & "(OFF),"
         Else
                 tStr = tStr & UserList(userindex).flags.NombreAmigo(tInt) & "(ON),"
@@ -799,6 +795,7 @@ Dim i       As Integer
     tStr = tStr & Guilds(GI).GetLeader & "¬"
     tStr = tStr & Guilds(GI).GetSubLider1 & "¬"
     tStr = tStr & Guilds(GI).GetSubLider2 & "¬"
+    tStr = tStr & Guilds(GI).GetURL & "¬"
     tStr = tStr & CStr(Guilds(GI).CantidadDeMiembros) & "¬"
     For i = 1 To CANTIDADMAXIMACODEX
         tStr = tStr & Guilds(GI).GetCodex(i) & "¬"
@@ -849,6 +846,7 @@ CastilloOeste = GetVar(IniPath & "configuracion.ini", "CASTILLO", "CastilloOeste
     UserInfo = UserInfo & CastilloOeste & "¬"
     UserInfo = UserInfo & CastilloEste & "¬"
     UserInfo = UserInfo & Guilds(GI).GetReputacion & "¬"
+    UserInfo = UserInfo & Guilds(GI).Fundador & "¬"
     
     UserInfo = UserInfo & CANTIDADDECLANES & "¬"
     
@@ -894,15 +892,19 @@ Fortaleza = GetVar(IniPath & "configuracion.ini", "CASTILLO", "Fortaleza")
     tStr = tStr & Guilds(GI).GetLeader & "¬"
     tStr = tStr & Guilds(GI).GetSubLider1 & "¬"
     tStr = tStr & Guilds(GI).GetSubLider2 & "¬"
-
+    For i = 1 To CANTIDADMAXIMACODEX
+        tStr = tStr & Guilds(GI).GetCodex(i) & "¬"
+    Next i
     tStr = tStr & CastilloNorte & "¬"
     tStr = tStr & CastilloSur & "¬"
     tStr = tStr & CastilloOeste & "¬"
     tStr = tStr & CastilloEste & "¬"
-    tStr = tStr & Guilds(GI).GetReputacion & "¬"
+    tStr = tStr & Guilds(GI).GetDesc & "¬"
+    tStr = tStr & Guilds(GI).GetURL & "¬"
     tStr = tStr & Guilds(GI).CVCG & "¬"
     tStr = tStr & Guilds(GI).CVCP & "¬"
     tStr = tStr & Guilds(GI).CASTIS & "¬"
+    tStr = tStr & Guilds(GI).GetReputacion & "¬"
     
     tStr = tStr & CANTIDADDECLANES & "¬"
     
@@ -913,6 +915,9 @@ Fortaleza = GetVar(IniPath & "configuracion.ini", "CASTILLO", "Fortaleza")
     '<-------Lista de miembros ---------->
     tStr = tStr & Guilds(GI).CantidadDeMiembros & "¬"
     tStr = tStr & Guilds(GI).GetMemberList("¬", True) & "¬"
+    
+    '<------- Guild News -------->
+    tStr = tStr & Replace(Guilds(GI).GetGuildNews, vbCrLf, "º") & "¬"
     
     '<------- Solicitudes ------->
     CantAsp = Guilds(GI).CantidadAspirantes()

@@ -7,7 +7,6 @@ Begin VB.Form FrmCirujia
    ClientWidth     =   6225
    FillColor       =   &H8000000F&
    ForeColor       =   &H8000000F&
-   Icon            =   "FrmCirujia.frx":0000
    LinkTopic       =   "Form1"
    ScaleHeight     =   5115
    ScaleWidth      =   6225
@@ -1799,6 +1798,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
 Option Explicit
 
 Dim NumeroCirujia As Integer
@@ -1806,8 +1806,8 @@ Public Sub ParseHead(Raza As String, Genero As String)
 
 Dim i As Long, SR As RECT
 
-SR.bottom = 20
-SR.Right = 37
+SR.bottom = 32
+SR.Right = 32
 SR.left = 0
 SR.top = 0
         
@@ -1915,19 +1915,24 @@ NumeroCirujia = Index
 NumeroCara(Index).ForeColor = &HFFFF&
 
 End Sub
+
 Private Sub Command1_Click()
 SendData "CABEZI" & NumeroCara(NumeroCirujia)
 Unload Me
 End Sub
+
 Private Sub Command2_Click()
 Unload Me
 End Sub
+
+
+
+
 Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    FormDrag Me
+FormDrag Me
 End Sub
 
 Public Sub FormDrag(TheForm As Form)
 ReleaseCapture
 Call SendMessage(Me.hWnd, &HA1, 2, 0&)
 End Sub
-

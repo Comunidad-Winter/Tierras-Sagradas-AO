@@ -144,7 +144,7 @@ Public Sub Initialize(ByVal File As String)
 'Opens the requested file and loads it's data into memory
 '**************************************************************
     Dim handle As Integer
-    Dim text As String
+    Dim Text As String
     Dim Pos As Long
     
     'Prevent memory losses if we are attempting to reload a file....
@@ -156,25 +156,25 @@ Public Sub Initialize(ByVal File As String)
     Open File For Input As handle
     
     Do Until EOF(handle)
-        Line Input #handle, text
+        Line Input #handle, Text
         
         'Is it null??
-        If Len(text) Then
+        If Len(Text) Then
             'If it starts with '[' it is a main node or nothing (GetPrivateProfileStringA works this way), otherwise it's a value
-            If left$(text, 1) = "[" Then
+            If left$(Text, 1) = "[" Then
                 'If it has an ending ']' it's a main node, otherwise it's nothing
-                Pos = InStr(2, text, "]")
+                Pos = InStr(2, Text, "]")
                 If Pos Then
                     'Add a main node
                     ReDim Preserve fileData(MainNodes) As MainNode
                     
-                    fileData(MainNodes).Name = UCase$(Trim$(mid$(text, 2, Pos - 2)))
+                    fileData(MainNodes).Name = UCase$(Trim$(mid$(Text, 2, Pos - 2)))
                     
                     MainNodes = MainNodes + 1
                 End If
             Else
                 'So it's a value. Check if it has a '=', otherwise it's nothing
-                Pos = InStr(2, text, "=")
+                Pos = InStr(2, Text, "=")
                 If Pos Then
                     'Is it under any main node??
                     If MainNodes Then
@@ -182,8 +182,8 @@ Public Sub Initialize(ByVal File As String)
                             'Add it to the main node's value
                             ReDim Preserve .values(.numValues) As ChildNode
                             
-                            .values(.numValues).Value = Right$(text, Len(text) - Pos)
-                            .values(.numValues).key = UCase$(left$(text, Pos - 1))
+                            .values(.numValues).Value = Right$(Text, Len(Text) - Pos)
+                            .values(.numValues).key = UCase$(left$(Text, Pos - 1))
                             
                             .numValues = .numValues + 1
                         End With
@@ -554,6 +554,4 @@ Open File For Output As hFile
     
 Close hFile
 End Sub
-
-
 

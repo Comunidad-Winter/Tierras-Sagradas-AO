@@ -117,7 +117,6 @@ Dim IpTableIndex As Long
             Exit Function
         Else
             IpSecurityAceptarNuevaConexion = False
-
             Debug.Print "CONEXION NO ACEPTADA"
             Exit Function
         End If
@@ -226,18 +225,18 @@ Private Sub AddNewIpLimiteConexiones(ByVal ip As Long, ByVal index As Long)
 End Sub
 
 Public Sub IpRestarConexion(ByVal ip As Long)
-Dim Key As Long
+Dim key As Long
     Debug.Print "resta conexion a " & ip
     
-    Key = FindTableIp(ip, IP_LIMITECONEXIONES)
+    key = FindTableIp(ip, IP_LIMITECONEXIONES)
     
-    If Key >= 0 Then
-        If MaxConTables(Key + 1) > 0 Then
-            MaxConTables(Key + 1) = MaxConTables(Key + 1) - 1
+    If key >= 0 Then
+        If MaxConTables(key + 1) > 0 Then
+            MaxConTables(key + 1) = MaxConTables(key + 1) - 1
         End If
-        If MaxConTables(Key + 1) <= 0 Then
+        If MaxConTables(key + 1) <= 0 Then
             'la limpiamos
-            Call CopyMemory(MaxConTables(Key), MaxConTables(Key + 2), (MaxConTablesEntry - (Key \ 2) + 1) * 8)
+            Call CopyMemory(MaxConTables(key), MaxConTables(key + 2), (MaxConTablesEntry - (key \ 2) + 1) * 8)
             MaxConTablesEntry = MaxConTablesEntry - 1
         End If
     Else 'Key <= 0

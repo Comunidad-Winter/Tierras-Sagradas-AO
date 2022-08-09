@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "mscomctl.ocx"
-Begin VB.Form frmMClanesUsuario 
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
+Begin VB.Form frmClanesUsuario 
    BorderStyle     =   0  'None
    Caption         =   "Form1"
    ClientHeight    =   7140
@@ -444,7 +444,7 @@ Begin VB.Form frmMClanesUsuario
       Width           =   2295
    End
 End
-Attribute VB_Name = "frmMClanesUsuario"
+Attribute VB_Name = "frmClanesUsuario"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
@@ -473,10 +473,10 @@ lblSublider2.Caption = "-"
 End If
 
 
-txtCastillo(0).text = ReadField(6, Data, Asc("¬"))
-txtCastillo(1).text = ReadField(7, Data, Asc("¬"))
-txtCastillo(2).text = ReadField(8, Data, Asc("¬"))
-txtCastillo(3).text = ReadField(9, Data, Asc("¬"))
+txtCastillo(0).Text = ReadField(6, Data, Asc("¬"))
+txtCastillo(1).Text = ReadField(7, Data, Asc("¬"))
+txtCastillo(2).Text = ReadField(8, Data, Asc("¬"))
+txtCastillo(3).Text = ReadField(9, Data, Asc("¬"))
 lblReputacion.Caption = PonerPuntos(ReadField(10, Data, Asc("¬")))
 lblFundador.Caption = ReadField(11, Data, Asc("¬"))
 
@@ -572,7 +572,7 @@ Unload Me
 End Sub
 Private Sub imgMasInfoDelClan_Click()
    If lstGuildsList.SelectedItem.Index <= 0 Then Exit Sub
-Call SendData("CLANDETAILS" & lstGuildsList.ListItems.Item(lstGuildsList.SelectedItem.Index).text)
+Call SendData("CLANDETAILS" & lstGuildsList.ListItems.Item(lstGuildsList.SelectedItem.Index).Text)
 End Sub
 Private Sub imgAbandonar_Click()
 Call SendData("/SALIRCLAN")
@@ -586,9 +586,9 @@ If Index = 3 Then Call SendData("/IR 34")
 If Index = 4 Then Call SendData("/IR 32")
 End Sub
 Private Sub imgAddPuntos_Click()
-If Not IsNumeric(CantiPuntos.text) Then Exit Sub
+If Not IsNumeric(CantiPuntos.Text) Then Exit Sub
 
-Call SendData("ADDPTS" & CantiPuntos.text)
+Call SendData("ADDPTS" & CantiPuntos.Text)
 Call SendData("GLINFO")
 End Sub
 Private Sub imgMasInfoDelClan_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)

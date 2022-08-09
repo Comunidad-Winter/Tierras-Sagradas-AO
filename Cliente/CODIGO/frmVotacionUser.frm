@@ -6,7 +6,6 @@ Begin VB.Form frmVotacionUser
    ClientLeft      =   45
    ClientTop       =   315
    ClientWidth     =   4275
-   Icon            =   "frmVotacionUser.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False

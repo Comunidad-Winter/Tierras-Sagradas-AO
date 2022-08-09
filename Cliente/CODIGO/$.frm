@@ -1,6 +1,7 @@
 VERSION 5.00
-Begin VB.Form frmMClanes 
-   BackColor       =   &H00000000&
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
+Begin VB.Form frmClanes 
+   BackColor       =   &H00FFFFFF&
    BorderStyle     =   0  'None
    ClientHeight    =   7230
    ClientLeft      =   105
@@ -17,22 +18,331 @@ Begin VB.Form frmMClanes
       BorderStyle     =   0  'None
       ForeColor       =   &H00FFFFFF&
       Height          =   1075
-      Left            =   9840
-      TabIndex        =   11
+      Left            =   240
+      TabIndex        =   20
       Text            =   "Text9"
-      Top             =   7200
+      Top             =   3885
       Width           =   9700
+   End
+   Begin VB.TextBox txtWeb 
+      BackColor       =   &H00000000&
+      BorderStyle     =   0  'None
+      ForeColor       =   &H00FFFFFF&
+      Height          =   260
+      Left            =   2760
+      TabIndex        =   19
+      Text            =   "Text10"
+      Top             =   3255
+      Width           =   4520
    End
    Begin VB.TextBox txtNoticias 
       BackColor       =   &H00000000&
       BorderStyle     =   0  'None
       ForeColor       =   &H00FFFFFF&
       Height          =   1065
-      Left            =   4800
-      TabIndex        =   10
+      Left            =   270
+      TabIndex        =   18
       Text            =   "Text11"
-      Top             =   7200
+      Top             =   5370
       Width           =   9585
+   End
+   Begin VB.TextBox txtCodex 
+      BackColor       =   &H00000000&
+      BorderStyle     =   0  'None
+      ForeColor       =   &H00FFFFFF&
+      Height          =   285
+      Index           =   7
+      Left            =   5160
+      TabIndex        =   17
+      Text            =   "Text1"
+      Top             =   2580
+      Width           =   4650
+   End
+   Begin VB.TextBox txtCodex 
+      BackColor       =   &H00000000&
+      BorderStyle     =   0  'None
+      ForeColor       =   &H00FFFFFF&
+      Height          =   285
+      Index           =   6
+      Left            =   5160
+      TabIndex        =   16
+      Text            =   "Text1"
+      Top             =   2220
+      Width           =   4650
+   End
+   Begin VB.TextBox txtCodex 
+      BackColor       =   &H00000000&
+      BorderStyle     =   0  'None
+      ForeColor       =   &H00FFFFFF&
+      Height          =   285
+      Index           =   5
+      Left            =   5160
+      TabIndex        =   15
+      Text            =   "Text1"
+      Top             =   1860
+      Width           =   4650
+   End
+   Begin VB.TextBox txtCodex 
+      BackColor       =   &H00000000&
+      BorderStyle     =   0  'None
+      ForeColor       =   &H00FFFFFF&
+      Height          =   285
+      Index           =   4
+      Left            =   5160
+      TabIndex        =   14
+      Text            =   "Text1"
+      Top             =   1515
+      Width           =   4650
+   End
+   Begin VB.TextBox txtCodex 
+      BackColor       =   &H00000000&
+      BorderStyle     =   0  'None
+      ForeColor       =   &H00FFFFFF&
+      Height          =   285
+      Index           =   3
+      Left            =   270
+      TabIndex        =   13
+      Text            =   "Text1"
+      Top             =   2580
+      Width           =   4750
+   End
+   Begin VB.TextBox txtCodex 
+      BackColor       =   &H00000000&
+      BorderStyle     =   0  'None
+      ForeColor       =   &H00FFFFFF&
+      Height          =   285
+      Index           =   2
+      Left            =   270
+      TabIndex        =   12
+      Text            =   "Text1"
+      Top             =   2220
+      Width           =   4750
+   End
+   Begin VB.TextBox txtCodex 
+      BackColor       =   &H00000000&
+      BorderStyle     =   0  'None
+      ForeColor       =   &H00FFFFFF&
+      Height          =   285
+      Index           =   1
+      Left            =   270
+      TabIndex        =   11
+      Text            =   "Text1"
+      Top             =   1860
+      Width           =   4750
+   End
+   Begin VB.TextBox txtCodex 
+      BackColor       =   &H00000000&
+      BorderStyle     =   0  'None
+      ForeColor       =   &H00FFFFFF&
+      Height          =   285
+      Index           =   0
+      Left            =   270
+      TabIndex        =   10
+      Text            =   "Text1"
+      Top             =   1515
+      Width           =   4750
+   End
+   Begin MSComctlLib.ListView Members 
+      Height          =   5775
+      Left            =   330
+      TabIndex        =   26
+      Top             =   1275
+      Width           =   9465
+      _ExtentX        =   16695
+      _ExtentY        =   10186
+      View            =   3
+      LabelWrap       =   -1  'True
+      HideSelection   =   -1  'True
+      FullRowSelect   =   -1  'True
+      _Version        =   393217
+      ForeColor       =   16777215
+      BackColor       =   0
+      Appearance      =   0
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Trebuchet MS"
+         Size            =   9.75
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      NumItems        =   11
+      BeginProperty ColumnHeader(1) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         Text            =   "Nombre"
+         Object.Width           =   3528
+      EndProperty
+      BeginProperty ColumnHeader(2) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   1
+         Text            =   "Estado"
+         Object.Width           =   1411
+      EndProperty
+      BeginProperty ColumnHeader(3) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   2
+         Text            =   "Nivel"
+         Object.Width           =   1235
+      EndProperty
+      BeginProperty ColumnHeader(4) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   3
+         Text            =   "Reputacion"
+         Object.Width           =   2822
+      EndProperty
+      BeginProperty ColumnHeader(5) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   4
+         Text            =   "Raza"
+         Object.Width           =   2822
+      EndProperty
+      BeginProperty ColumnHeader(6) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   5
+         Text            =   "Clase"
+         Object.Width           =   2822
+      EndProperty
+      BeginProperty ColumnHeader(7) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   6
+         Text            =   "Oro"
+         Object.Width           =   2822
+      EndProperty
+      BeginProperty ColumnHeader(8) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   7
+         Text            =   "Alianzas matados"
+         Object.Width           =   2822
+      EndProperty
+      BeginProperty ColumnHeader(9) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   8
+         Text            =   "Neutrales matados"
+         Object.Width           =   2822
+      EndProperty
+      BeginProperty ColumnHeader(10) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   9
+         Text            =   "Hordas matados"
+         Object.Width           =   2822
+      EndProperty
+      BeginProperty ColumnHeader(11) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   10
+         Text            =   "Ultima vez online"
+         Object.Width           =   2822
+      EndProperty
+   End
+   Begin MSComctlLib.ListView lstGuildList 
+      Height          =   3062
+      Left            =   360
+      TabIndex        =   27
+      Top             =   3165
+      Width           =   9393
+      _ExtentX        =   16563
+      _ExtentY        =   5398
+      View            =   3
+      LabelWrap       =   -1  'True
+      HideSelection   =   -1  'True
+      _Version        =   393217
+      ForeColor       =   16777215
+      BackColor       =   0
+      Appearance      =   0
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Trebuchet MS"
+         Size            =   9.75
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      NumItems        =   3
+      BeginProperty ColumnHeader(1) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         Text            =   "Nombre"
+         Object.Width           =   8819
+      EndProperty
+      BeginProperty ColumnHeader(2) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   1
+         Text            =   "Faccion"
+         Object.Width           =   6174
+      EndProperty
+      BeginProperty ColumnHeader(3) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   2
+         Text            =   "Nivel"
+         Object.Width           =   1587
+      EndProperty
+   End
+   Begin MSComctlLib.ListView lstSolicitudes 
+      Height          =   2775
+      Left            =   225
+      TabIndex        =   28
+      Top             =   4365
+      Width           =   7915
+      _ExtentX        =   13970
+      _ExtentY        =   4895
+      View            =   3
+      LabelWrap       =   -1  'True
+      HideSelection   =   -1  'True
+      FullRowSelect   =   -1  'True
+      _Version        =   393217
+      ForeColor       =   16777215
+      BackColor       =   0
+      Appearance      =   0
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Trebuchet MS"
+         Size            =   9.75
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      NumItems        =   11
+      BeginProperty ColumnHeader(1) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         Text            =   "Nombre"
+         Object.Width           =   3528
+      EndProperty
+      BeginProperty ColumnHeader(2) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   1
+         Text            =   "Estado"
+         Object.Width           =   1411
+      EndProperty
+      BeginProperty ColumnHeader(3) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   2
+         Text            =   "Nivel"
+         Object.Width           =   1235
+      EndProperty
+      BeginProperty ColumnHeader(4) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   3
+         Text            =   "Reputacion"
+         Object.Width           =   2822
+      EndProperty
+      BeginProperty ColumnHeader(5) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   4
+         Text            =   "Raza"
+         Object.Width           =   2822
+      EndProperty
+      BeginProperty ColumnHeader(6) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   5
+         Text            =   "Clase"
+         Object.Width           =   2822
+      EndProperty
+      BeginProperty ColumnHeader(7) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   6
+         Text            =   "Oro"
+         Object.Width           =   2822
+      EndProperty
+      BeginProperty ColumnHeader(8) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   7
+         Text            =   "Alianzas matados"
+         Object.Width           =   2822
+      EndProperty
+      BeginProperty ColumnHeader(9) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   8
+         Text            =   "Neutrales matados"
+         Object.Width           =   2822
+      EndProperty
+      BeginProperty ColumnHeader(10) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   9
+         Text            =   "Hordas matados"
+         Object.Width           =   2822
+      EndProperty
+      BeginProperty ColumnHeader(11) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   10
+         Text            =   "Ultima vez online"
+         Object.Width           =   2822
+      EndProperty
    End
    Begin VB.Label lblCastillos 
       BackColor       =   &H00000000&
@@ -50,7 +360,7 @@ Begin VB.Form frmMClanes
       Height          =   210
       Index           =   4
       Left            =   5295
-      TabIndex        =   16
+      TabIndex        =   25
       Top             =   3660
       Width           =   2625
    End
@@ -76,9 +386,9 @@ Begin VB.Form frmMClanes
       EndProperty
       ForeColor       =   &H00FFFFFF&
       Height          =   255
-      Left            =   5760
-      TabIndex        =   15
-      Top             =   360
+      Left            =   3240
+      TabIndex        =   24
+      Top             =   2280
       Visible         =   0   'False
       Width           =   495
    End
@@ -96,9 +406,9 @@ Begin VB.Form frmMClanes
       EndProperty
       ForeColor       =   &H00FFFFFF&
       Height          =   255
-      Left            =   7320
-      TabIndex        =   14
-      Top             =   360
+      Left            =   2040
+      TabIndex        =   23
+      Top             =   1920
       Visible         =   0   'False
       Width           =   495
    End
@@ -116,16 +426,16 @@ Begin VB.Form frmMClanes
       EndProperty
       ForeColor       =   &H00FFFFFF&
       Height          =   255
-      Left            =   4800
-      TabIndex        =   13
-      Top             =   480
+      Left            =   2040
+      TabIndex        =   22
+      Top             =   1560
       Visible         =   0   'False
       Width           =   495
    End
    Begin VB.Image imgVerDetalles 
       Height          =   495
-      Left            =   600
-      Top             =   7200
+      Left            =   435
+      Top             =   6405
       Visible         =   0   'False
       Width           =   9255
    End
@@ -138,7 +448,7 @@ Begin VB.Form frmMClanes
    End
    Begin VB.Image imgSubirLvl 
       Height          =   360
-      Left            =   3840
+      Left            =   3870
       Picture         =   "$.frx":60BA
       Top             =   1905
       Width           =   1140
@@ -158,20 +468,20 @@ Begin VB.Form frmMClanes
       ForeColor       =   &H00FFFFFF&
       Height          =   255
       Left            =   2040
-      TabIndex        =   12
+      TabIndex        =   21
       Top             =   1560
       Width           =   855
    End
    Begin VB.Image imgCerrarClan 
       Height          =   735
-      Left            =   9840
-      Top             =   7200
+      Left            =   8370
+      Top             =   6630
       Width           =   4575
    End
    Begin VB.Image imgInfo 
       Height          =   375
-      Left            =   120
-      Top             =   7200
+      Left            =   240
+      Top             =   6630
       Width           =   8055
    End
    Begin VB.Image imgModo 
@@ -457,7 +767,7 @@ Begin VB.Form frmMClanes
       End
    End
 End
-Attribute VB_Name = "frmMClanes"
+Attribute VB_Name = "frmClanes"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
@@ -484,7 +794,7 @@ End If
 Dim tX As Long
 
 For tX = 1 To 8
-    txtCodex(tX - 1).text = ReadField(5 + tX, Data, Asc("¬"))
+    txtCodex(tX - 1).Text = ReadField(5 + tX, Data, Asc("¬"))
 Next tX
 
 lblCastillos(0).Caption = ReadField(14, Data, Asc("¬"))
@@ -493,7 +803,7 @@ lblCastillos(2).Caption = ReadField(16, Data, Asc("¬"))
 lblCastillos(3).Caption = ReadField(17, Data, Asc("¬"))
 'lblCastillos(4).Caption = ReadField(18, Data, Asc("¬"))
 
-txtWeb.text = ReadField(19, Data, Asc("¬"))
+txtWeb.Text = ReadField(19, Data, Asc("¬"))
 lblCVCWins.Caption = ReadField(20, Data, Asc("¬"))
 lblCVCLosses.Caption = ReadField(21, Data, Asc("¬"))
 lblCastles.Caption = ReadField(22, Data, Asc("¬"))
@@ -501,7 +811,7 @@ lblRep.Caption = PonerPuntos(ReadField(23, Data, Asc("¬")))
 
 Dim des As String
 des = ReadField(18, Data, Asc("¬"))
-txtInfo.text = Replace(des, "º", vbCrLf)
+txtInfo.Text = Replace(des, "º", vbCrLf)
 
 Dim r%, T%
 
@@ -934,26 +1244,27 @@ End If
 
 End Sub
 Private Sub imgAceptar_Click()
-If lstSolicitudes.ListItems.Item(lstSolicitudes.SelectedItem.Index).text <> "" Then
-    Call SendData("ACEPTARI" & lstSolicitudes.ListItems.Item(lstSolicitudes.SelectedItem.Index).text)
-    Call SendData("GLINFO")
+If lstSolicitudes.ListItems.Item(lstSolicitudes.SelectedItem.Index).Text = "" Then
+Else
+Call SendData("ACEPTARI" & lstSolicitudes.ListItems.Item(lstSolicitudes.SelectedItem.Index).Text)
+Call SendData("GLINFO")
 End If
 End Sub
 Private Sub imgBorrar_Click()
     
-Call SendData("RECHAZAR" & lstSolicitudes.ListItems.Item(lstSolicitudes.SelectedItem.Index).text & "," & Replace(Replace("asd", ",", " "), vbCrLf, " "))
-lstSolicitudes.ListItems.Remove lstSolicitudes.SelectedItem.Inde
+Call SendData("RECHAZAR" & lstSolicitudes.ListItems.Item(lstSolicitudes.SelectedItem.Index).Text & "," & Replace(Replace("asd", ",", " "), vbCrLf, " "))
+lstSolicitudes.ListItems.Remove lstSolicitudes.SelectedItem.Index
     
 Call SendData("GLINFO")
 End Sub
 Private Sub imgRechazar_Click()
 
-Call SendData("RECHAZAR" & lstSolicitudes.ListItems.Item(lstSolicitudes.SelectedItem.Index).text & "," & Replace(Replace("asd", ",", " "), vbCrLf, " "))
+Call SendData("RECHAZAR" & lstSolicitudes.ListItems.Item(lstSolicitudes.SelectedItem.Index).Text & "," & Replace(Replace("asd", ",", " "), vbCrLf, " "))
 lstSolicitudes.ListItems.Remove lstSolicitudes.SelectedItem.Index
     
 Call SendData("GLINFO")
 End Sub
-Private Sub imgCastillo_Click(Index As Integer)
+Private Sub ImgCastillo_Click(Index As Integer)
 If Index = 0 Then Call SendData("/IR 33")
 If Index = 1 Then Call SendData("/IR 31")
 If Index = 2 Then Call SendData("/IR 34")
@@ -961,25 +1272,35 @@ If Index = 3 Then Call SendData("/IR 32")
 If Index = 4 Then Call SendData("/IR 35")
 End Sub
 Private Sub mnuExpulsar_Click()
-    Call SendData("ECHARCLA" & Members.ListItems.Item(Members.SelectedItem.Index).text)
-    Call SendData("GLINFO")
-    mostrarAdminLeader (True)
+Call SendData("ECHARCLA" & Members.ListItems.Item(Members.SelectedItem.Index).Text)
+Call SendData("GLINFO")
 End Sub
 Private Sub mnuSubHacer_Click()
-    Call SendData("/SUBLIDER " & Members.ListItems.Item(Members.SelectedItem.Index).text)
+Call SendData("/SUBLIDER " & Members.ListItems.Item(Members.SelectedItem.Index).Text)
+Call SendData("GLINFO")
 End Sub
 Private Sub mnuSubSacar_Click()
-    Call SendData("/QSUBLIDR " & Members.ListItems.Item(Members.SelectedItem.Index).text)
+Call SendData("/QSUBLIDR " & Members.ListItems.Item(Members.SelectedItem.Index).Text)
+Call SendData("GLINFO")
 End Sub
 Private Sub mnuDoLider_Click()
-    If MsgBox("¿Está seguro que desea pasarle el liderazgo a " & Members.ListItems.Item(Members.SelectedItem.Index).text & "?", vbYesNo) = vbYes Then Call SendData("/HACLIDER " & Members.ListItems.Item(Members.SelectedItem.Index).text)
-    Unload Me
+If MsgBox("¿Está seguro que desea pasarle el liderazgo a " & Members.ListItems.Item(Members.SelectedItem.Index).Text & "?", vbYesNo) = vbYes Then Call SendData("/HACLIDER " & Members.ListItems.Item(Members.SelectedItem.Index).Text)
+Unload Me
 End Sub
 Private Sub mnucontacts_Click()
-    Call SendData("ADDCON" & Members.ListItems.Item(Members.SelectedItem.Index).text)
+Call SendData("ADDCON" & Members.ListItems.Item(Members.SelectedItem.Index).Text)
 End Sub
 Private Sub mnumensaje_Click()
-    TheUser = Members.ListItems.Item(Members.SelectedItem.Index).text
+TheUser = Members.ListItems.Item(Members.SelectedItem.Index).Text
+'frmMain.ModoHabla.Text = "\"
+'frmMain.mnuNormal.Checked = False
+'frmMain.mnuprivado.Checked = True
+'frmMain.mnudenunciar.Checked = False
+'frmMain.mnuClanes.Checked = False
+'frmMain.mnuParty.Checked = False
+'frmMain.mnuGritar.Checked = False
+'frmMain.mnuGlo.Checked = False
+'frmMain.mnuFaccion.Checked = False
 End Sub
 Private Sub imgCerrarClan_Click()
 Dim numerito As Integer
@@ -996,15 +1317,15 @@ End If
 End Sub
 Private Sub imgVerDetalles_Click()
 If lstGuildList.SelectedItem.Index <= 0 Then Exit Sub
-Call SendData("CLANDETAILS" & lstGuildList.ListItems.Item(lstGuildList.SelectedItem.Index).text)
+Call SendData("CLANDETAILS" & lstGuildList.ListItems.Item(lstGuildList.SelectedItem.Index).Text)
 End Sub
 Private Sub imgPuntos_Click()
-Dim cantipuntos As String
-cantipuntos = InputBox("Cantidad de puntos a Agregar:", "Agregar Puntos")
-If Not IsNumeric(cantipuntos) Then Exit Sub
-If cantipuntos = 0 Then Exit Sub
+Dim CantiPuntos As String
+CantiPuntos = InputBox("Cantidad de puntos a Agregar:", "Agregar Puntos")
+If Not IsNumeric(CantiPuntos) Then Exit Sub
+If CantiPuntos = 0 Then Exit Sub
 
-Call SendData("ADDPTS" & cantipuntos)
+Call SendData("ADDPTS" & CantiPuntos)
 Call SendData("GLINFO")
 End Sub
 Private Sub imgSubirLvl_Click()
@@ -1103,7 +1424,7 @@ End Sub
 Private Sub members_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
 
 If Button = 2 Then
-    Call SendData("VLKG" & Members.ListItems.Item(Members.SelectedItem.Index).text)
+    Call SendData("VLKG" & Members.ListItems.Item(Members.SelectedItem.Index).Text)
     
     If RetiraObj = 1 And RetiraOro = 1 Then
         mnuGld.Checked = False
@@ -1134,17 +1455,17 @@ End Sub
 Private Sub mnuDep_Click()
 Dim NumeriL As Byte
 NumeriL = 0
-Call SendData("BOVC" & Members.ListItems.Item(Members.SelectedItem.Index).text & "," & NumeriL)
+Call SendData("BOVC" & Members.ListItems.Item(Members.SelectedItem.Index).Text & "," & NumeriL)
 End Sub
 Private Sub mnuGld_Click()
 NumeriL = 1
-Call SendData("BOVC" & Members.ListItems.Item(Members.SelectedItem.Index).text & "," & NumeriL)
+Call SendData("BOVC" & Members.ListItems.Item(Members.SelectedItem.Index).Text & "," & NumeriL)
 End Sub
 Private Sub mnuObjs_Click()
 NumeriL = 2
-Call SendData("BOVC" & Members.ListItems.Item(Members.SelectedItem.Index).text & "," & NumeriL)
+Call SendData("BOVC" & Members.ListItems.Item(Members.SelectedItem.Index).Text & "," & NumeriL)
 End Sub
 Private Sub mnuFull_Click()
 NumeriL = 3
-Call SendData("BOVC" & Members.ListItems.Item(Members.SelectedItem.Index).text & "," & NumeriL)
+Call SendData("BOVC" & Members.ListItems.Item(Members.SelectedItem.Index).Text & "," & NumeriL)
 End Sub

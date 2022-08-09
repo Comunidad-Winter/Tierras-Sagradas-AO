@@ -144,7 +144,7 @@ On Error Resume Next
 Dim loopX As Integer
 Dim Porc As Long
 
-Call SendData(SendTarget.toall, 0, 0, "||656")
+Call SendData(SendTarget.ToAll, 0, 0, "||656")
 
 Dim j As Integer, k As Integer
 
@@ -168,7 +168,7 @@ For loopX = 1 To LastNPC
     End If
 Next
 
-Call SendData(SendTarget.toall, 0, 0, "||657")
+Call SendData(SendTarget.ToAll, 0, 0, "||657")
 
 End Sub
 
@@ -195,14 +195,14 @@ Next i
 End Sub
 
 
-Public Sub Encarcelar(ByVal Userindex As Integer, ByVal Minutos As Long, Optional ByVal GmName As String = "")
+Public Sub Encarcelar(ByVal userindex As Integer, ByVal Minutos As Long, Optional ByVal GmName As String = "")
         
-        UserList(Userindex).Counters.Pena = Minutos
+        UserList(userindex).Counters.Pena = Minutos
        
         
-        Call WarpUserChar(Userindex, Prision.Map, Prision.X, Prision.Y, True)
+        Call WarpUserChar(userindex, Prision.Map, Prision.X, Prision.Y, True)
         
-        Call SendData(SendTarget.toindex, Userindex, 0, "||659@" & Minutos)
+        Call SendData(SendTarget.toindex, userindex, 0, "||659@" & Minutos)
         
 End Sub
 
@@ -214,15 +214,15 @@ If FileExist(CharPath & UCase$(UserName) & ".chr", vbNormal) Then
 End If
 End Sub
 
-Public Function BANCheck(ByVal name As String) As Boolean
+Public Function BANCheck(ByVal Name As String) As Boolean
 
-BANCheck = (val(GetVar(App.Path & "\charfile\" & name & ".chr", "FLAGS", "Ban")) = 1)
+BANCheck = (val(GetVar(App.Path & "\charfile\" & Name & ".chr", "FLAGS", "Ban")) = 1)
 
 End Function
 
-Public Function PersonajeExiste(ByVal name As String) As Boolean
+Public Function PersonajeExiste(ByVal Name As String) As Boolean
 
-PersonajeExiste = FileExist(CharPath & UCase$(name) & ".chr", vbNormal)
+PersonajeExiste = FileExist(CharPath & UCase$(Name) & ".chr", vbNormal)
 
 End Function
 
@@ -232,13 +232,13 @@ CuentaExiste = FileExist(App.Path & "\Accounts\" & UCase$(Cuenta) & ".act", vbNo
  
 End Function
 
-Public Function UnBan(ByVal name As String) As Boolean
+Public Function UnBan(ByVal Name As String) As Boolean
 'Unban the character
-Call WriteVar(App.Path & "\charfile\" & name & ".chr", "FLAGS", "Ban", "0")
+Call WriteVar(App.Path & "\charfile\" & Name & ".chr", "FLAGS", "Ban", "0")
 
 'Remove it from the banned people database
-Call WriteVar(App.Path & "\logs\" & "BanDetail.dat", name, "BannedBy", "NOBODY")
-Call WriteVar(App.Path & "\logs\" & "BanDetail.dat", name, "Reason", "NO REASON")
+Call WriteVar(App.Path & "\logs\" & "BanDetail.dat", Name, "BannedBy", "NOBODY")
+Call WriteVar(App.Path & "\logs\" & "BanDetail.dat", Name, "Reason", "NO REASON")
 End Function
 Public Function CheckHD(ByVal hd As String) As Boolean
 '***************************************************
@@ -248,11 +248,13 @@ Public Function CheckHD(ByVal hd As String) As Boolean
 '***************************************************
 Open App.Path & "\DAT\BanHds.dat" For Input As #1
 Dim Linea As String, Total As String
+
 Do Until EOF(1)
 Line Input #1, Linea
 Total = Total + Linea + vbCrLf
 Loop
 Close #1
+
 Dim Ret As String
 If InStr(1, Total, hd) Then
 CheckHD = True
@@ -339,27 +341,21 @@ Loop
 Close #ArchN
 
 End Sub
-Public Function UserDarPrivilegioLevel(ByVal name As String) As Long
-If EsAdministrador(name) Then
-    UserDarPrivilegioLevel = 12
-ElseIf EsSubAdministrador(name) Then
-    UserDarPrivilegioLevel = 11
-ElseIf EsDeveloper(name) Then
-    UserDarPrivilegioLevel = 10
-ElseIf EsDirector(name) Then
-    UserDarPrivilegioLevel = 9
-ElseIf EsGranDios(name) Then
-    UserDarPrivilegioLevel = 8
-ElseIf EsDios(name) Then
-    UserDarPrivilegioLevel = 4
-ElseIf EsEventMaster(name) Then
-    UserDarPrivilegioLevel = 3
-ElseIf EsSemiDios(name) Then
-    UserDarPrivilegioLevel = 2
-ElseIf EsConsejero(name) Then
-    UserDarPrivilegioLevel = 1
-Else
-    UserDarPrivilegioLevel = 0
-End If
+Public Function UserDarPrivilegioLevel(ByVal Name As String) As Long
+    If IsAdministrator(Name) Then
+        UserDarPrivilegioLevel = 6
+    ElseIf IsDevelopment(Name) Then
+        UserDarPrivilegioLevel = 5
+    ElseIf IsCoordination(Name) Then
+        UserDarPrivilegioLevel = 4
+    ElseIf IsTournamentManager(Name) Then
+        UserDarPrivilegioLevel = 3
+    ElseIf IsEventManager(Name) Then
+        UserDarPrivilegioLevel = 2
+    ElseIf IsUserSupport(Name) Then
+        UserDarPrivilegioLevel = 1
+    Else
+        UserDarPrivilegioLevel = 0
+    End If
 End Function
 

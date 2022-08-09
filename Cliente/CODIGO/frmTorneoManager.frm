@@ -15,7 +15,6 @@ Begin VB.Form frmTorneoManager
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   Icon            =   "frmTorneoManager.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -164,37 +163,37 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
-Public Sub PonerListaTorneo(ByVal rData As String)
+Public Sub PonerListaTorneo(ByVal Rdata As String)
 
 Dim j As Integer, k As Integer
 For j = 0 To List1.ListCount - 1
     Me.List1.RemoveItem 0
 Next j
-k = CInt(ReadField(1, rData, 44))
+k = CInt(ReadField(1, Rdata, 44))
 
 For j = 1 To k
-    List1.AddItem ReadField(1 + j, rData, 44)
+    List1.AddItem ReadField(1 + j, Rdata, 44)
 Next j
 
 Me.Show , frmMain
 
 End Sub
 Private Sub Ass_Click()
-Call SendData("/SUM " & List1.text & "")
+Call SendData("/SUM " & List1.Text & "")
 End Sub
 Private Sub Command2_Click()
-Call SendData("/IRA " & List1.text & "")
+Call SendData("/IRA " & List1.Text & "")
 End Sub
 Private Sub Command3_Click()
-Call SendData("/DV " & List1.text & "")
+Call SendData("/DV " & List1.Text & "")
 End Sub
 Private Sub Command4_Click()
-Call SendData("/ECHAR " & List1.text & "")
+Call SendData("/ECHAR " & List1.Text & "")
 End Sub
 Private Sub Command5_Click()
-If List1.text = "" Then Exit Sub
-If List1.ListIndex = 0 Then Exit Sub
-List1.RemoveItem List1.text
+If List1.Text = "" Then Exit Sub
+If List1.listIndex = 0 Then Exit Sub
+List1.RemoveItem List1.Text
 End Sub
 Private Sub Command6_Click()
 List1.Clear

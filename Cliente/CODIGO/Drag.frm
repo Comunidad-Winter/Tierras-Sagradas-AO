@@ -7,7 +7,6 @@ Begin VB.Form Drag
    ClientLeft      =   0
    ClientTop       =   0
    ClientWidth     =   480
-   Icon            =   "Drag.frx":0000
    LinkTopic       =   "Form1"
    ScaleHeight     =   480
    ScaleWidth      =   480

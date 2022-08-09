@@ -328,7 +328,7 @@ End Function
 ' @param    key The key of the value we are looking for.
 ' @returns  The value asociated with the given key under the requeted main section of the INI file or a null string if it's not found.
 
-Public Sub ChangeValue(ByVal Main As String, ByVal key As String, ByVal Value As String)
+Public Sub ChangeValue(ByVal Main As String, ByVal key As String, ByVal Value As Long)
 '**************************************************************
 'Author: ZaMa
 'Last Modify Date: 27/05/2009
@@ -546,6 +546,5 @@ Open file For Output As hFile
     
 Close hFile
 End Sub
-
 
 

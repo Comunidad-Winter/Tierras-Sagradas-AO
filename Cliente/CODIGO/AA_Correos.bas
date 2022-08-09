@@ -15,9 +15,9 @@ Private cTempRead2  As String
 Private iCorr        As Long
 Private cOferto     As Boolean
 Private cRecivi     As Boolean
-Public Sub correosIniciar(rData As String)
-cNombre = ReadField(1, rData, Asc("$"))
-cTempRead = ReadField(2, rData, Asc("$"))
+Public Sub correosIniciar(Rdata As String)
+cNombre = ReadField(1, Rdata, Asc("$"))
+cTempRead = ReadField(2, Rdata, Asc("$"))
     For iCorr = 1 To 20
         With cItem(iCorr)
             cTempRead2 = ReadField(iCorr, cTempRead, Asc(","))
@@ -29,13 +29,13 @@ cTempRead = ReadField(2, rData, Asc("$"))
 
 correosCarga
 End Sub
-Public Sub correosIniciarForm(rData As String)
+Public Sub correosIniciarForm(Rdata As String)
 
 Dim i As Long
 frmCorreo.lstMails.Clear
 
 For i = 1 To 30
-    frmCorreo.lstMails.AddItem ReadField(i, rData, Asc(","))
+    frmCorreo.lstMails.AddItem ReadField(i, Rdata, Asc(","))
 Next i
 
 If frmCorreo.Visible = False Then
@@ -45,14 +45,14 @@ Else
 End If
 
 End Sub
-Public Sub correosListaAmigos(rData As String)
+Public Sub correosListaAmigos(Rdata As String)
 
 Dim i As Long
 frmCorreo.lstContactos.Clear
 
 For i = 1 To 20
-    If UCase$(ReadField(i, rData, Asc(","))) <> "(NADIE)" Then
-        frmCorreo.lstContactos.AddItem ReadField(i, rData, Asc(","))
+    If UCase$(ReadField(i, Rdata, Asc(","))) <> "(NADIE)" Then
+        frmCorreo.lstContactos.AddItem ReadField(i, Rdata, Asc(","))
     End If
 Next i
 
@@ -85,11 +85,11 @@ correosCarga
 frmCorreo.lstObjs.ListIndex = Index - 1
 End Sub
 Public Sub correosQuitarItem(Index As Integer, Cant As Integer)
-If frmCorreo.lstObjsEnviar.Text = "" Then Exit Sub
+If frmCorreo.lstObjsEnviar.text = "" Then Exit Sub
 
 Dim cFo As Long
     For cFo = 1 To 20
-        If "" & UCase$(cItem(cFo).iNombre) & " " = UCase$(ReadField(1, frmCorreo.lstObjsEnviar.Text, Asc("-"))) Or UCase$(cItem(cFo).iNombre) = UCase$(ReadField(1, frmCorreo.lstObjsEnviar.Text, Asc("-"))) Then
+        If "" & UCase$(cItem(cFo).iNombre) & " " = UCase$(ReadField(1, frmCorreo.lstObjsEnviar.text, Asc("-"))) Or UCase$(cItem(cFo).iNombre) = UCase$(ReadField(1, frmCorreo.lstObjsEnviar.text, Asc("-"))) Then
                 If Cant > cItem(cFo).iOfrece Then Cant = cItem(cFo).iOfrece
             cItem(cFo).iOfrece = cItem(cFo).iOfrece - Cant
             cItem(cFo).iCantidad = cItem(cFo).iCantidad + Cant
@@ -107,28 +107,34 @@ Dim cTempPa As String
         cTempPa = cTempPa & iCorr & "-" & cItem(iCorr).iOfrece & ","
     Next iCorr
     
-    SendData "CZM" & frmCorreo.txtDestinatario.Text & "$" & frmCorreo.txtAsunto.Text & "$" & frmCorreo.txtMensaje.Text & "$" & cTempPa
+    SendData "CZM" & frmCorreo.txtDestinatario.text & "$" & frmCorreo.txtAsunto.text & "$" & frmCorreo.txtMensaje.text & "$" & cTempPa
     correosCerrar
 End Sub
-Public Sub correosCargarMensaje(rData As String)
+Public Sub correosCargarMensaje(Rdata As String)
 
 frmCorreo.lblAsunto.Caption = ""
-frmCorreo.lblMensaje.Text = ""
+frmCorreo.lblMensaje.text = ""
 frmCorreo.lstObjetos.Clear
 frmCorreo.lblFecha.Caption = ""
 frmCorreo.lblRemitente.Caption = ""
 
-frmCorreo.lblRemitente.Caption = ReadField(1, rData, Asc("$"))
-frmCorreo.lblAsunto.Caption = ReadField(2, rData, Asc("$"))
-frmCorreo.lblMensaje.Text = ReadField(3, rData, Asc("$"))
-frmCorreo.lblFecha.Caption = ReadField(4, rData, Asc("$"))
-    
-End Sub
-Public Sub correosCargarItems(rData As String)
+frmCorreo.lblRemitente.Caption = ReadField(1, Rdata, Asc("$"))
+frmCorreo.lblAsunto.Caption = ReadField(2, Rdata, Asc("$"))
+frmCorreo.lblMensaje.text = ReadField(3, Rdata, Asc("$"))
+frmCorreo.lblFecha.Caption = ReadField(4, Rdata, Asc("$"))
+
+Dim cDatPalOtro As String, ComienzoPaLeer As Integer
+
+cDatPalOtro = cDatPalOtro & ReadField(1, Rdata, Asc("$")) & "$" & ReadField(2, Rdata, Asc("$")) & "$" & ReadField(3, Rdata, Asc("$")) & "$" & ReadField(4, Rdata, Asc("$")) & "$"
+ComienzoPaLeer = Len(cDatPalOtro)
 
     For iCorr = 1 To 20
         With cRetirar(iCorr)
-            cTempRead = ReadField(iCorr, rData, Asc(","))
+            If iCorr = 1 Then
+                cTempRead = ReadField(1, mid(Rdata, ComienzoPaLeer), Asc(","))
+            Else
+                cTempRead = ReadField(iCorr, Rdata, Asc(","))
+            End If
             
             .iGrhIndex = ReadField(1, cTempRead, Asc("-"))
             .iCantidad = ReadField(2, cTempRead, Asc("-"))
@@ -139,7 +145,8 @@ Public Sub correosCargarItems(rData As String)
             End If
         End With
     Next iCorr
-
+    
+    
 End Sub
 Public Sub correosCerrar()
     With frmCorreo

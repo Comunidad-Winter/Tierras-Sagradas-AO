@@ -6,76 +6,78 @@ Begin VB.Form frmEstadisticasUsuario
    ClientLeft      =   0
    ClientTop       =   0
    ClientWidth     =   6855
-   Icon            =   "frmEstadisticasUsuario.frx":0000
    LinkTopic       =   "Form2"
-   ScaleHeight     =   282
-   ScaleMode       =   3  'Pixel
-   ScaleWidth      =   457
+   Picture         =   "frmEstadisticasUsuario.frx":0000
+   ScaleHeight     =   4230
+   ScaleWidth      =   6855
    ShowInTaskbar   =   0   'False
-   StartUpPosition =   1  'CenterOwner
+   StartUpPosition =   2  'CenterScreen
    Begin VB.Label lblParejas 
+      Alignment       =   2  'Center
       BackStyle       =   0  'Transparent
       Caption         =   "8421 jugados (67% victorias)"
       BeginProperty Font 
-         Name            =   "Palatino Linotype"
-         Size            =   6.75
+         Name            =   "Lucida Sans"
+         Size            =   6
          Charset         =   0
          Weight          =   400
          Underline       =   0   'False
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H0000FFFF&
+      ForeColor       =   &H0080FFFF&
       Height          =   255
-      Left            =   4530
+      Left            =   4560
       TabIndex        =   15
-      Top             =   1215
-      Width           =   2055
+      Top             =   1230
+      Width           =   1935
    End
    Begin VB.Label lblDuelos 
+      Alignment       =   2  'Center
       BackStyle       =   0  'Transparent
       Caption         =   "244 jugados (15% victorias)"
       BeginProperty Font 
-         Name            =   "Palatino Linotype"
-         Size            =   6.75
+         Name            =   "Lucida Sans"
+         Size            =   6
          Charset         =   0
          Weight          =   400
          Underline       =   0   'False
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H0000FFFF&
+      ForeColor       =   &H0080FFFF&
       Height          =   255
-      Left            =   4530
+      Left            =   4560
       TabIndex        =   14
-      Top             =   825
+      Top             =   830
       Width           =   1935
    End
    Begin VB.Label lblRondas 
+      Alignment       =   2  'Center
       BackStyle       =   0  'Transparent
       Caption         =   "200"
       BeginProperty Font 
-         Name            =   "Palatino Linotype"
-         Size            =   8.25
+         Name            =   "Lucida Sans"
+         Size            =   6
          Charset         =   0
          Weight          =   400
          Underline       =   0   'False
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H0000FFFF&
+      ForeColor       =   &H0080FFFF&
       Height          =   255
-      Left            =   5760
+      Left            =   5640
       TabIndex        =   13
-      Top             =   1590
-      Width           =   615
+      Top             =   1615
+      Width           =   855
    End
    Begin VB.Label lblUsuariosMatados 
       Alignment       =   2  'Center
       BackStyle       =   0  'Transparent
       Caption         =   "4.811"
       BeginProperty Font 
-         Name            =   "Palatino Linotype"
+         Name            =   "Lucida Sans"
          Size            =   8.25
          Charset         =   0
          Weight          =   400
@@ -83,18 +85,19 @@ Begin VB.Form frmEstadisticasUsuario
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H0000FFFF&
+      ForeColor       =   &H0080FFFF&
       Height          =   255
       Left            =   5880
       TabIndex        =   12
       Top             =   2370
-      Width           =   495
+      Width           =   615
    End
    Begin VB.Label lblMuertes 
+      Alignment       =   2  'Center
       BackStyle       =   0  'Transparent
       Caption         =   "0"
       BeginProperty Font 
-         Name            =   "Palatino Linotype"
+         Name            =   "Lucida Sans"
          Size            =   8.25
          Charset         =   0
          Weight          =   400
@@ -102,38 +105,18 @@ Begin VB.Form frmEstadisticasUsuario
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H0000FFFF&
+      ForeColor       =   &H0080FFFF&
       Height          =   255
       Left            =   4680
       TabIndex        =   11
-      Top             =   1980
-      Width           =   1695
+      Top             =   2000
+      Width           =   1335
    End
    Begin VB.Label lblQuests 
-      Alignment       =   2  'Center
       BackStyle       =   0  'Transparent
-      Caption         =   "1.343"
+      Caption         =   "124"
       BeginProperty Font 
-         Name            =   "Palatino Linotype"
-         Size            =   6.75
-         Charset         =   0
-         Weight          =   400
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H0000FFFF&
-      Height          =   255
-      Left            =   5985
-      TabIndex        =   10
-      Top             =   3555
-      Width           =   495
-   End
-   Begin VB.Label lblCVCS 
-      BackStyle       =   0  'Transparent
-      Caption         =   "10.654"
-      BeginProperty Font 
-         Name            =   "Palatino Linotype"
+         Name            =   "Lucida Sans"
          Size            =   8.25
          Charset         =   0
          Weight          =   400
@@ -141,19 +124,39 @@ Begin VB.Form frmEstadisticasUsuario
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H0000FFFF&
+      ForeColor       =   &H0080FFFF&
+      Height          =   255
+      Left            =   6140
+      TabIndex        =   10
+      Top             =   3555
+      Width           =   375
+   End
+   Begin VB.Label lblCVCS 
+      Alignment       =   2  'Center
+      BackStyle       =   0  'Transparent
+      Caption         =   "10.654"
+      BeginProperty Font 
+         Name            =   "Lucida Sans"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H0080FFFF&
       Height          =   255
       Left            =   4320
       TabIndex        =   9
       Top             =   3150
-      Width           =   2055
+      Width           =   2175
    End
    Begin VB.Label lblEventos 
       Alignment       =   2  'Center
       BackStyle       =   0  'Transparent
       Caption         =   "22.377"
       BeginProperty Font 
-         Name            =   "Palatino Linotype"
+         Name            =   "Lucida Sans"
          Size            =   8.25
          Charset         =   0
          Weight          =   400
@@ -161,37 +164,37 @@ Begin VB.Form frmEstadisticasUsuario
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H0000FFFF&
+      ForeColor       =   &H0080FFFF&
       Height          =   255
-      Left            =   5640
+      Left            =   5760
       TabIndex        =   8
       Top             =   2760
-      Width           =   855
+      Width           =   735
    End
    Begin VB.Label lblReputacion 
       BackStyle       =   0  'Transparent
       Caption         =   "20.000"
       BeginProperty Font 
-         Name            =   "Palatino Linotype"
+         Name            =   "Lucida Sans"
          Size            =   9.75
          Charset         =   0
-         Weight          =   700
+         Weight          =   600
          Underline       =   0   'False
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
       ForeColor       =   &H00FFFFFF&
       Height          =   255
-      Left            =   2040
+      Left            =   2160
       TabIndex        =   7
-      Top             =   3510
+      Top             =   3530
       Width           =   1335
    End
    Begin VB.Label lblJerarquia 
       BackStyle       =   0  'Transparent
       Caption         =   "4ta Jerarquia"
       BeginProperty Font 
-         Name            =   "Palatino Linotype"
+         Name            =   "Lucida Sans"
          Size            =   8.25
          Charset         =   0
          Weight          =   400
@@ -199,37 +202,38 @@ Begin VB.Form frmEstadisticasUsuario
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H0000FFFF&
+      ForeColor       =   &H0080FFFF&
       Height          =   255
-      Left            =   1800
+      Left            =   1920
       TabIndex        =   6
-      Top             =   3135
+      Top             =   3150
       Width           =   1335
    End
    Begin VB.Label lblFaccion 
       BackStyle       =   0  'Transparent
       Caption         =   "HORDA"
       BeginProperty Font 
-         Name            =   "MS Sans Serif"
+         Name            =   "Lucida Sans"
          Size            =   8.25
          Charset         =   0
-         Weight          =   700
+         Weight          =   600
          Underline       =   0   'False
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
       ForeColor       =   &H000000FF&
       Height          =   255
-      Left            =   1560
+      Left            =   1680
       TabIndex        =   5
-      Top             =   2775
+      Top             =   2790
       Width           =   1815
    End
    Begin VB.Label lblExp 
+      Alignment       =   2  'Center
       BackStyle       =   0  'Transparent
       Caption         =   "999999999/999999999"
       BeginProperty Font 
-         Name            =   "Palatino Linotype"
+         Name            =   "Lucida Sans"
          Size            =   8.25
          Charset         =   0
          Weight          =   400
@@ -237,18 +241,19 @@ Begin VB.Form frmEstadisticasUsuario
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H0000FFFF&
+      ForeColor       =   &H0080FFFF&
       Height          =   255
-      Left            =   1080
+      Left            =   1200
       TabIndex        =   4
-      Top             =   2355
+      Top             =   2370
       Width           =   2295
    End
    Begin VB.Label lblNivel 
+      Alignment       =   2  'Center
       BackStyle       =   0  'Transparent
       Caption         =   "50 + 20"
       BeginProperty Font 
-         Name            =   "Palatino Linotype"
+         Name            =   "Lucida Sans"
          Size            =   9
          Charset         =   0
          Weight          =   400
@@ -256,56 +261,59 @@ Begin VB.Form frmEstadisticasUsuario
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H0000FFFF&
+      ForeColor       =   &H0080FFFF&
       Height          =   255
       Left            =   1320
       TabIndex        =   3
-      Top             =   1965
+      Top             =   1980
       Width           =   1815
    End
    Begin VB.Label lblRaza 
+      Alignment       =   2  'Center
       BackStyle       =   0  'Transparent
       Caption         =   "Elfo"
       BeginProperty Font 
-         Name            =   "Palatino Linotype"
+         Name            =   "Lucida Sans"
          Size            =   9
          Charset         =   0
          Weight          =   400
          Underline       =   0   'False
-         Italic          =   0   'False
+         Italic          =   -1  'True
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H0000FFFF&
+      ForeColor       =   &H0080FFFF&
       Height          =   255
-      Left            =   1200
+      Left            =   1320
       TabIndex        =   2
-      Top             =   1575
+      Top             =   1560
       Width           =   1815
    End
    Begin VB.Label lblClase 
+      Alignment       =   2  'Center
       BackStyle       =   0  'Transparent
       Caption         =   "Mago"
       BeginProperty Font 
-         Name            =   "Palatino Linotype"
+         Name            =   "Lucida Sans"
          Size            =   9
          Charset         =   0
          Weight          =   400
          Underline       =   0   'False
-         Italic          =   0   'False
+         Italic          =   -1  'True
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H0000FFFF&
+      ForeColor       =   &H0080FFFF&
       Height          =   255
       Left            =   1320
       TabIndex        =   1
-      Top             =   1185
+      Top             =   1200
       Width           =   1815
    End
    Begin VB.Label lblNombre 
+      Alignment       =   2  'Center
       BackStyle       =   0  'Transparent
       Caption         =   "Shay"
       BeginProperty Font 
-         Name            =   "Palatino Linotype"
+         Name            =   "Arial"
          Size            =   12
          Charset         =   0
          Weight          =   700
@@ -313,18 +321,18 @@ Begin VB.Form frmEstadisticasUsuario
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H0000FFFF&
-      Height          =   375
+      ForeColor       =   &H0080FFFF&
+      Height          =   255
       Left            =   1560
       TabIndex        =   0
-      Top             =   735
-      Width           =   1815
+      Top             =   765
+      Width           =   1575
    End
    Begin VB.Image Image1 
-      Height          =   495
-      Left            =   6360
-      Top             =   0
-      Width           =   495
+      Height          =   255
+      Left            =   6480
+      Top             =   120
+      Width           =   255
    End
 End
 Attribute VB_Name = "frmEstadisticasUsuario"
@@ -337,30 +345,8 @@ Private Sub Form_Load()
 Set form_Moviment = New clsFormMovementManager
 form_Moviment.Initialize Me
 
-If formuEstadisticas.Nivel > 50 Then
-    lblNivel.Caption = "50 + " & formuEstadisticas.Nivel - 50 & ""
-Else
-    lblNivel.Caption = formuEstadisticas.Nivel
-End If
+lblNivel.Caption = formuEstadisticas.Nivel
 
-Me.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\EstadisticasUser_Main.jpg")
-
-With Me
-    Me.lblNombre.ForeColor = RGB(185, 169, 146)
-    Me.lblClase.ForeColor = RGB(185, 169, 146)
-    Me.lblRaza.ForeColor = RGB(185, 169, 146)
-    Me.lblNivel.ForeColor = RGB(185, 169, 146)
-    Me.lblJerarquia.ForeColor = RGB(185, 169, 146)
-    Me.lblDuelos.ForeColor = RGB(185, 169, 146)
-    Me.lblParejas.ForeColor = RGB(185, 169, 146)
-    Me.lblEventos.ForeColor = RGB(185, 169, 146)
-    Me.lblCVCS.ForeColor = RGB(185, 169, 146)
-    Me.lblQuests.ForeColor = RGB(185, 169, 146)
-    Me.lblMuertes.ForeColor = RGB(185, 169, 146)
-    Me.lblUsuariosMatados.ForeColor = RGB(185, 169, 146)
-    Me.lblRondas.ForeColor = RGB(185, 169, 146)
-    Me.lblExp.ForeColor = RGB(185, 169, 146)
-End With
 
 If formuEstadisticas.Faccion = 1 Then
     lblFaccion.ForeColor = &H80&
@@ -377,3 +363,4 @@ End Sub
 Private Sub Image1_Click()
 Unload Me
 End Sub
+

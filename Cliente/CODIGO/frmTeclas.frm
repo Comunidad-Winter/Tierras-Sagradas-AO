@@ -6,7 +6,6 @@ Begin VB.Form frmTeclas
    ClientLeft      =   45
    ClientTop       =   315
    ClientWidth     =   7935
-   Icon            =   "frmTeclas.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -738,7 +737,6 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
-Private tmpDef(1 To NUMBINDS) As tBindedKey
 Private TempVars(0 To NUMBINDS) As Integer
 
 Function AlreadyBinded(KeyCode As Integer) As Boolean
@@ -775,10 +773,11 @@ Select Case Index
     Case 0
         Call GuardaConfigEnVariables
         For lc = 1 To NUMBINDS
-            Call WriteVar(App.Path & "\Data\INIT\Teclas.tsao", "TECLAS", Str(lc), Str(BindKeys(lc).KeyCode) & "," & BindKeys(lc).Name)
+            Call WriteVar(App.Path & "\Data\INIT\Teclas.tsao", "TECLAS", str(lc), str(BindKeys(lc).KeyCode) & "," & BindKeys(lc).Name)
         Next lc
     Case 1
         Call LoadDefaultBinds
+        Call CargaConfigEnForm
     Case 2
     
         For i = 1 To NUMBINDS
@@ -793,7 +792,7 @@ Select Case Index
             If Resultado = vbYes Then
                 Call GuardaConfigEnVariables
                 For lc = 1 To NUMBINDS
-                    Call WriteVar(App.Path & "\Data\INIT\Teclas.tsao", "TECLAS", Str(lc), Str(BindKeys(lc).KeyCode) & "," & BindKeys(lc).Name)
+                    Call WriteVar(App.Path & "\Data\INIT\Teclas.tsao", "TECLAS", str(lc), str(BindKeys(lc).KeyCode) & "," & BindKeys(lc).Name)
                 Next lc
             End If
         End If
@@ -913,18 +912,10 @@ Dim Arch, LACONCHA As String, lc As Integer
 Arch = App.Path & "\Data\INIT\" & "Teclas.tsao"
 
 For lc = 1 To NUMBINDS
-    LACONCHA = GetVar(App.Path & "\Data\INIT\" & "Teclas.tsao", "DEFAULTS", Str(lc))
-    tmpDef(lc).KeyCode = Val(ReadField(1, LACONCHA, 44))
-    tmpDef(lc).Name = ReadField(2, LACONCHA, 44)
+    LACONCHA = GetVar(App.Path & "\Data\INIT\" & "Teclas.tsao", "DEFAULTS", str(lc))
+    BindKeys(lc).KeyCode = Val(ReadField(1, LACONCHA, 44))
+    BindKeys(lc).Name = ReadField(2, LACONCHA, 44)
 Next lc
-
-Dim i As Integer
-
-For i = 1 To NUMBINDS
-    txConfig(i - 1).text = tmpDef(i).Name
-    TempVars(i - 1) = tmpDef(i).KeyCode
-Next
 
 
 End Sub
-

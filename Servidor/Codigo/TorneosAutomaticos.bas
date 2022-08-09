@@ -16,9 +16,9 @@ Private Const esquina2y As Integer = 57
 Private Const esperax As Integer = 27
 Private Const esperay As Integer = 43
 ' Mapa desconecta
-Private Const mapa_fuera As Integer = 28
-Private Const fueraesperay As Integer = 50
-Private Const fueraesperax As Integer = 50
+Private Const mapa_fuera As Integer = 1
+Private Const fueraesperay As Integer = 45
+Private Const fueraesperax As Integer = 55
  ' estas son las pocisiones de las 2 esquinas de la zona de espera, en su mapa tienen que tener en la misma posicion las 2 esquinas.
 Private Const X1 As Integer = 23
 Private Const X2 As Integer = 31
@@ -147,10 +147,14 @@ End If
     
         UserList(Torneo_Luchadores(LI1)).Stats.MedOro = UserList(Torneo_Luchadores(LI1)).Stats.MedOro + 1
         UserList(userindex).Stats.Reputacione = UserList(userindex).Stats.Reputacione + 100
+        Call WarpUserChar(Torneo_Luchadores(LI1), mapa_fuera, fueraesperax, fueraesperay, True)
+    
+        Call GRANK_User_Check(Events, UserList(Torneo_Luchadores(LI1)).Name, UserList(Torneo_Luchadores(LI1)).Stats.MedOro)
+        Call WriteVar(CharPath & UserList(Torneo_Luchadores(LI1)).Name & ".chr", "STATS", "MedOro", UserList(Torneo_Luchadores(LI1)).Stats.MedOro)
         
         Call SendData(toindex, Torneo_Luchadores(LI1), 0, "||57@50")
         Call AgregarPuntos(Torneo_Luchadores(LI1), 50)
-        Call WarpUserChar(Torneo_Luchadores(LI1), mapa_fuera, fueraesperax, fueraesperay, True)
+        Call WriteVar(CharPath & UserList(Torneo_Luchadores(LI1)).Name & ".chr", "STATS", "PuntosTorneo", UserList(Torneo_Luchadores(LI1)).Stats.PuntosTorneo)
     
         UserList(Torneo_Luchadores(LI1)).flags.Automatico = False
         Torneo_Activo = False

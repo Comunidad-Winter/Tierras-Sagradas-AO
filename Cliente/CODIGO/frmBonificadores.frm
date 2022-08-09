@@ -7,17 +7,15 @@ Begin VB.Form frmBonificadores
    ClientLeft      =   0
    ClientTop       =   0
    ClientWidth     =   5445
-   Icon            =   "frmBonificadores.frx":0000
    LinkTopic       =   "Form1"
-   ScaleHeight     =   147
-   ScaleMode       =   3  'Pixel
-   ScaleWidth      =   363
+   ScaleHeight     =   2205
+   ScaleWidth      =   5445
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.Image Image1 
-      Height          =   495
-      Left            =   5040
-      Top             =   0
+      Height          =   375
+      Left            =   4920
+      Top             =   120
       Width           =   375
    End
    Begin VB.Label lblBeneficio 
@@ -33,12 +31,12 @@ Begin VB.Form frmBonificadores
          Strikethrough   =   0   'False
       EndProperty
       ForeColor       =   &H0000FFFF&
-      Height          =   555
+      Height          =   600
       Index           =   1
-      Left            =   1050
+      Left            =   1030
       TabIndex        =   1
-      Top             =   1500
-      Width           =   4155
+      Top             =   1430
+      Width           =   4200
    End
    Begin VB.Label lblBeneficio 
       Alignment       =   2  'Center
@@ -53,26 +51,26 @@ Begin VB.Form frmBonificadores
          Strikethrough   =   0   'False
       EndProperty
       ForeColor       =   &H0000FFFF&
-      Height          =   555
+      Height          =   585
       Index           =   0
-      Left            =   1050
+      Left            =   1030
       TabIndex        =   0
-      Top             =   675
-      Width           =   4155
+      Top             =   600
+      Width           =   4200
    End
    Begin VB.Image Bonificacion 
-      Height          =   660
+      Height          =   690
       Index           =   1
-      Left            =   195
-      Top             =   1440
-      Width           =   690
+      Left            =   200
+      Top             =   1400
+      Width           =   720
    End
    Begin VB.Image Bonificacion 
-      Height          =   660
+      Height          =   690
       Index           =   0
-      Left            =   195
-      Top             =   615
-      Width           =   690
+      Left            =   200
+      Top             =   550
+      Width           =   720
    End
 End
 Attribute VB_Name = "frmBonificadores"
@@ -106,7 +104,7 @@ If Estado = Apretado Then Set ChangeButtonState = General_Load_Interface_Picture
 End Function
 Private Sub ChangeButtonsNormal()
 
-Bonificacion(0).Picture = ChangeButtonState(BNormal, "BAbajo")
+Bonificacion(0).Picture = ChangeButtonState(BNormal, "BArriva")
 Bonificacion(1).Picture = ChangeButtonState(BNormal, "BAbajo")
 
 Dim j
@@ -118,7 +116,7 @@ Me.Tag = "0"
 
 End Sub
 Private Sub Bonificacion_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
-If Index = 0 Then Bonificacion(0).Picture = ChangeButtonState(Apretado, "BAbajo")
+If Index = 0 Then Bonificacion(0).Picture = ChangeButtonState(Apretado, "BArriva")
 If Index = 1 Then Bonificacion(1).Picture = ChangeButtonState(Apretado, "BAbajo")
 End Sub
 Private Sub Bonificacion_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
@@ -126,7 +124,7 @@ Private Sub Bonificacion_MouseMove(Index As Integer, Button As Integer, Shift As
 If Index = 0 Then
 If Bonificacion(0).Tag = "0" Then
     Call ChangeButtonsNormal
-    Bonificacion(0).Picture = ChangeButtonState(Iluminado, "BAbajo")
+    Bonificacion(0).Picture = ChangeButtonState(Iluminado, "BArriva")
     Bonificacion(0).Tag = "1"
 End If
 End If
@@ -150,10 +148,8 @@ Private Sub Form_Load()
 Set form_Moviment = New clsFormMovementManager
 form_Moviment.Initialize Me
 
-lblBeneficio(0).BackColor = RGB(19, 20, 22)
-lblBeneficio(1).BackColor = RGB(19, 20, 22)
-
 Me.Picture = General_Load_Interface_Picture(InterfaceName & "_Main.jpg")
+
 ChangeButtonsNormal
 
 End Sub

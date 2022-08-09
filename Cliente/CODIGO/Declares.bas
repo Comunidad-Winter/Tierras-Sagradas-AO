@@ -34,39 +34,11 @@ Attribute VB_Name = "Mod_Declaraciones"
 'Pablo Ignacio Márquez
 Option Explicit
 
-'Seguridad antimacros//
-Public Declare Function GetCursorPos Lib "user32" (lpPoint As POINTAPI) As Long
-
-Public Type POINTAPI
-    X As Long
-    Y As Long
-End Type
-
-Public movementSpeed As Single
-Public LastTime As Long 'Para controlar la velocidad
-
-Public antMX As Long
-Public antMY As Long
-Public tempMX As Long
-Public tempMY As Long
-
-Public toyMacreado As Boolean
-Public tmpMouse(1 To 2) As POINTAPI
-'Seguridad antimacros//
-
-Public Type tScrolls
-    tiempoFaltante As Integer
-    tiempoTotal As Integer
-End Type
-
-Public Scroll(1 To 4) As tScrolls
-
-
 Declare Function ShellExecute Lib "shell32.dll" Alias _
     "ShellExecuteA" (ByVal hWnd As Long, ByVal lpOperation As String, ByVal lpFile As String, _
     ByVal lpParameters As String, ByVal lpDirectory As String, ByVal nShowCmd As Long) As Long
 
-Public TheUser As String
+Public Movement_Speed As Single
 
 ' Api mouse_event
 Public Declare Sub mouse_event Lib "user32" _
@@ -80,7 +52,28 @@ Public Declare Sub mouse_event Lib "user32" _
 Public Const MOUSEEVENTF_LEFTDOWN = &H2
 Public Const MOUSEEVENTF_LEFTUP = &H4
 
+Public UserIpAdress As String
+Public InventorySlots As Byte
 Public AramSeconds As Integer
+
+Public Type tQuests
+    Nombre As String
+    Info As String
+    Tipo As Byte
+    puntos As Long
+    Oro As Long
+    Dificultad As String
+    NivelMinimo As Byte
+    Mapas As String
+    PosiblesDrops As String
+    Usuarios As Integer
+    NPCs As Byte
+    NumNPC(1 To 3) As Integer
+    CantNPC(1 To 3) As Long
+    IndexOBJ As Long
+    CantOBJ As Long
+End Type
+Public InfoQuests() As tQuests
 
 Public Const ScreenWidth As Long = 800
 Public Const ScreenHeight As Long = 600
@@ -95,14 +88,27 @@ Public CorreoListIndex As Integer
 Public PantallaCompleta As Boolean
 Public TieneColorMapa As Boolean
 
-Public MSEnvioPING As Boolean
-Public modoHabla As String
-
 'Renderizacion conectar-cuenta
-Public ButtonPJHover(0 To 9) As Boolean
-Public ButtonCPHover As Boolean
-Public ButtonDeleteCharHover As Boolean
-Public PJApretado As Byte
+Public CrearAura(0 To 9) As Boolean
+Public MostrarTodo(0 To 9) As Boolean
+Public PersonajeX As Integer
+Public BodyHeadY As Integer
+Public ArmaEscudoY As Integer
+Public NickX As Integer
+Public NickY As Integer
+Public EntrarX As Integer
+Public EntrarY As Integer
+Public ButtonLogin As String
+Public ButtonCC As String
+Public ButtonRC As String
+Public ButtonVW As String
+Public ButtonCP As String
+Public ButtonCPass As String
+Public ButtonSalir As String
+Public ButtonEntrarPJ As String
+Public ButtonBorrarPJ As String
+Public RenderConnect As Boolean
+Public RenderAccount As Boolean
 
 '/CHORI
 Public UserMinHPCHORI As Integer
@@ -122,18 +128,16 @@ Public VentanitaMostrar(1 To 5) As Byte
 'menu
 Public nombreotro As String
 
-Public CantidadCanjeYegua As Long
-Public RangoPRIV(1 To 12) As String
-Public EsStatusCOLOR(0 To 9)
+'CS
+Public LiderDueño As String
+Public ClanDueño As String
+Public HoraComienzo As String
+Public ClanesInscriptos As Byte
+Public Inscripto As Byte
 
-'quests - menu
-Public TipoQuest As Byte
-Public CantNUQuest As Byte
-Public NombreNPC As String
-Public PremioOro As Long
-Public PremioPTS As Long
-Public Nombresiyo As String
-Public Numeriyo As Byte
+Public CantidadCanjeYegua As Long
+Public RangoPRIV(1 To 6) As String
+Public EsStatusCOLOR(0 To 9)
 
 'Casas
 Public DueñoKsa As String
@@ -161,7 +165,7 @@ Type tMensajesSos
     Autor As String
     Contenido As String
 End Type
-Public MensajesSOS(1 To 500) As tMensajesSos
+Public MensajesSOS(1 To 120) As tMensajesSos
 Public EsUsuario As String
 Public MensajesNumber As Integer
 Public TieneParaResponder As Boolean
@@ -180,18 +184,8 @@ Type tDenuncias
     UltimaDenuncia As String
     Estado As String
 End Type
-Public Denuncias(1 To 100) As tDenuncias
+Public Denuncias(1 To 50) As tDenuncias
 Public DenunciasNumber As Integer
-
-Public Type tBatMistica
-    EquipoRojo As Integer
-    EquipoAzul As Integer
-    EquipoAmarillo As Integer
-    EquipoVerde As Integer
-    hayBatalla As Boolean
-End Type
-
-Public Batalla As tBatMistica
 
 'Cuenta Regresiva
 Public Cuenta As Boolean
@@ -200,24 +194,30 @@ Public Tiempo As Byte
 
 'Connect - Account
 Public Aurix_Angle As Single
+Public ClickeoTextCuenta As Boolean
+Public ClickeoTextPassw As Boolean
+Public TextBoxCuenta As String
+Public TextBoxPassw As String
+Public TextBoxPasswR As String
+Public Const MapConnect = 998
 Public Const MapCuent = 999
+Public BarritaTextConnect As Byte
 
 Public Type Account_Charge
-    Nombre As String
-    Head As Integer
-    Body As Integer
-    Shield As Integer
-    Weapon As Integer
-    Casco As Integer
-    Index As Integer
-    Level As Integer
-    Clase As String
-    Existe As Boolean
-    Raza As String
-    Muerto As Integer
+Nombre As String
+Head As Integer
+Body As Integer
+Shield As Integer
+Weapon As Integer
+Casco As Integer
+Index As Integer
+Level As Integer
+Clase As String
+Existe As Boolean
+Raza As String
+Muerto As Integer
 End Type
-
-Public CargarPJ(0 To 9) As Account_Charge
+Public CargarPJ(0 To 8) As Account_Charge
 
 'Teclas
 Public Const NUMBINDS = 22
@@ -237,41 +237,40 @@ Public CartelInvisibilidad As Integer
 Public Type User_Config
     Music As Byte
     Sound As Byte
-    Graphics As Byte
-    Cursor As Byte
+    FPS As Byte
     Mensajes As Byte
     Desactivar_Globales As Byte
     Desactivar_Privados As Byte
+    MisionDiaria As Byte
     MoverPantalla As Byte
-    DobleClick As Byte
     AnunciarContacto As Byte
+    MP3Volume As Long
     
-    recordarCuenta As Byte
-    tmpCuenta As String
-    tmpPassword As String
     HablaNumerico As Byte
+    Interactuar As Byte
+    DobleClick As Byte
     MenuDesplegable As Byte
+    
+    Auras As Byte
+    Sombras As Byte
+    Particulas As Byte
+    Letras_Suben As Byte
+    Nombres As Byte
+    Transparencias As Byte
+    Desvanecimientos As Byte
+    Contador As Byte
+    ReflejosAgua As Byte
+    CartelMuerte As Byte
+    VerMiniMapa As Byte
+    VerEmoticons As Byte
 End Type
 
 Public Configuracion As User_Config
+Public tmpConfiguracion As User_Config
 Public Interfaces() As String
 Public CodigoRecibido As String
 Public Nombredelmapaxx As String
 Public CantidadDePersonajes As Byte
-
-Public Type MEMORYSTATUS
-    dwLength As Long
-    dwMemoryLoad As Long
-    dwTotalPhys As Long
-    dwAvailPhys As Long
-    dwTotalPageFile As Long
-    dwAvailPageFile As Long
-    dwTotalVirtual As Long
-    dwAvailVirtual As Long
-End Type
-
-Public Declare Sub GlobalMemoryStatus Lib "kernel32" _
-   (lpBuffer As MEMORYSTATUS)
 
 'd/d
 Public AllowDrag As Byte
@@ -301,21 +300,6 @@ Public mode As Boolean
 Public temp_rgb(3) As Long
 Public LuzGrh(3) As Long
 Public AlphaY As Byte
-
-'Desvanecimiento NPCs
-Public Type tDesvNPC
-    Activo As Boolean
-    Body As Integer
-    Head As Integer
-    Heading As E_Heading
-    X As Byte
-    Y As Byte
-    Llegoalatransp As Boolean
-    TransparenciaBody As Byte
-    HeadOffsetX As String
-    HeadOffsetY As String
-End Type
-Public DesvNPC(1 To 50) As tDesvNPC
 
 Public MinEleccion As Integer, MaxEleccion As Integer, Actualea As Integer
 
@@ -366,14 +350,19 @@ Public PJSAmount As Integer
 
 Public HDSerial As String
 
-Public AodefConv As AoDefenderConverter
-Public ALaMierda As Boolean
-Public Centrada As Boolean
-Public SuperClave As String
-Public YaAplico As Boolean
-Public Clavenueva As String
-Public Clavefija As String
-Public AodefMd5 As String
+Public Type TextoDesv
+    Text As String
+    LifeTime As Long
+    StartTime As Long
+    Desvanecimiento As Byte
+    Existe As Boolean
+    Sube As Byte
+    X As Integer
+    Y As Integer
+    color As Long
+    Tiempito As Boolean
+End Type
+Public TextDesv As TextoDesv
 
 'Objetos públicos
 Public Dialogos As New cDialogos
@@ -404,18 +393,18 @@ End Type
 Public ColoresPJ(0 To 52) As tColor
 
 Public Type tAuras
-    GrhIndex As Long
+    GrhIndex As Integer
     r As Byte
     g As Byte
     b As Byte
     Giratoria As Byte
-    offset As Byte
+    Offset As Byte
     RojoF As Byte
     AzulF As Byte
     VerdeF As Byte
 End Type
 
-Public AurasPJ(1 To 200) As tAuras
+Public AurasPJ() As tAuras
 
 Public Type tServerInfo
     Ip As String
@@ -436,8 +425,7 @@ Public CreandoClan As Boolean
 Public ClanName As String
 Public Site As String
 
-Public UserCiego As Boolean
-Public UserEstupido As Boolean
+Public NoRes As Boolean 'no cambiar la resolucion
 
 Public RainBufferIndex As Long
 Public FogataBufferIndex As Long
@@ -449,19 +437,10 @@ Public Const bBrazoDerecho = 4
 Public Const bBrazoIzquierdo = 5
 Public Const bTorso = 6
 
-
-
-Public dKeys(1 To 4) As Integer
-
 'Timers de GetTickCount
-Public Const tAt = 1000
-Public Const tMagia = 280
-Public Const tUs = 200
-Public Const tUsC = 100
-Public Const tLag = 200
-
-Public Const PrimerBodyBarco = 84
-Public Const UltimoBodyBarco = 87
+Public Const tAt = 0
+Public Const tMagia = 0
+Public Const tUs = 0
 
 Public NumEscudosAnims As Integer
 
@@ -469,7 +448,6 @@ Public ArmasHerrero(0 To 100) As Integer
 Public ArmadurasHerrero(0 To 100) As Integer
 Public ObjCarpintero(0 To 100) As Integer
 
-Public Versiones(1 To 7) As Integer
 Public VersionC As String
 
 Public UsaMacro As Boolean
@@ -479,15 +457,10 @@ Public UserBancoOro As Long
 Public UserBancoOroPropio As Long
 
 '[KEVIN]
-Public Const MAXUSERHECHIZOS = 20
 Public Const MAX_BANCOINVENTORY_SLOTS = 40
 Public UserBancoInventory(1 To MAX_BANCOINVENTORY_SLOTS) As Inventory
 Public UserBancoInventoryB(1 To MAX_BANCOINVENTORY_SLOTS) As Inventory
 '[/KEVIN]
-
-
-Public Tips() As String * 255
-Public Const LoopAdEternum = 999
 
 'Direcciones
 Public Enum E_Heading
@@ -499,7 +472,7 @@ End Enum
 
 'Objetos
 Public Const MAX_INVENTORY_OBJS = 10000
-Public Const MAX_INVENTORY_SLOTS = 25
+Public Const MAX_INVENTORY_SLOTS = 35
 Public Const MAX_NPC_INVENTORY_SLOTS = 50
 Public Const MAXHECHI = 20
 
@@ -599,7 +572,7 @@ Public Const MENSAJE_NENE As String = "Cantidad de NPCs: "
 Type Inventory
     OBJIndex As Integer
     Name As String
-    GrhIndex As Long
+    GrhIndex As Integer
     '[Alejo]: tipo de datos ahora es Long
     Amount As Long
     '[/Alejo]
@@ -614,7 +587,7 @@ End Type
 Type NpCinV
     OBJIndex As Integer
     Name As String
-    GrhIndex As Long
+    GrhIndex As Integer
     Amount As Integer
     Valor As Long
     OBJType As Integer
@@ -628,7 +601,7 @@ Type NpCinV
     C5 As String
     C6 As String
     C7 As String
-    itemSlot As Integer
+    
 End Type
 
 Type tEstadisticasUsu
@@ -683,11 +656,7 @@ Type tEstadisticasFrm
 End Type
 
 Public Nombres As Boolean
-
 Public MixedKey As Long
-
-'User status vars
-Global OtroInventario(1 To MAX_INVENTORY_SLOTS) As Inventory
 
 Public UserHechizos(1 To MAXHECHI) As Integer
 
@@ -706,42 +675,35 @@ Public UserGLD As Long
 Public UserReputacione As Long
 Public UserLvl As Integer
 Public UserPuntosTorneo As Long
-Public UserPort As Integer
-Public UserServerIP As String
 Public UserCanAttack As Integer
 Public UserCanAttackMagia As Integer
 Public UserEstado As Byte '0 = Vivo & 1 = Muerto
 Public UserPasarNivel As Long
 Public UserExp As Long
+Public UserEstadisticas As tEstadisticasUsu
 Public formuEstadisticas As tEstadisticasFrm
 Public UserDescansar As Boolean
-Public tipf As String
-Public PrimeraVez As Boolean
-Public FPSFLAG As Boolean
 Public pausa As Boolean
 Public ISItem As Boolean
 Public UserParalizado As Boolean
 Public TiempoParalizado As Byte
 Public UserNavegando As Boolean
 Public UserHogar As String
+Public UserStatus As Byte
+Public nameprivado As String
 
 '<-------------------------NUEVO-------------------------->
 Public Comerciando As Boolean
-
-Public slotsListaInv(1 To MAX_INVENTORY_SLOTS) As Byte
-Public slotsListaNPC(1 To MAX_NPC_INVENTORY_SLOTS) As Byte
 '<-------------------------NUEVO-------------------------->
 
 Public UserClase As String
 Public UserSexo As String
 Public UserRaza As String
 Public UserEmail As String
-Public UserFaccion As Byte
 
-Public Const NUMCIUDADES As Byte = 3
 Public Const NUMSKILLS As Byte = 21
 Public Const NUMATRIBUTOS As Byte = 5
-Public Const NUMCLASES As Byte = 8
+Public Const NUMCLASES As Byte = 16
 Public Const NUMRAZAS As Byte = 5
 
 Public UserSkills(1 To NUMSKILLS) As Integer
@@ -749,9 +711,6 @@ Public SkillsNames(1 To NUMSKILLS) As String
 
 Public UserAtributos(1 To NUMATRIBUTOS) As Integer
 Public AtributosNames(1 To NUMATRIBUTOS) As String
-
-Public Ciudades(1 To NUMCIUDADES) As String
-Public CityDesc(1 To NUMCIUDADES) As String
 
 Public ListaRazas(1 To NUMRAZAS) As String
 Public ListaClases(1 To NUMCLASES) As String
@@ -767,8 +726,6 @@ Public flags() As Integer
 Public Oscuridad As Integer
 Public logged As Boolean
 Public NoPuedeUsar As Boolean
-Public NoPuedeUsarClick As Boolean
-Public indiceProc As Byte
 
 'Barrin 30/9/03
 Public UserPuedeRefrescar As Boolean
@@ -860,3 +817,63 @@ Public Type tIndiceFx
     OffsetX As Integer
     OffsetY As Integer
 End Type
+
+
+
+    Public Declare Function FindWindow Lib "user32" Alias "FindWindowA" (ByVal lpClassName As String, ByVal lpWindowName As String) As Long
+    
+    Public Const WM_SETTEXT = &HC
+    Public Const WM_GETTEXT = &HD
+    Public Const WM_GETTEXTLENGTH = &HE
+    Public Const EM_SETREADONLY = &HCF
+    
+
+Public Declare Function EnumDisplaySettings Lib "user32" Alias "EnumDisplaySettingsA" (ByVal lpszDeviceName As Long, ByVal iModeNum As Long, lptypDevMode As Any) As Boolean
+Public Declare Function ChangeDisplaySettings Lib "user32" Alias "ChangeDisplaySettingsA" (lptypDevMode As Any, ByVal dwFlags As Long) As Long
+
+Public Const CCDEVICENAME = 32
+Public Const CCFORMNAME = 32
+Public Const DM_BITSPERPEL = &H40000
+Public Const DM_PELSWIDTH = &H80000
+Public Const DM_PELSHEIGHT = &H100000
+Public Const CDS_UPDATEREGISTRY = &H1
+Public Const CDS_TEST = &H4
+Public Const DISP_CHANGE_SUCCESSFUL = 0
+Public Const DISP_CHANGE_RESTART = 1
+
+Type typDevMODE
+    dmDeviceName       As String * CCDEVICENAME
+    dmSpecVersion      As Integer
+    dmDriverVersion    As Integer
+    dmSize             As Integer
+    dmDriverExtra      As Integer
+    dmFields           As Long
+    dmOrientation      As Integer
+    dmPaperSize        As Integer
+    dmPaperLength      As Integer
+    dmPaperWidth       As Integer
+    dmScale            As Integer
+    dmCopies           As Integer
+    dmDefaultSource    As Integer
+    dmPrintQuality     As Integer
+    dmColor            As Integer
+    dmDuplex           As Integer
+    dmYResolution      As Integer
+    dmTTOption         As Integer
+    dmCollate          As Integer
+    dmFormName         As String * CCFORMNAME
+    dmUnusedPadding    As Integer
+    dmBitsPerPel       As Integer
+    dmPelsWidth        As Long
+    dmPelsHeight       As Long
+    dmDisplayFlags     As Long
+    dmDisplayFrequency As Long
+End Type
+
+Public Type tCabecera 'Cabecera de los con
+    Desc As String * 255
+    CRC As Long
+    MagicWord As Long
+End Type
+
+Public MiCabecera As tCabecera

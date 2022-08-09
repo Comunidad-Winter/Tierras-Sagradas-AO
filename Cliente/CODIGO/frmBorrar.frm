@@ -164,7 +164,7 @@ Attribute VB_Exposed = False
 '******************************************************************************************************************
 
 Private Sub Command1_Click()
-If Len(newpass.text) < 6 Then
+If Len(newpass.Text) < 6 Then
     MsgBox "El password de la cuenta debe de tener mas de 6 caracteres.", vbCritical
     Exit Sub
 End If
@@ -174,13 +174,13 @@ If newpass <> repnewpass Then
     Exit Sub
 End If
 
-If respuesta.text = " " Then
+If respuesta.Text = " " Then
 MsgBox "No se ha detectado ninguna respuesta secreta"
 Exit Sub
 End If
 
 
-Call SendData("REPASS" & nombrecuent & "," & Pregunta.Caption & "," & respuesta & "," & passant & "," & newpass & "," & repnewpass)
+Call SendData("REPASS" & nombrecuent & "," & pregunta.Caption & "," & respuesta & "," & passant & "," & newpass & "," & repnewpass)
 
 Unload Me
 End Sub

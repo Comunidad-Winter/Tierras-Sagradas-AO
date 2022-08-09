@@ -49,115 +49,71 @@ End Sub
 Public Sub SendUserFuerza(ByVal userindex As Integer)
     SendData SendTarget.toindex, userindex, 0, "[F]" & UserList(userindex).Stats.UserAtributos(Fuerza)
 End Sub
-Public Sub SendUserMontVol(ByVal userindex As Integer)
-    SendData SendTarget.toMap, 0, UserList(userindex).Pos.Map, "MVOL" & UserList(userindex).Char.CharIndex & "," & UserList(userindex).flags.levitando
-End Sub
-Public Sub SendCharData(ByVal sndRoute As SendTarget, ByVal sndIndex As Integer, ByVal sndMap As Integer, ByVal userindex As Integer)
+Public Sub ActualizarSlot(ByVal userindex As Integer, ByVal Slot As Byte)
 
-    Dim Color As Byte
-    Color = 0
-        
-        With UserList(userindex)
-            If (.flags.enBatalla) Then
-                If (.flags.teamNumber = 1) Then
-                    Color = 49
-                ElseIf (.flags.teamNumber = 2) Then
-                    Color = 30
-                ElseIf (.flags.teamNumber = 3) Then
-                    Color = 50
-                ElseIf (.flags.teamNumber = 4) Then
-                    Color = 31
-                End If
-            Else
-                If (UserList(userindex).flags.estado = 1) Then
-                    Color = 40
-                ElseIf (UserList(userindex).flags.EsPremium = 1) Then
-                    Color = 41
-                ElseIf (UserList(userindex).flags.GranPoder = 1) Then
-                    Color = 42
-                ElseIf (UserList(userindex).flags.CvcBlue = 1) Or (UserList(userindex).flags.CastiBlue = 1) Or (UserList(userindex).flags.AramAzul) Then
-                    Color = 49
-                ElseIf (UserList(userindex).flags.CvcRed = 1) Or (UserList(userindex).flags.CastiRed = 1) Or (UserList(userindex).flags.AramRojo) Then
-                    Color = 50
-                End If
-            End If
-        End With
-        
-        Call SendData(sndRoute, sndIndex, sndMap, "[CD" & UserList(userindex).Char.CharIndex & "," & Color & "," & _
-            UserList(userindex).Char.AuraA & "," & UserList(userindex).Char.AuraW & "," & UserList(userindex).Char.AuraE & "," & UserList(userindex).Char.AuraR & "," & UserList(userindex).Char.AuraC & "," & _
-            UserList(userindex).flags.levitando & "," & Mod_Ranking.tieneRanking(userindex))
-End Sub
-Public Sub SendUserReputacion(ByVal userindex As Integer)
-    SendData SendTarget.toindex, userindex, 0, "[R]" & UserList(userindex).Stats.Reputacione
-End Sub
-Public Sub ActualizarSlot(ByVal userindex As Integer, ByVal slot As Byte)
-
-   If UserList(userindex).Invent.Object(slot).Amount > 0 Then
-    SendData SendTarget.toindex, userindex, 0, "|S1" & slot & "," & UserList(userindex).Invent.Object(slot).Amount
+   If UserList(userindex).Invent.Object(Slot).Amount > 0 Then
+    SendData SendTarget.toindex, userindex, 0, "|S1" & Slot & "," & UserList(userindex).Invent.Object(Slot).Amount
    Else
-    Call UpdateUserInv(False, userindex, slot)
+    Call UpdateUserInv(False, userindex, Slot)
    End If
 
 End Sub
-Public Sub ActualizarSlotEquipped(ByVal userindex As Integer, ByVal slot As Byte)
+Public Sub ActualizarSlotEquipped(ByVal userindex As Integer, ByVal Slot As Byte)
 
-    SendData SendTarget.toindex, userindex, 0, "|S2" & slot & "," & UserList(userindex).Invent.Object(slot).Equipped
+    SendData SendTarget.toindex, userindex, 0, "|S2" & Slot & "," & UserList(userindex).Invent.Object(Slot).Equipped
 
 End Sub
 Public Sub ActualizarChori(ByVal userindex As Integer)
     Call SendData(SendTarget.ToAdmins, 0, 0, "CHX" & UserList(UsuarioRevisado).Stats.MaxHP & "," & UserList(UsuarioRevisado).Stats.MinHP & "," & UserList(UsuarioRevisado).Stats.MaxMAN & "," & UserList(UsuarioRevisado).Stats.MinMAN & "," & UserList(UsuarioRevisado).Name)
 End Sub
 Public Sub SendUserData(ByVal userindex As Integer)
-    SendData SendTarget.toindex, userindex, 0, "[EZ" & UserList(userindex).Stats.MaxHP & "," & UserList(userindex).Stats.MinHP & "," & UserList(userindex).Stats.MaxMAN & "," & UserList(userindex).Stats.MinMAN & "," & UserList(userindex).Stats.MaxSta & "," & UserList(userindex).Stats.MinSta
+    Call SendUserHP(userindex)
+    Call SendUserMP(userindex)
+    Call SendUserST(userindex)
 End Sub
 Public Sub SendUserStats(ByVal userindex As Integer)
-    SendData SendTarget.toindex, userindex, 0, "[ES" & UserList(userindex).Stats.MaxHP & "," & UserList(userindex).Stats.MinHP & "," & UserList(userindex).Stats.MaxMAN & "," & UserList(userindex).Stats.MinMAN & "," & UserList(userindex).Stats.MaxSta & "," & UserList(userindex).Stats.MinSta & "," & _
-    UserList(userindex).Stats.GLD & "," & UserList(userindex).Stats.ELV & "," & UserList(userindex).Stats.ELU & "," & UserList(userindex).Stats.Exp & "," & UserList(userindex).Name & "," & UserList(userindex).Stats.UserAtributos(Agilidad) & "," & UserList(userindex).Stats.UserAtributos(Fuerza) & "," & _
-    UserList(userindex).Stats.Reputacione
+    Call SendUserHP(userindex)
+    Call SendUserMP(userindex)
+    Call SendUserST(userindex)
+    Call SendUserGLD(userindex)
+    Call SendUserLVL(userindex)
+    Call SendUserEXP(userindex)
+    Call SendUserNick(userindex)
+    Call SendUserAgilidad(userindex)
+    Call SendUserFuerza(userindex)
+    Call SendUserAura(userindex)
 End Sub
 Public Sub SendUserVariant(ByVal userindex As Integer)
 
 Dim Color As Byte
 Color = 0
+
+        If UserList(userindex).flags.estado = 1 Then
+            Color = 40
+        ElseIf UserList(userindex).flags.EsPremium = 1 Then
+            Color = 41
+        ElseIf UserList(userindex).flags.GranPoder = 1 Then
+            Color = 42
+        ElseIf UserList(userindex).flags.CvcBlue = 1 Or UserList(userindex).flags.CastiBlue = 1 Then
+            Color = 49
+        ElseIf UserList(userindex).flags.CvcRed = 1 Or UserList(userindex).flags.CastiRed = 1 Then
+            Color = 50
+        End If
         
-        With UserList(userindex)
-            If (.flags.enBatalla) Then
-                If (.flags.teamNumber = 1) Then
-                    Color = 49
-                ElseIf (.flags.teamNumber = 2) Then
-                    Color = 30
-                ElseIf (.flags.teamNumber = 3) Then
-                    Color = 50
-                ElseIf (.flags.teamNumber = 4) Then
-                    Color = 31
-                End If
-            Else
-                If (UserList(userindex).flags.estado = 1) Then
-                    Color = 40
-                ElseIf (UserList(userindex).flags.EsPremium = 1) Then
-                    Color = 41
-                ElseIf (UserList(userindex).flags.GranPoder = 1) Then
-                    Color = 42
-                ElseIf (UserList(userindex).flags.CvcBlue = 1) Or (UserList(userindex).flags.CastiBlue = 1) Or (UserList(userindex).flags.AramAzul) Then
-                    Color = 49
-                ElseIf (UserList(userindex).flags.CvcRed = 1) Or (UserList(userindex).flags.CastiRed = 1) Or (UserList(userindex).flags.AramRojo) Then
-                    Color = 50
-                End If
-            End If
-        End With
-        
-        Call SendData(SendTarget.toMap, 0, UserList(userindex).Pos.Map, "XC" & UserList(userindex).Char.CharIndex & "," & Color)
+        Call SendData(SendTarget.ToPCArea, 0, UserList(userindex).Pos.Map, "XC" & UserList(userindex).Char.CharIndex & "," & Color)
 End Sub
 Public Sub SendUserAura(ByVal userindex As Integer)
-    'Call SendData(SendTarget.toindex, userindex, 0, "AU|" & UserList(userindex).Char.CharIndex & "," & UserList(userindex).Char.AuraA & "," & UserList(userindex).Char.AuraW & "," & UserList(userindex).Char.AuraE & "," & UserList(userindex).Char.AuraR & "," & UserList(userindex).Char.AuraC)
-    'Call SendToUserArea(userindex, "AU|" & UserList(userindex).Char.CharIndex & "," & UserList(userindex).Char.AuraA & "," & UserList(userindex).Char.AuraW & "," & UserList(userindex).Char.AuraE & "," & UserList(userindex).Char.AuraR & "," & UserList(userindex).Char.AuraC)
-    SendToUserArea userindex, "AU|" & UserList(userindex).Char.CharIndex & "," & UserList(userindex).Char.AuraA & "," & UserList(userindex).Char.AuraW & "," & UserList(userindex).Char.AuraE & "," & UserList(userindex).Char.AuraR & "," & UserList(userindex).Char.AuraC
+    Call SendData(SendTarget.toindex, userindex, 0, "AU|" & UserList(userindex).Char.CharIndex & "," & UserList(userindex).Char.AuraA & "," & UserList(userindex).Char.AuraW & "," & UserList(userindex).Char.AuraE & "," & UserList(userindex).Char.AuraR & "," & UserList(userindex).Char.AuraC)
+    Call SendData(SendTarget.ToPCArea, 0, UserList(userindex).Pos.Map, "AU|" & UserList(userindex).Char.CharIndex & "," & UserList(userindex).Char.AuraA & "," & UserList(userindex).Char.AuraW & "," & UserList(userindex).Char.AuraE & "," & UserList(userindex).Char.AuraR & "," & UserList(userindex).Char.AuraC)
+End Sub
+Public Sub SendUserRank(ByVal userindex As Integer)
+    Call SendData(SendTarget.ToPCArea, 0, UserList(userindex).Pos.Map, "RANK" & UserList(userindex).Char.CharIndex & "," & UserList(userindex).flags.TieneRanking & "," & UserList(userindex).flags.PosRanking)
 End Sub
 Sub ChangeUserHeading(ByVal sndRoute As Byte, ByVal sndIndex As Integer, ByVal sndMap As Integer, ByVal userindex As Integer, ByVal Heading As Byte)
 
     UserList(userindex).Char.Heading = Heading
 
-    If sndRoute = SendTarget.toMap Then
+    If sndRoute = SendTarget.ToMap Then
         Call SendToUserArea(userindex, "|H" & UserList(userindex).Char.CharIndex & "," & Heading)
     Else
         Call SendData(sndRoute, sndIndex, sndMap, "|H" & UserList(userindex).Char.CharIndex & "," & Heading)
@@ -168,7 +124,7 @@ Sub ChangeUserBody(ByVal sndRoute As Byte, ByVal sndIndex As Integer, ByVal sndM
 
     UserList(userindex).Char.Body = Body
 
-    If sndRoute = SendTarget.toMap Then
+    If sndRoute = SendTarget.ToMap Then
         Call SendToUserArea(userindex, "|B" & UserList(userindex).Char.CharIndex & "," & Body)
     Else
         Call SendData(sndRoute, sndIndex, sndMap, "|B" & UserList(userindex).Char.CharIndex & "," & Body)
@@ -179,7 +135,7 @@ Sub ChangeUserCasco(ByVal sndRoute As Byte, ByVal sndIndex As Integer, ByVal snd
 
     UserList(userindex).Char.CascoAnim = Casco
 
-    If sndRoute = SendTarget.toMap Then
+    If sndRoute = SendTarget.ToMap Then
         Call SendToUserArea(userindex, "|C" & UserList(userindex).Char.CharIndex & "," & Casco)
     Else
         Call SendData(sndRoute, sndIndex, sndMap, "|C" & UserList(userindex).Char.CharIndex & "," & Casco)
@@ -190,7 +146,7 @@ Sub ChangeUserEscudo(ByVal sndRoute As Byte, ByVal sndIndex As Integer, ByVal sn
 
     UserList(userindex).Char.ShieldAnim = Escudo
 
-    If sndRoute = SendTarget.toMap Then
+    If sndRoute = SendTarget.ToMap Then
         Call SendToUserArea(userindex, "|E" & UserList(userindex).Char.CharIndex & "," & Escudo)
     Else
         Call SendData(sndRoute, sndIndex, sndMap, "|E" & UserList(userindex).Char.CharIndex & "," & Escudo)
@@ -201,22 +157,17 @@ Sub ChangeUserArma(ByVal sndRoute As Byte, ByVal sndIndex As Integer, ByVal sndM
 
     UserList(userindex).Char.WeaponAnim = Arma
 
-    If sndRoute = SendTarget.toMap Then
+    If sndRoute = SendTarget.ToMap Then
         Call SendToUserArea(userindex, "|W" & UserList(userindex).Char.CharIndex & "," & Arma)
     Else
         Call SendData(sndRoute, sndIndex, sndMap, "|W" & UserList(userindex).Char.CharIndex & "," & Arma)
     End If
     
 End Sub
-Sub sendUserRank(ByVal userindex As Integer)
-    Call SendData(SendTarget.toMap, 0, UserList(userindex).Pos.Map, "RANK" & UserList(userindex).Char.CharIndex & "," & Mod_Ranking.tieneRanking(userindex))
-End Sub
-
 Public Sub CargarExperiencia()
     Dim loopC As Long
     
-        For loopC = 1 To STAT_MAXELV
+        For loopC = 1 To 59
             ArrayExp(loopC) = val(GetVar(App.Path & "\Dat\Experiencia.dat", "EXPERIENCIA", "Nivel" & loopC))
         Next loopC
 End Sub
-

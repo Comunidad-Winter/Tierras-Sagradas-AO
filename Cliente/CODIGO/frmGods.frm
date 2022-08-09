@@ -7,7 +7,6 @@ Begin VB.Form frmGods
    ClientLeft      =   0
    ClientTop       =   0
    ClientWidth     =   5325
-   Icon            =   "frmGods.frx":0000
    LinkTopic       =   "Form2"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -20,38 +19,6 @@ Begin VB.Form frmGods
       Height          =   1230
       Left            =   330
       Top             =   675
-      Width           =   4665
-   End
-   Begin VB.Label txtValor 
-      Alignment       =   2  'Center
-      BackStyle       =   0  'Transparent
-      Caption         =   "0"
-      BeginProperty Font 
-         Name            =   "Trebuchet MS"
-         Size            =   12
-         Charset         =   0
-         Weight          =   400
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H00FF8080&
-      Height          =   252
-      Left            =   1800
-      TabIndex        =   1
-      Top             =   2715
-      Width           =   1815
-   End
-   Begin VB.Image cmdSalir 
-      Height          =   375
-      Left            =   4920
-      Top             =   0
-      Width           =   375
-   End
-   Begin VB.Image cmdOfrecer 
-      Height          =   525
-      Left            =   330
-      Top             =   3195
       Width           =   4665
    End
    Begin VB.Label lblOfrecidos 
@@ -77,8 +44,41 @@ Begin VB.Form frmGods
    Begin VB.Image imgAlmas 
       Height          =   300
       Left            =   150
+      Picture         =   "frmGods.frx":0000
       Top             =   2280
       Width           =   5025
+   End
+   Begin VB.Label txtValor 
+      Alignment       =   2  'Center
+      BackStyle       =   0  'Transparent
+      Caption         =   "0"
+      BeginProperty Font 
+         Name            =   "Trebuchet MS"
+         Size            =   12
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FF8080&
+      Height          =   252
+      Left            =   1800
+      TabIndex        =   1
+      Top             =   2715
+      Width           =   1815
+   End
+   Begin VB.Image cmdSalir 
+      Height          =   375
+      Left            =   4800
+      Top             =   120
+      Width           =   375
+   End
+   Begin VB.Image cmdOfrecer 
+      Height          =   525
+      Left            =   330
+      Top             =   3195
+      Width           =   4665
    End
 End
 Attribute VB_Name = "frmGods"
@@ -92,13 +92,13 @@ Private Sub cmdOfrecer_Click()
     Unload Me
 End Sub
 Private Sub cmdSalir_Click()
-    Unload Me
+Unload Me
 End Sub
 Private Sub Form_Load()
-    cmdOfrecer.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Almas_OfrecerN.jpg")
+cmdOfrecer.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Almas_OfrecerN.jpg")
 End Sub
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    cmdOfrecer.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Almas_OfrecerN.jpg")
+cmdOfrecer.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Almas_OfrecerN.jpg")
 End Sub
 Private Sub Form_KeyPress(KeyAscii As Integer)
 
@@ -115,8 +115,8 @@ form_Moviment.Initialize Me
 
 End Sub
 Private Sub cmdOfrecer_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    cmdOfrecer.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Almas_OfrecerI.jpg")
+cmdOfrecer.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Almas_OfrecerI.jpg")
 End Sub
 Private Sub cmdOfrecer_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    cmdOfrecer.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Almas_OfrecerA.jpg")
+cmdOfrecer.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Almas_OfrecerA.jpg")
 End Sub

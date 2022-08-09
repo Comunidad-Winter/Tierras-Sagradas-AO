@@ -2,21 +2,19 @@ VERSION 5.00
 Begin VB.Form frmCantidad 
    BackColor       =   &H00C0C000&
    BorderStyle     =   0  'None
-   ClientHeight    =   2415
+   ClientHeight    =   1950
    ClientLeft      =   1635
    ClientTop       =   4410
-   ClientWidth     =   4485
+   ClientWidth     =   3300
    ClipControls    =   0   'False
    ControlBox      =   0   'False
-   Icon            =   "frmCantidad.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   Picture         =   "frmCantidad.frx":000C
-   ScaleHeight     =   161
-   ScaleMode       =   3  'Pixel
-   ScaleWidth      =   299
+   Picture         =   "frmCantidad.frx":0000
+   ScaleHeight     =   1950
+   ScaleWidth      =   3300
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
    Begin VB.TextBox Text1 
@@ -24,8 +22,8 @@ Begin VB.Form frmCantidad
       BackColor       =   &H00000040&
       BorderStyle     =   0  'None
       BeginProperty Font 
-         Name            =   "Palatino Linotype"
-         Size            =   9.75
+         Name            =   "Tahoma"
+         Size            =   12
          Charset         =   0
          Weight          =   700
          Underline       =   0   'False
@@ -33,33 +31,53 @@ Begin VB.Form frmCantidad
          Strikethrough   =   0   'False
       EndProperty
       ForeColor       =   &H00C0FFFF&
-      Height          =   345
-      Left            =   975
+      Height          =   310
+      Left            =   755
       MaxLength       =   6
       TabIndex        =   0
       Text            =   "0"
-      Top             =   855
-      Width           =   2520
+      Top             =   480
+      Width           =   1800
    End
-   Begin VB.Image bSalir 
-      Height          =   375
-      Left            =   4080
-      Top             =   0
-      Width           =   375
+   Begin VB.Image MasMenos 
+      Height          =   390
+      Index           =   1
+      Left            =   2625
+      Top             =   420
+      Width           =   495
+   End
+   Begin VB.Image MasMenos 
+      Height          =   390
+      Index           =   0
+      Left            =   200
+      Top             =   420
+      Width           =   495
+   End
+   Begin VB.Image Command3 
+      Height          =   420
+      Index           =   2
+      Left            =   1200
+      Top             =   840
+      Width           =   930
+   End
+   Begin VB.Image Command3 
+      Height          =   420
+      Index           =   1
+      Left            =   240
+      Top             =   840
+      Width           =   930
    End
    Begin VB.Image All 
-      Height          =   345
-      Left            =   2295
-      Picture         =   "frmCantidad.frx":A8DA
-      Top             =   1515
-      Width           =   1200
+      Height          =   420
+      Left            =   2160
+      Top             =   840
+      Width           =   930
    End
    Begin VB.Image Command1 
-      Height          =   345
-      Left            =   975
-      Picture         =   "frmCantidad.frx":EDC7
-      Top             =   1515
-      Width           =   1200
+      Height          =   450
+      Left            =   240
+      Top             =   1320
+      Width           =   2895
    End
 End
 Attribute VB_Name = "frmCantidad"
@@ -99,11 +117,6 @@ Attribute VB_Exposed = False
 'Pablo Ignacio Márquez
 
 Private Const InterfaceName As String = "TirarObj"
-
-Private Sub bSalir_Click()
-    Unload Me
-End Sub
-
 Private Sub Command1_Click()
 frmCantidad.Visible = False
 If OfMouse Then
@@ -116,31 +129,49 @@ End If
 End Sub
 Private Sub All_Click()
 
-    frmCantidad.Visible = False
-    
-        If OfMouse Then
-            SendData "TR" & Inventario.SelectedItem & "," & Inventario.Amount(Inventario.SelectedItem) & "," & tX & "," & tY
-        Else
-            SendData "TI" & Inventario.SelectedItem & "," & Inventario.Amount(Inventario.SelectedItem)
-        End If
-    
-    frmCantidad.Text1.text = "0"
+frmCantidad.Visible = False
+
+    If OfMouse Then
+        SendData "TR" & Inventario.SelectedItem & "," & Inventario.Amount(Inventario.SelectedItem) & "," & tX & "," & tY
+    Else
+        SendData "TI" & Inventario.SelectedItem & "," & Inventario.Amount(Inventario.SelectedItem)
+    End If
+
+frmCantidad.Text1.text = "0"
 
 End Sub
+
+Private Sub Command3_Click(Index As Integer)
+
+Select Case Index
+
+    Case 1
+        Text1 = Text1 + 100
+    Case 2
+        Text1 = Text1 + 1000
+
+End Select
+End Sub
+
 Private Sub Form_Load()
 
 Set form_Moviment = New clsFormMovementManager
 form_Moviment.Initialize Me
-
-    Text1.BackColor = RGB(19, 21, 23)
-    frmCantidad.Text1.text = 1
 
 'If Configuracion.Alpha_Interfaz_Transparencia > 0 Then MakeTransparent Me.hWnd, Configuracion.Alpha_Interfaz_Transparencia
 Me.Picture = General_Load_Interface_Picture("TirarObj_Main.jpg")
 ChangeButtonsNormal
 
 End Sub
-Private Sub Text1_Change()
+Private Sub MasMenos_Click(Index As Integer)
+
+If Index = 0 And Val(Text1.text) >= 1 Then Text1.text = Val(Text1.text) - 1
+
+If Index = 1 And Val(Text1.text) <= 199999 Then Text1.text = Val(Text1.text) + 1
+
+End Sub
+
+Private Sub text1_Change()
 
 If Val(Text1.text) < 0 Then
     Text1.text = MAX_INVENTORY_OBJS
@@ -208,7 +239,68 @@ Private Sub All_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As S
 ChangeButtonsNormal
 
 End Sub
+
+Private Sub MasMenos_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+    
+If Index = 0 Then MasMenos(0).Picture = ChangeButtonState(Apretado, "BMenos")
+If Index = 1 Then MasMenos(1).Picture = ChangeButtonState(Apretado, "BMas")
+
+End Sub
+
+Private Sub MasMenos_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+
+If Index = 0 Then
+If MasMenos(0).Tag = "0" Then
+    Call ChangeButtonsNormal
+    MasMenos(0).Picture = ChangeButtonState(Iluminado, "BMenos")
+    MasMenos(0).Tag = "1"
+End If
+End If
+
+If Index = 1 Then
+If MasMenos(1).Tag = "0" Then
+    Call ChangeButtonsNormal
+    MasMenos(1).Picture = ChangeButtonState(Iluminado, "BMas")
+    MasMenos(1).Tag = "1"
+End If
+End If
+
+End Sub
+
 Private Sub MasMenos_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+
+ChangeButtonsNormal
+
+End Sub
+
+Private Sub Command3_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+    
+If Index = 1 Then Command3(1).Picture = ChangeButtonState(Apretado, "B+100")
+If Index = 2 Then Command3(2).Picture = ChangeButtonState(Apretado, "B+1000")
+
+End Sub
+
+Private Sub Command3_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+
+If Index = 1 Then
+If Command3(1).Tag = "0" Then
+    Call ChangeButtonsNormal
+    Command3(1).Picture = ChangeButtonState(Iluminado, "B+100")
+    Command3(1).Tag = "1"
+End If
+End If
+
+If Index = 2 Then
+If Command3(2).Tag = "0" Then
+    Call ChangeButtonsNormal
+    Command3(2).Picture = ChangeButtonState(Iluminado, "B+1000")
+    Command3(2).Tag = "1"
+End If
+End If
+
+End Sub
+
+Private Sub Command3_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
 
 ChangeButtonsNormal
 
@@ -226,7 +318,11 @@ End Function
 Private Sub ChangeButtonsNormal()
 
 Command1.Picture = ChangeButtonState(BNormal, "BAceptar")
+Command3(1).Picture = ChangeButtonState(BNormal, "B+100")
+Command3(2).Picture = ChangeButtonState(BNormal, "B+1000")
 All.Picture = ChangeButtonState(BNormal, "BTodo")
+MasMenos(1).Picture = ChangeButtonState(BNormal, "BMas")
+MasMenos(0).Picture = ChangeButtonState(BNormal, "BMenos")
 
 Dim j
 For Each j In Me

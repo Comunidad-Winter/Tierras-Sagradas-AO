@@ -6,7 +6,6 @@ Begin VB.Form frmCambiaMotd
    ClientLeft      =   45
    ClientTop       =   330
    ClientWidth     =   5175
-   Icon            =   "frmCambiaMotd.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -143,11 +142,11 @@ Private Sub cmdOk_Click()
     Dim T() As String
     Dim i As Long, N As Long, Pos As Long
     
-    If Len(txtMotd.text) >= 2 Then
-        If Right$(txtMotd.text, 2) = vbCrLf Then txtMotd.text = left$(txtMotd.text, Len(txtMotd.text) - 2)
+    If Len(txtMotd.Text) >= 2 Then
+        If Right$(txtMotd.Text, 2) = vbCrLf Then txtMotd.Text = Left$(txtMotd.Text, Len(txtMotd.Text) - 2)
     End If
     
-    T = Split(txtMotd.text, vbCrLf)
+    T = Split(txtMotd.Text, vbCrLf)
     
     'hola~1~1~1~1~1
     
@@ -164,7 +163,7 @@ Private Sub cmdOk_Click()
         End If
     Next i
     
-    Call SendData("ZMOTD" & txtMotd.text)
+    Call SendData("ZMOTD" & txtMotd.Text)
     Unload Me
 End Sub
 
@@ -174,33 +173,33 @@ End Sub
 
 'A partir de Command2_Click son todos buttons para agregar color al texto
 Private Sub cmdAzul_Click()
-    txtMotd.text = txtMotd & "50~70~250~" & CStr(chkBold.Value) & "~" & CStr(chkItalic.Value)
+    txtMotd.Text = txtMotd & "50~70~250~" & CStr(chkBold.value) & "~" & CStr(chkItalic.value)
 End Sub
 
 Private Sub cmdRojo_Click()
-    txtMotd.text = txtMotd & "255~0~0~" & CStr(chkBold.Value) & "~" & CStr(chkItalic.Value)
+    txtMotd.Text = txtMotd & "255~0~0~" & CStr(chkBold.value) & "~" & CStr(chkItalic.value)
 End Sub
 
 Private Sub cmdBlanco_Click()
-    txtMotd.text = txtMotd & "255~255~255~" & CStr(chkBold.Value) & "~" & CStr(chkItalic.Value)
+    txtMotd.Text = txtMotd & "255~255~255~" & CStr(chkBold.value) & "~" & CStr(chkItalic.value)
 End Sub
 
 Private Sub cmdGris_Click()
-    txtMotd.text = txtMotd & "157~157~157~" & CStr(chkBold.Value) & "~" & CStr(chkItalic.Value)
+    txtMotd.Text = txtMotd & "157~157~157~" & CStr(chkBold.value) & "~" & CStr(chkItalic.value)
 End Sub
 
 Private Sub cmdAmarillo_Click()
-    txtMotd.text = txtMotd & "244~244~0~" & CStr(chkBold.Value) & "~" & CStr(chkItalic.Value)
+    txtMotd.Text = txtMotd & "244~244~0~" & CStr(chkBold.value) & "~" & CStr(chkItalic.value)
 End Sub
 
 Private Sub cmdMorado_Click()
-    txtMotd.text = txtMotd & "128~0~128~" & CStr(chkBold.Value) & "~" & CStr(chkItalic.Value)
+    txtMotd.Text = txtMotd & "128~0~128~" & CStr(chkBold.value) & "~" & CStr(chkItalic.value)
 End Sub
 
 Private Sub cmdVerde_Click()
-  txtMotd.text = txtMotd & "23~104~26~" & CStr(chkBold.Value) & "~" & CStr(chkItalic.Value)
+  txtMotd.Text = txtMotd & "23~104~26~" & CStr(chkBold.value) & "~" & CStr(chkItalic.value)
 End Sub
 
 Private Sub cmdMarron_Click()
-    txtMotd.text = txtMotd & "97~58~31~" & CStr(chkBold.Value) & "~" & CStr(chkItalic.Value)
+    txtMotd.Text = txtMotd & "97~58~31~" & CStr(chkBold.value) & "~" & CStr(chkItalic.value)
 End Sub

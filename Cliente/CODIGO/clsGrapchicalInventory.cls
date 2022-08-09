@@ -30,7 +30,10 @@ Dim UserInventory(1 To MAX_INVENTORY_SLOTS) As Inventory    'User's inventory
 Dim WithEvents InventoryWindow As PictureBox    'Placeholder where to render the inventory
 Attribute InventoryWindow.VB_VarHelpID = -1
 
-Dim ItemMenu As Menu    'Menu to be shown as pop up
+#If ConMenuesConextuales = 1 Then
+    Dim ItemMenu As Menu    'Menu to be shown as pop up
+#End If
+
 Private Sub Class_Initialize()
 '***************************************************
 'Last Modify Date: 18/05/11
@@ -43,8 +46,8 @@ Private Sub Class_Initialize()
    
     InvRect.top = 0: InvD3DRect.Y1 = 0
     InvRect.left = 0: InvD3DRect.X1 = 0
-    InvRect.bottom = 174: InvD3DRect.Y2 = 174
-    InvRect.Right = 174: InvD3DRect.X2 = 174
+    InvRect.bottom = 167: InvD3DRect.Y2 = 167
+    InvRect.Right = 232: InvD3DRect.X2 = 232
 End Sub
 
 Private Sub Class_Terminate()
@@ -63,13 +66,12 @@ Public Sub ScrollInventory(ByVal up As Boolean)
 '***************************************************
     'Only move if there is something to show up /down
     If up Then
-        If (InventoryOffset + (InventoryWindow.ScaleHeight \ 34)) * (InventoryWindow.ScaleWidth \ 34) < MAX_INVENTORY_SLOTS Then _
+        If (InventoryOffset + (InventoryWindow.ScaleHeight \ TilePixelHeight)) * (InventoryWindow.ScaleWidth \ TilePixelWidth) < MAX_INVENTORY_SLOTS Then _
             InventoryOffset = InventoryOffset + 1
     Else
         If InventoryOffset > 0 Then _
             InventoryOffset = InventoryOffset - 1
     End If
-    
 End Sub
 
 Public Sub SelectGold()
@@ -85,6 +87,7 @@ Public Sub SelectGold()
     
     'Select the gold
     InvSelectedItem = FLAGORO
+    
 
 End Sub
 
@@ -179,7 +182,7 @@ Public Property Get ItemName(ByVal slot As Byte) As String
 'Last Modify Date: 27/07/04
 'Retrieves the selected item's name
 '***************************************************
-   ItemName = UserInventory(slot).Name
+    ItemName = UserInventory(slot).Name
 End Property
 
 Public Property Get Equipped(ByVal slot As Byte) As Boolean
@@ -192,7 +195,7 @@ Public Property Get Equipped(ByVal slot As Byte) As Boolean
 End Property
 
 Public Sub SetItem(ByVal slot As Byte, ByVal eOBJIndex As Integer, ByVal eAmount As Integer, ByVal eEquipped As Byte, _
-                        ByVal eGrhIndex As Long, ByVal eObjType As Integer, ByVal eMaxHit As Integer, ByVal eMinHit As Integer, _
+                        ByVal eGrhIndex As Integer, ByVal eObjType As Integer, ByVal eMaxHit As Integer, ByVal eMinHit As Integer, _
                         ByVal eDef As Integer, ByVal eValor As Single, ByVal eName As String)
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
@@ -213,7 +216,7 @@ Public Sub SetItem(ByVal slot As Byte, ByVal eOBJIndex As Integer, ByVal eAmount
         .OBJType = eObjType
         .Valor = eValor
     End With
-
+    
 End Sub
 Public Sub ActualizarSlotEquipped(ByVal slot As Byte, ByVal eEquipped As Byte)
 '***************************************************
@@ -251,10 +254,10 @@ Private Function ClickItem(ByVal X As Long, ByVal Y As Long) As Long
     Dim temp_x As Long
     Dim temp_y As Long
    
-    temp_x = X \ 34 'TilePixelWidth
-    temp_y = Y \ 34 'TilePixelHeight
+    temp_x = X \ 32 'TilePixelWidth
+    temp_y = Y \ 32 'TilePixelHeight
    
-    TempItem = temp_x + (temp_y + InventoryOffset) * (InventoryWindow.ScaleWidth \ 34) + 1
+    TempItem = temp_x + (temp_y + InventoryOffset) * (InventoryWindow.ScaleWidth \ 32) + 1
    
     'Make sure it's within limits
     If TempItem <= MAX_INVENTORY_SLOTS Then
@@ -264,67 +267,57 @@ Private Function ClickItem(ByVal X As Long, ByVal Y As Long) As Long
 End Function
 Public Sub DrawInventory()
  
-    Dim X, Y As Integer
+    Dim i As Byte
+ 
+    Dim X As Integer
+ 
+    Dim Y As Integer
+    
+    Dim Slots As Long
+    
     Dim s(3) As Long
-    Dim i As Long
+    s(0) = -1
+    s(1) = -1
+    s(2) = -1
+    s(3) = -1
     
-    Static re As RECT
-    re.left = 0
-    re.top = 0
-    re.bottom = 174
-    re.Right = 174
+    Slots = 31400 + (35 - InventorySlots)
     
-    s(0) = D3DColorXRGB(255, 255, 255)
-    s(1) = s(0)
-    s(2) = s(0)
-    s(3) = s(0)
-    
-
-DirectDevice.Clear 0, ByVal 0, D3DCLEAR_TARGET, 0, 0, 0
-DirectDevice.BeginScene
-    
-    Call engine.Device_Box_Textured_Render(31570, 0, 0, 174, 174, s, 0, 0)
+    If Slots < 31400 Or Slots > 31414 Then
+        Slots = 31414
+    End If
+     
+    Call engine.Device_Box_Textured_Render(Slots, 0, 0, 232, 167, s, 0, 0)
    
     For i = 1 To UBound(UserInventory)
     
-    If MouseOK = True Then
-        Call engine.Draw_GrhIndex(MouseItem, MouseX, MouseY)
-    End If
+        If MouseOK = True Then
+            Call engine.Draw_GrhIndex(MouseItem, MouseX, MouseY)
+        End If
  
         If UserInventory(i).GrhIndex Then
-            X = ((i - 1) Mod (InventoryWindow.Width / 34)) * 34 + 1
-            Y = ((i - 1) \ (InventoryWindow.Width / 34)) * 34
-            
-             
-            If i > 10 And i < 15 Then
-                Y = Y + 2
-            ElseIf i > 5 And i < 10 Then
-                Y = Y + 1
-            ElseIf i > 15 And i < 20 Then
-                Y = Y + 3
-            ElseIf i > 20 Then
-                Y = Y + 4
-            End If
-             
+            Dim xSuma As Byte
             Select Case i
-            
-                Case 2, 7, 12, 17, 22
-                    X = X + 1
+                Case 1, 2, 8, 9, 15, 16, 22, 23, 29, 30
+                    xSuma = 2
                     
-                Case 3, 8, 13, 18, 23
-                    X = X + 2
-                    
-                Case 4, 9, 14, 19, 24
-                    X = X + 3
+                Case 6, 7, 13, 14, 20, 21, 27, 28, 34, 35
+                    xSuma = 6
                 
-                Case 5, 10, 15, 20, 25
-                    X = X + 4
+                Case Else
+                    xSuma = 4
             End Select
-             
-             
+            
+            X = ((i - 1) Mod (InventoryWindow.Width / 32)) * 32 + xSuma
+            
+            If i > 15 Then
+                Y = ((i - 1) \ (InventoryWindow.Width / 32)) * 32 + 3
+            Else
+                Y = ((i - 1) \ (InventoryWindow.Width / 32)) * 32 + 2
+            End If
+ 
             If InvSelectedItem = i Then
-                Call engine.Draw_GrhIndex(32758, X, Y)
-                'Call engine.Draw_FilledBox(X, Y, 32, 32, D3DColorXRGB(30, 30, 30), D3DColorXRGB(142, 142, 142))
+                Call engine.Draw_FilledBox(X, Y, 32, 32, D3DColorXRGB(30, 30, 30), D3DColorXRGB(142, 142, 142))
             End If
  
             If DibujadoContinuoInv = True And i = InvSelectedItem And DyDActivado = True Then
@@ -336,7 +329,7 @@ DirectDevice.BeginScene
                 End If
                 
             Else
-                Call engine.Draw_GrhIndex(UserInventory(i).GrhIndex, X, Y - 1)
+                Call engine.Draw_GrhIndex(UserInventory(i).GrhIndex, X, Y)
             End If
             
             Texto.Engine_Text_Draw X - 1, Y + 3, Str$(UserInventory(i).Amount), D3DColorXRGB(255, 255, 255)
@@ -347,23 +340,25 @@ DirectDevice.BeginScene
         End If
  
     Next i
-    
-DirectDevice.EndScene
-DirectDevice.Present re, ByVal 0, frmMain.picInv.hWnd, ByVal 0
-
-
  
 End Sub
-Public Sub Initialize(ByRef InvPic As PictureBox)
+#If ConMenuesConextuales = 1 Then   'Argument list varies!!!
+    Public Sub Initialize(ByRef DirectDraw As DirectDraw7, ByRef InvPic As PictureBox, ByRef PopUpMenu As Menu)
+#Else   'Argument list varies!!!
+    Public Sub Initialize(ByRef InvPic As PictureBox)
+#End If
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
 'Last Modify Date: 27/07/04
 'Sets the reference to the picture box on which to render the inventory
 '***************************************************
     Set InventoryWindow = InvPic
-    
     '\TODO
     InvSelectedItem = ClickItem(1, 1)   'If there is anything there we select the top left item
+    
+#If ConMenuesConextuales = 1 Then
+    Set ItemMenu = PopUpMenu
+#End If
 End Sub
 
 Private Sub InventoryWindow_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
@@ -381,10 +376,10 @@ Private Sub InventoryWindow_MouseMove(Button As Integer, Shift As Integer, X As 
     If X < 0 Or Y < 0 Or X > InventoryWindow.Width Or Y > InventoryWindow.Height Then _
         Exit Sub
     
-    temp_x = X \ 34
-    temp_y = Y \ 34
+    temp_x = X \ 32
+    temp_y = Y \ 32
     
-    TempItem = temp_x + (temp_y + InventoryOffset) * (InventoryWindow.ScaleWidth \ 34) + 1
+    TempItem = temp_x + (temp_y + InventoryOffset) * (InventoryWindow.ScaleWidth \ 32) + 1
     
     If TempItem <= MAX_INVENTORY_SLOTS Then
         InventoryWindow.ToolTipText = UserInventory(TempItem).Name
@@ -446,6 +441,10 @@ Private Sub InventoryWindow_MouseUp(Button As Integer, Shift As Integer, X As Si
     If DyDActivado Then
         MouseOK = False
         MouseItem = 0
+        MouseRendOK = False
+        DibujadoContinuoInv = False
+        ButtonIN = False
+        PUEDO = False
     End If
     
         MouseItem = 0
@@ -454,7 +453,14 @@ Private Sub InventoryWindow_MouseUp(Button As Integer, Shift As Integer, X As Si
             If (Inventario.SelectedItem > 0) And (Inventario.SelectedItem < MAX_INVENTORY_SLOTS + 1) Then _
                 SendData "EQUI" & Inventario.SelectedItem
             End If
-
+    
+#If ConMenuesConextuales = 1 Then
+    'If it was a right click on the same item we had selected before, show popup menu
+    If Button = vbRightButton And prevSelItem = InvSelectedItem Then
+        'Show the provided menu as a popup
+        Call InventoryWindow.Parent.PopUpMenu(ItemMenu, , X, Y)
+    End If
+#End If
 End Sub
 Private Sub InventoryWindow_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
 Dim TempItem As Long
@@ -485,33 +491,3 @@ Dim TempItem As Long
     MouseDownSelectedItem = 0
    
 End Sub
-Public Sub MoverItemInv(equisde As Integer)
-    
-If equisde = 0 Then
-
-'movemos hacia la izquierda
-Call SendData("SWAP" & InvSelectedItem & "," & InvSelectedItem - 1)
-
-ElseIf equisde = 1 Then
-
-'movemos hacia la derecha
-Call SendData("SWAP" & InvSelectedItem & "," & InvSelectedItem + 1)
-
-ElseIf equisde = 2 Then
-
-'movemos hacia abajo
-Call SendData("SWAP" & InvSelectedItem & "," & InvSelectedItem + 5)
-
-ElseIf equisde = 3 Then
-
-'movemos hacia arriba
-If InvSelectedItem - 5 < 0 Then
-Call SendData("SWAP" & InvSelectedItem & "," & InvSelectedItem + 15)
-Else
-Call SendData("SWAP" & InvSelectedItem & "," & InvSelectedItem - 5)
-End If
-
-End If
-
-End Sub
-

@@ -6,24 +6,23 @@ Begin VB.Form Mensaje
    ClientHeight    =   2415
    ClientLeft      =   0
    ClientTop       =   0
-   ClientWidth     =   4470
-   Icon            =   "Mensaje.frx":0000
+   ClientWidth     =   4455
    LinkTopic       =   "Form1"
    ScaleHeight     =   2415
-   ScaleWidth      =   4470
+   ScaleWidth      =   4455
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.Image Image1 
-      Height          =   510
-      Left            =   1380
-      Top             =   1780
-      Width           =   1710
+      Height          =   465
+      Left            =   1440
+      Top             =   1800
+      Width           =   1575
    End
    Begin VB.Label Label1 
       Alignment       =   2  'Center
       BackStyle       =   0  'Transparent
       BeginProperty Font 
-         Name            =   "Palatino Linotype"
+         Name            =   "Trebuchet MS"
          Size            =   12
          Charset         =   0
          Weight          =   700
@@ -51,8 +50,6 @@ Label1.Caption = text
         Me.Show , frmMain
     ElseIf frmConnect.Visible = True Then
         Me.Show , frmConnect
-    ElseIf frmAccount.Visible = True Then
-        Me.Show , frmConnect
     Else
         Me.Show
     End If
@@ -78,14 +75,18 @@ Private Sub Form_Load()
 Set form_Moviment = New clsFormMovementManager
 form_Moviment.Initialize Me
 Me.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Mensaje.jpg")
+Image1.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\OKM.jpg")
 End Sub
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    Image1.Picture = Nothing
+    Image1.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\OKM.jpg")
 End Sub
 Private Sub Image1_Click()
-    Unload Me
+Unload Me
 End Sub
 Private Sub Image1_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    Image1.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Mensaje_AceptarApretado.jpg")
+Image1.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\OKMApretado.jpg")
+End Sub
+Private Sub Image1_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Image1.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\OKMEncima.jpg")
 End Sub
 

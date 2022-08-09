@@ -6,10 +6,27 @@ Begin VB.Form OpcionesNew
    ClientTop       =   0
    ClientWidth     =   5835
    LinkTopic       =   "Form2"
+   Picture         =   "OpcionesNew.frx":0000
    ScaleHeight     =   6075
    ScaleWidth      =   5835
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
+   Begin VB.CommandButton cmdReset 
+      Caption         =   "Resetear PJ"
+      Height          =   375
+      Left            =   2880
+      TabIndex        =   2
+      Top             =   4440
+      Width           =   1215
+   End
+   Begin VB.CommandButton cmdNivel 
+      Caption         =   "Editar Nivel"
+      Height          =   375
+      Left            =   1560
+      TabIndex        =   1
+      Top             =   4440
+      Width           =   1215
+   End
    Begin VB.HScrollBar MP3Volume 
       Height          =   195
       LargeChange     =   50
@@ -564,7 +581,7 @@ Private Sub FPS_Click(Index As Integer)
     ConfigChanged = True
 End Sub
 Private Sub imgSalir_Click()
-If ConfigChanged Then
+If ConfigChanged = True Then
     If MsgBox("La configuracion ha cambiado, ¿Salir sin guardar?", vbYesNo) = vbYes Then
         Unload Me
     End If
@@ -611,12 +628,12 @@ End Sub
 Private Sub ConfigMacros_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
 ConfigMacros.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Opc_Macro_I.jpg")
 End Sub
-Private Sub AplicarTick(Activate As Byte, aux As Image)
+Private Sub AplicarTick(Activate As Byte, Aux As Image)
     
     If Activate = 1 Then
-        aux.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Opc_Tick2.jpg")
+        Aux.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Opc_Tick2.jpg")
     Else
-        aux.Picture = Nothing
+        Aux.Picture = Nothing
     End If
 
 End Sub
@@ -646,6 +663,9 @@ Select Case UCase$(Main)
         
         MP3Volume.Visible = True
         MP3Volume.Value = Configuracion.MP3Volume
+        
+        cmdNivel.Visible = True
+        cmdReset.Visible = True
                 
         'Reiniciamos todos los ticks
             For i = 0 To 3
@@ -722,6 +742,8 @@ Select Case UCase$(Main)
         chkMuerte.Visible = False
         chkMiniMap.Visible = False
         chkEmojis.Visible = False
+        cmdNivel.Visible = False
+        cmdReset.Visible = False
         
     Case "RENDER"
         Me.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Opciones_Render.jpg")
@@ -768,6 +790,8 @@ Select Case UCase$(Main)
         chkInteractuar.Visible = False
         chkDobleClick.Visible = False
         chkMenu.Visible = False
+        cmdNivel.Visible = False
+        cmdReset.Visible = False
 End Select
         
 End Sub
@@ -807,10 +831,10 @@ Public Sub LoadOptions()
     Configuracion.CartelMuerte = l_file.GetValue("OPTIONS", "Config_CartelMuerte")
     Configuracion.VerMiniMapa = l_file.GetValue("OPTIONS", "Config_MiniMap")
     Configuracion.VerEmoticons = l_file.GetValue("OPTIONS", "Config_Emoticons")
-    
-    Configuracion.recordarCuenta = l_file.GetValue("OPTIONS", "RECORDAR_CUENTA")
-    Configuracion.tmpCuenta = l_file.GetValue("OPTIONS", "TMPCUENTA")
-    Configuracion.tmpPassword = l_file.GetValue("OPTIONS", "TMPPASSWORD")
+End Sub
+Private Sub LoadTempOptions()
+    'Guardamos el actual, en un temporal para trabajarlo dentro del formulario
+    tmpConfiguracion = Configuracion
 End Sub
 Private Sub SaveOptions()
 
@@ -850,9 +874,6 @@ Private Sub SaveOptions()
     l_file.ChangeValue "OPTIONS", "Config_MiniMap", Configuracion.VerMiniMapa
     l_file.ChangeValue "OPTIONS", "Config_Emoticons", Configuracion.VerEmoticons
     
-    Sound = Configuracion.Sound
-    Musica = Configuracion.Music
-    
     If Configuracion.Music = 0 And MusicChanged = True Then
         Audio.MP3_Stop
         Audio.MP3_Destroy
@@ -876,7 +897,8 @@ End Sub
 Private Sub imgSaveOpt_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
 imgSaveOpt.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\Principal\Opc_Guardar_I.jpg")
 End Sub
+
 Private Sub MP3Volume_Change()
     tmpConfiguracion.MP3Volume = MP3Volume.Value
+    ConfigChanged = True
 End Sub
-

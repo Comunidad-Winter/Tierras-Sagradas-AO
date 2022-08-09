@@ -7,10 +7,10 @@ Begin VB.Form frmHerrero
    ClientTop       =   3465
    ClientWidth     =   6000
    ControlBox      =   0   'False
-   Icon            =   "frmHerrero.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
+   Picture         =   "frmHerrero.frx":0000
    ScaleHeight     =   4500
    ScaleWidth      =   6000
    ShowInTaskbar   =   0   'False
@@ -52,7 +52,7 @@ Begin VB.Form frmHerrero
       Left            =   3360
       MultiLine       =   -1  'True
       TabIndex        =   2
-      Text            =   "frmHerrero.frx":000C
+      Text            =   "frmHerrero.frx":6137
       Top             =   360
       Width           =   2415
    End
@@ -74,6 +74,7 @@ Begin VB.Form frmHerrero
       Height          =   480
       Left            =   240
       MousePointer    =   99  'Custom
+      Picture         =   "frmHerrero.frx":6150
       Top             =   3840
       Width           =   5415
    End
@@ -81,6 +82,7 @@ Begin VB.Form frmHerrero
       Height          =   525
       Left            =   240
       MousePointer    =   99  'Custom
+      Picture         =   "frmHerrero.frx":6D3D
       Top             =   3240
       Width           =   2715
    End
@@ -88,6 +90,7 @@ Begin VB.Form frmHerrero
       Height          =   705
       Left            =   1680
       MousePointer    =   99  'Custom
+      Picture         =   "frmHerrero.frx":75F0
       Top             =   2520
       Width           =   1245
    End
@@ -95,6 +98,7 @@ Begin VB.Form frmHerrero
       Height          =   720
       Left            =   240
       MousePointer    =   99  'Custom
+      Picture         =   "frmHerrero.frx":7C77
       Top             =   2520
       Width           =   1485
    End

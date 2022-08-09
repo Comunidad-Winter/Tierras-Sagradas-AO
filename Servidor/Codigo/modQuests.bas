@@ -5,35 +5,50 @@ Public Type tQuests
     Name As String
     Tipo As Byte
     Usuarios As Integer
-    ptsTorneo As Integer
-    ptsTS As Integer
-    Creditos As Integer
+    Puntos As Integer
     Oro As Long
-    numNPC As Integer
-    CantNPC As Integer
+    NivelMinimo As Byte
+    NPCs As Byte
+    NumNPC() As Integer
+    CantNPC() As Integer
+    
+    NumOBJ As Integer
+    CantOBJ As Integer
 End Type
 Public Sub CargarQuests()
-        Dim p As Integer, loopC As Integer, LoopD
+        Dim p As Integer, LoopC As Integer, LoopD
         p = val(GetVar(App.Path & "\Dat\QUESTS.dat", "INIT", "Num"))
    
         ReDim QuestsList(p) As tQuests
        
-        For loopC = 1 To p
-            QuestsList(loopC).Name = GetVar(App.Path & "\Dat\QUESTS.dat", "Quest" & loopC, "Name")
-            QuestsList(loopC).Tipo = GetVar(App.Path & "\Dat\QUESTS.dat", "Quest" & loopC, "Tipo")
-            QuestsList(loopC).ptsTorneo = GetVar(App.Path & "\Dat\QUESTS.dat", "Quest" & loopC, "ptsTorneo")
-            QuestsList(loopC).Creditos = GetVar(App.Path & "\Dat\QUESTS.dat", "Quest" & loopC, "Creditos")
-            QuestsList(loopC).ptsTS = GetVar(App.Path & "\Dat\QUESTS.dat", "Quest" & loopC, "ptsTS")
-            QuestsList(loopC).Oro = GetVar(App.Path & "\Dat\QUESTS.dat", "Quest" & loopC, "Oro")
+           
+        For LoopC = 1 To p
+            QuestsList(LoopC).Name = GetVar(App.Path & "\Dat\QUESTS.dat", "Quest" & LoopC, "Nombre")
+            QuestsList(LoopC).Tipo = GetVar(App.Path & "\Dat\QUESTS.dat", "Quest" & LoopC, "Tipo")
+            QuestsList(LoopC).Puntos = GetVar(App.Path & "\Dat\QUESTS.dat", "Quest" & LoopC, "Puntos")
+            QuestsList(LoopC).Oro = GetVar(App.Path & "\Dat\QUESTS.dat", "Quest" & LoopC, "Oro")
             
-            If QuestsList(loopC).Tipo = 1 Then
-                QuestsList(loopC).numNPC = GetVar(App.Path & "\Dat\QUESTS.dat", "Quest" & loopC, "MataNPC")
-                QuestsList(loopC).CantNPC = GetVar(App.Path & "\Dat\QUESTS.dat", "Quest" & loopC, "Cant")
-            ElseIf QuestsList(loopC).Tipo = 2 Then
-                QuestsList(loopC).Usuarios = GetVar(App.Path & "\Dat\QUESTS.dat", "Quest" & loopC, "Usuarios")
-            End If
+            QuestsList(LoopC).NumOBJ = ReadField(1, GetVar(App.Path & "\Dat\QUESTS.dat", "Quest" & LoopC, "OBJ"), Asc("-"))
+            QuestsList(LoopC).CantOBJ = ReadField(2, GetVar(App.Path & "\Dat\QUESTS.dat", "Quest" & LoopC, "OBJ"), Asc("-"))
+            
+            If QuestsList(LoopC).Tipo = 1 Then
+                QuestsList(LoopC).NPCs = GetVar(App.Path & "\Dat\QUESTS.dat", "Quest" & LoopC, "NPCs")
                 
-        Next loopC
+                    'Seteamos el numero y la cantidad de npcs..
+                    ReDim QuestsList(LoopC).NumNPC(QuestsList(LoopC).NPCs) As Integer
+                    ReDim QuestsList(LoopC).CantNPC(QuestsList(LoopC).NPCs) As Integer
+                    
+                    For LoopD = 1 To QuestsList(LoopC).NPCs
+                        QuestsList(LoopC).NumNPC(LoopD) = ReadField(1, GetVar(App.Path & "\Dat\QUESTS.dat", "Quest" & LoopC, "Npc" & LoopD), Asc("-"))
+                        QuestsList(LoopC).CantNPC(LoopD) = ReadField(2, GetVar(App.Path & "\Dat\QUESTS.dat", "Quest" & LoopC, "Npc" & LoopD), Asc("-"))
+                    Next LoopD
+            ElseIf QuestsList(LoopC).Tipo = 2 Then
+                QuestsList(LoopC).Usuarios = GetVar(App.Path & "\Dat\QUESTS.dat", "Quest" & LoopC, "Usuarios")
+            End If
+            
+            QuestsList(LoopC).NivelMinimo = GetVar(App.Path & "\Dat\QUESTS.dat", "Quest" & LoopC, "NivelMinimo")
+                
+        Next LoopC
 End Sub
 Public Sub RestarNPC(ByVal userindex As Integer, ByVal KillNPC As Integer)
 
@@ -41,60 +56,59 @@ Public Sub RestarNPC(ByVal userindex As Integer, ByVal KillNPC As Integer)
     NroQuest = UserList(userindex).flags.UserNumQuest
 
     If QuestsList(NroQuest).Tipo = 1 Then
-    
-            If KillNPC = QuestsList(NroQuest).numNPC Then
-                UserList(userindex).flags.MuereQuest = UserList(userindex).flags.MuereQuest + 1
+        
+        CompletoQuest = True
+        For i = 1 To QuestsList(NroQuest).NPCs
+            If KillNPC = QuestsList(NroQuest).NumNPC(i) Then
+                UserList(userindex).flags.MuereQuest(i) = UserList(userindex).flags.MuereQuest(i) + 1
             End If
             
-            'Si la completo, gg
-            If UserList(userindex).flags.MuereQuest >= QuestsList(NroQuest).CantNPC Then
-                CompletoQuest = True
-            Else
+            If (CompletoQuest = True) And (UserList(userindex).flags.MuereQuest(i) < QuestsList(NroQuest).CantNPC(i)) Then
                 CompletoQuest = False
             End If
+        Next i
             
        If CompletoQuest = True Then
-       
-            Call SendData(SendTarget.toindex, userindex, 0, "||66")
-            
-            Dim tmpReward As Long
-            
-            'Oro
-            If QuestsList(NroQuest).Oro > 0 Then
-                tmpReward = IIf((UserList(userindex).flags.estado = 0 And UserList(userindex).flags.EsPremium = 0), val(QuestsList(NroQuest).Oro), val(QuestsList(NroQuest).Oro) * 2)
-                UserList(userindex).Stats.GLD = UserList(userindex).Stats.GLD + tmpReward
-                Call SendData(SendTarget.toindex, userindex, 0, "||63@" & PonerPuntos(tmpReward))
+            'Mision diaria
+            If MisionesDiarias(UserList(userindex).Misiones.NumeroMision).Tipo = 6 And MisionesDiarias(UserList(userindex).Misiones.NumeroMision).QuestNumber = UserList(userindex).flags.UserNumQuest Then
+                If UserList(userindex).Misiones.ConteoUser < MisionesDiarias(UserList(userindex).Misiones.NumeroMision).Cantidad Then UserList(userindex).Misiones.ConteoUser = UserList(userindex).Misiones.ConteoUser + 1
             End If
-            
-            'Puntos de Torneo
-            If QuestsList(NroQuest).ptsTorneo > 0 Then
-                tmpReward = IIf((UserList(userindex).flags.estado = 0 And UserList(userindex).flags.EsPremium = 0), val(QuestsList(NroQuest).ptsTorneo), val(QuestsList(NroQuest).ptsTorneo) * 2)
-                Call SendData(SendTarget.toindex, userindex, 0, "||57@" & tmpReward)
-                Call AgregarPuntos(userindex, (val(tmpReward)))
-            End If
-            
-            'TS Points
-            If QuestsList(NroQuest).ptsTS > 0 Then
-                tmpReward = val(QuestsList(NroQuest).ptsTS)
-                UserList(userindex).Stats.TSPoints = UserList(userindex).Stats.TSPoints + (tmpReward)
-                Call SendData(SendTarget.toindex, userindex, 0, "||900@" & tmpReward)
-            End If
-            
-            'Creditos
-            If QuestsList(NroQuest).Creditos > 0 Then
-                tmpReward = val(QuestsList(NroQuest).Creditos)
-                UserList(userindex).Stats.PuntosDonacion = UserList(userindex).Stats.PuntosDonacion + tmpReward
-                Call SendData(SendTarget.toindex, userindex, 0, "||930@" & tmpReward)
-            End If
-            
-            'Reputación
-            tmpReward = IIf((UserList(userindex).flags.estado = 0 And UserList(userindex).flags.EsPremium = 0), val(QuestsList(NroQuest).ptsTorneo), val(QuestsList(NroQuest).ptsTorneo) * 2)
-            UserList(userindex).Stats.Reputacione = UserList(userindex).Stats.Reputacione + tmpReward
+    
+            If UserList(userindex).flags.estado = 1 Then
+                    Call SendData(SendTarget.toindex, userindex, 0, "||66")
+                    Call SendData(SendTarget.toindex, userindex, 0, "||63@" & PonerPuntos(QuestsList(NroQuest).Oro * 2))
+                    Call SendData(SendTarget.toindex, userindex, 0, "||57@" & QuestsList(NroQuest).Puntos * 2)
+                    UserList(userindex).Stats.GLD = UserList(userindex).Stats.GLD + (val(QuestsList(NroQuest).Oro) * 2)
+                    Call AgregarPuntos(userindex, (val(QuestsList(NroQuest).Puntos) * 2))
+                    UserList(userindex).Stats.Reputacione = UserList(userindex).Stats.Reputacione + val(QuestsList(NroQuest).Puntos)
                     
-            modQuests.ResetQuest (userindex)
-            UserList(userindex).flags.QuestCompletadas = UserList(userindex).flags.QuestCompletadas + 1
+                    modQuests.ResetQuest (userindex)
+                    UserList(userindex).flags.QuestCompletadas = UserList(userindex).flags.QuestCompletadas + 1
             
+            ElseIf UserList(userindex).flags.estado = 0 Then
+                    Call SendData(SendTarget.toindex, userindex, 0, "||66")
+                    Call SendData(SendTarget.toindex, userindex, 0, "||63@" & PonerPuntos(QuestsList(NroQuest).Oro))
+                    Call SendData(SendTarget.toindex, userindex, 0, "||57@" & QuestsList(NroQuest).Puntos)
+                    UserList(userindex).Stats.GLD = UserList(userindex).Stats.GLD + (val(QuestsList(NroQuest).Oro))
+                    Call AgregarPuntos(userindex, (val(QuestsList(NroQuest).Puntos)))
+                    UserList(userindex).Stats.Reputacione = UserList(userindex).Stats.Reputacione + val(QuestsList(NroQuest).Puntos)
+                    
+                    modQuests.ResetQuest (userindex)
+                    UserList(userindex).flags.QuestCompletadas = UserList(userindex).flags.QuestCompletadas + 1
+            End If
+            
+            Call SendData(SendTarget.toindex, userindex, UserList(userindex).Pos.Map, "[Q]")
             SendUserGLD (userindex)
+            
+            If QuestsList(NroQuest).NumOBJ > 0 Then
+                Dim OBJPremio As Obj
+                OBJPremio.ObjIndex = QuestsList(NroQuest).NumOBJ
+                OBJPremio.Amount = QuestsList(NroQuest).CantOBJ
+                        
+                If Not MeterItemEnInventario(userindex, OBJPremio) Then
+                    Call TirarItemAlPiso(UserList(userindex).Pos, OBJPremio)
+                End If
+            End If
     End If
   End If
 
@@ -106,50 +120,49 @@ Public Sub RestarUser(ByVal userindex As Integer, ByVal VictimIndex As Integer)
 
     If QuestsList(NroQuest).Tipo = 2 Then
         If UserList(userindex).flags.Questeando = 1 And TriggerZonaPelea(userindex, VictimIndex) <> TRIGGER6_PERMITE Then
-            UserList(userindex).flags.MuereQuest = UserList(userindex).flags.MuereQuest + 1
+            UserList(userindex).flags.MuereQuest(1) = UserList(userindex).flags.MuereQuest(1) + 1
         End If
          
-        If UserList(userindex).flags.MuereQuest = QuestsList(NroQuest).Usuarios Then
-            Call SendData(SendTarget.toindex, userindex, 0, "||66")
-            
-            Dim tmpReward As Long
-            
-            'Oro
-            If QuestsList(NroQuest).Oro > 0 Then
-                tmpReward = IIf(UserList(userindex).flags.estado, val(QuestsList(NroQuest).Oro), val(QuestsList(NroQuest).Oro) * 2)
-                UserList(userindex).Stats.GLD = UserList(userindex).Stats.GLD + tmpReward
-                Call SendData(SendTarget.toindex, userindex, 0, "||63@" & PonerPuntos(tmpReward))
+        If UserList(userindex).flags.MuereQuest(1) = QuestsList(NroQuest).Usuarios Then
+            'Mision diaria
+            If MisionesDiarias(UserList(userindex).Misiones.NumeroMision).Tipo = 6 And MisionesDiarias(UserList(userindex).Misiones.NumeroMision).QuestNumber = UserList(userindex).flags.UserNumQuest Then
+                If UserList(userindex).Misiones.ConteoUser < MisionesDiarias(UserList(userindex).Misiones.NumeroMision).Cantidad Then UserList(userindex).Misiones.ConteoUser = UserList(userindex).Misiones.ConteoUser + 1
             End If
-            
-            'Puntos de Torneo
-            If QuestsList(NroQuest).ptsTorneo > 0 Then
-                tmpReward = IIf(UserList(userindex).flags.estado, val(QuestsList(NroQuest).ptsTorneo), val(QuestsList(NroQuest).ptsTorneo) * 2)
-                Call SendData(SendTarget.toindex, userindex, 0, "||57@" & tmpReward)
-                Call AgregarPuntos(userindex, (val(tmpReward)))
-            End If
-            
-            'TS Points
-            If QuestsList(NroQuest).ptsTS > 0 Then
-                tmpReward = IIf(UserList(userindex).flags.estado, val(QuestsList(NroQuest).ptsTS), val(QuestsList(NroQuest).ptsTS) * 2)
-                UserList(userindex).Stats.TSPoints = UserList(userindex).Stats.TSPoints + (tmpReward)
-                Call SendData(SendTarget.toindex, userindex, 0, "||900@" & tmpReward)
-            End If
-            
-            'Creditos
-            If QuestsList(NroQuest).Creditos > 0 Then
-                tmpReward = IIf(UserList(userindex).flags.estado, val(QuestsList(NroQuest).Creditos), val(QuestsList(NroQuest).Creditos) * 2)
-                UserList(userindex).Stats.PuntosDonacion = UserList(userindex).Stats.PuntosDonacion + tmpReward
-                Call SendData(SendTarget.toindex, userindex, 0, "||930@" & tmpReward)
-            End If
-            
-            'Reputación
-            tmpReward = IIf(UserList(userindex).flags.estado, val(QuestsList(NroQuest).ptsTorneo), val(QuestsList(NroQuest).ptsTorneo) * 2)
-            UserList(userindex).Stats.Reputacione = UserList(userindex).Stats.Reputacione + tmpReward
+    
+            If UserList(userindex).flags.estado = 1 Then
+                    Call SendData(SendTarget.toindex, userindex, 0, "||66")
+                    Call SendData(SendTarget.toindex, userindex, 0, "||63@" & PonerPuntos(QuestsList(NroQuest).Oro * 2))
+                    Call SendData(SendTarget.toindex, userindex, 0, "||57@" & QuestsList(NroQuest).Puntos * 2)
+                    UserList(userindex).Stats.GLD = UserList(userindex).Stats.GLD + (val(QuestsList(NroQuest).Oro) * 2)
+                    Call AgregarPuntos(userindex, (val(QuestsList(NroQuest).Puntos) * 2))
+                    UserList(userindex).Stats.Reputacione = UserList(userindex).Stats.Reputacione + val(QuestsList(NroQuest).Puntos)
                     
-            modQuests.ResetQuest (userindex)
-            UserList(userindex).flags.QuestCompletadas = UserList(userindex).flags.QuestCompletadas + 1
+                    modQuests.ResetQuest (userindex)
+                    UserList(userindex).flags.QuestCompletadas = UserList(userindex).flags.QuestCompletadas + 1
+            
+            ElseIf UserList(userindex).flags.estado = 0 Then
+                    Call SendData(SendTarget.toindex, userindex, 0, "||66")
+                    Call SendData(SendTarget.toindex, userindex, 0, "||63@" & PonerPuntos(QuestsList(NroQuest).Oro))
+                    Call SendData(SendTarget.toindex, userindex, 0, "||57@" & QuestsList(NroQuest).Puntos * 2)
+                    UserList(userindex).Stats.GLD = UserList(userindex).Stats.GLD + (val(QuestsList(NroQuest).Oro))
+                    Call AgregarPuntos(userindex, (val(QuestsList(NroQuest).Puntos)))
+                    UserList(userindex).Stats.Reputacione = UserList(userindex).Stats.Reputacione + val(QuestsList(NroQuest).Puntos)
+                    
+                    modQuests.ResetQuest (userindex)
+                    UserList(userindex).flags.QuestCompletadas = UserList(userindex).flags.QuestCompletadas + 1
+            End If
             
             SendUserGLD (userindex)
+            
+            If QuestsList(NroQuest).NumOBJ > 0 Then
+                Dim OBJPremio As Obj
+                OBJPremio.ObjIndex = QuestsList(NroQuest).NumOBJ
+                OBJPremio.Amount = QuestsList(NroQuest).CantOBJ
+                        
+                If Not MeterItemEnInventario(userindex, OBJPremio) Then
+                    Call TirarItemAlPiso(UserList(userindex).Pos, OBJPremio)
+                End If
+            End If
         End If
     End If
 
@@ -157,18 +170,59 @@ Public Sub RestarUser(ByVal userindex As Integer, ByVal VictimIndex As Integer)
 End Sub
 Public Sub ResetQuest(ByVal userindex As Integer)
 
-        UserList(userindex).flags.MuereQuest = 0
+        Dim g As Long
+
+    For g = 1 To 3
+        UserList(userindex).flags.MuereQuest(g) = 0
+    Next g
+        
         UserList(userindex).flags.Questeando = 0
         UserList(userindex).flags.UserNumQuest = 0
+End Sub
+
+Public Sub CargarMisiones()
+    Dim n As Integer, LoopC As Integer, loopX As Integer
+    n = val(GetVar(App.Path & "\Dat\MisionesDiarias.dat", "INIT", "NumMisiones"))
+    
+    ReDim MisionesDiarias(n) As tMDiarias
+    
+    For LoopC = 1 To n
+        MisionesDiarias(LoopC).Nombre = GetVar(App.Path & "\Dat\MisionesDiarias.dat", "MISION" & LoopC, "Nombre")
+        MisionesDiarias(LoopC).Info = GetVar(App.Path & "\Dat\MisionesDiarias.dat", "MISION" & LoopC, "Info")
+        MisionesDiarias(LoopC).Tipo = val(GetVar(App.Path & "\Dat\MisionesDiarias.dat", "MISION" & LoopC, "Tipo"))
+        MisionesDiarias(LoopC).Cantidad = val(GetVar(App.Path & "\Dat\MisionesDiarias.dat", "MISION" & LoopC, "Cantidad"))
+        MisionesDiarias(LoopC).NumNPC = val(GetVar(App.Path & "\Dat\MisionesDiarias.dat", "MISION" & LoopC, "NumNPC"))
+        MisionesDiarias(LoopC).QuestNumber = val(GetVar(App.Path & "\Dat\MisionesDiarias.dat", "MISION" & LoopC, "QuestNumber"))
+        MisionesDiarias(LoopC).PTS = val(GetVar(App.Path & "\Dat\MisionesDiarias.dat", "MISION" & LoopC, "PTS"))
+        
+        MisionesDiarias(LoopC).pOro = val(GetVar(App.Path & "\Dat\MisionesDiarias.dat", "MISION" & LoopC, "Oro"))
+        MisionesDiarias(LoopC).pPuntos = val(GetVar(App.Path & "\Dat\MisionesDiarias.dat", "MISION" & LoopC, "Puntos"))
+        MisionesDiarias(LoopC).pObjetoIndex = ReadField(1, GetVar(App.Path & "\Dat\MisionesDiarias.dat", "MISION" & LoopC, "OBJ"), Asc("-"))
+        MisionesDiarias(LoopC).pObjetoAmount = ReadField(2, GetVar(App.Path & "\Dat\MisionesDiarias.dat", "MISION" & LoopC, "OBJ"), Asc("-"))
+    Next LoopC
+    
+End Sub
+Public Sub VerificarMisionDiaria(userindex As Integer)
+
+    If UserList(userindex).Misiones.ConteoUser >= MisionesDiarias(UserList(userindex).Misiones.NumeroMision).Cantidad Then
+        UserList(userindex).Stats.GLD = UserList(userindex).Stats.GLD + MisionesDiarias(UserList(userindex).Misiones.NumeroMision).pOro
+        SendUserGLD (userindex)
+        Call SendData(SendTarget.toindex, userindex, 0, "||63@" & PonerPuntos(MisionesDiarias(UserList(userindex).Misiones.NumeroMision).pOro))
+        UserList(userindex).Stats.PuntosTorneo = UserList(userindex).Stats.PuntosTorneo + MisionesDiarias(UserList(userindex).Misiones.NumeroMision).pPuntos
+        Call SendData(SendTarget.toindex, userindex, 0, "||57@" & PonerPuntos(MisionesDiarias(UserList(userindex).Misiones.NumeroMision).pPuntos))
+        
+        If MisionesDiarias(UserList(userindex).Misiones.NumeroMision).pObjetoAmount > 0 Then
+            Dim eOBJ As Obj
+            eOBJ.ObjIndex = MisionesDiarias(UserList(userindex).Misiones.NumeroMision).pObjetoIndex
+            eOBJ.Amount = MisionesDiarias(UserList(userindex).Misiones.NumeroMision).pObjetoAmount
+            
+            If Not MeterItemEnInventario(userindex, eOBJ) Then
+                Call TirarItemAlPiso(UserList(userindex).Pos, eOBJ)
+            End If
+            Call SendData(SendTarget.toindex, userindex, 0, "||879")
+        End If
+        
+        UserList(userindex).Misiones.Completada = 1
+    End If
         
 End Sub
-Public Function SendQuestList(ByVal userindex As Integer) As String
-Dim tStr As String, tIntx As Integer
- 
-    tStr = UBound(QuestsList) & ","
-    For tIntx = 1 To UBound(QuestsList)
-        tStr = tStr & QuestsList(tIntx).Name & ","
-    Next tIntx
-    
-    SendQuestList = tStr
-End Function

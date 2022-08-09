@@ -1,6 +1,5 @@
 VERSION 5.00
 Begin VB.Form frmGuildBrief 
-   BackColor       =   &H80000007&
    BorderStyle     =   0  'None
    Caption         =   "Detalles del Clan"
    ClientHeight    =   8895
@@ -20,7 +19,6 @@ Begin VB.Form frmGuildBrief
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   Picture         =   "frmGuildBrief.frx":0000
    ScaleHeight     =   8895
    ScaleWidth      =   8445
    ShowInTaskbar   =   0   'False
@@ -361,7 +359,7 @@ Next T
 Dim des As String
 
 des = ReadField(19, Buffer, Asc("¬"))
-Nombre.Caption = ReadField(20, Buffer, Asc("¬"))
+nombre.Caption = ReadField(20, Buffer, Asc("¬"))
 Desc.text = Replace(des, "º", vbCrLf)
 Me.Show vbModal, frmMain
 
@@ -397,7 +395,7 @@ Next T
 Dim des As String
 
 des = ReadField(19, Buffer, Asc("¬"))
-Nombre.Caption = ReadField(20, Buffer, Asc("¬"))
+nombre.Caption = ReadField(20, Buffer, Asc("¬"))
 Desc.text = Replace(des, "º", vbCrLf)
 Me.Show , frmMain
 
@@ -409,7 +407,7 @@ End Sub
 Private Sub BSolicitarIngreso_Click()
 Dim f$
 
-f$ = "SOLICITUD" & Nombre
+f$ = "SOLICITUD" & nombre
 f$ = f$ & "," & Replace(Replace("holi", ",", ";"), vbCrLf, "º")
 
 Call SendData(f$)

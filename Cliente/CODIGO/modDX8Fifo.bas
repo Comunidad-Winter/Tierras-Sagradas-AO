@@ -129,30 +129,6 @@ Sub CargarFxs()
     
     Close #N
 End Sub
-
-Sub CargarTips()
-    Dim N As Integer
-    Dim i As Long
-    Dim NumTips As Integer
-    
-    N = FreeFile
-    Open App.Path & "\Data\INIT\Tips.ayu" For Binary Access Read As #N
-    
-    'cabecera
-    Get #N, , MiCabecera
-    
-    'num de cabezas
-    Get #N, , NumTips
-    
-    'Resize array
-    ReDim Tips(1 To NumTips) As String * 255
-    
-    For i = 1 To NumTips
-        Get #N, , Tips(i)
-    Next i
-    
-    Close #N
-End Sub
 ''
 ' Loads grh data using the new file format.
 '
@@ -180,9 +156,9 @@ On Error GoTo ErrorHandler
     'Resize arrays
     ReDim GrhData(1 To grhCount) As GrhData
     
-    Get handle, , Grh
-    
-    Do Until Grh <= 0
+    While Not EOF(handle)
+        Get handle, , Grh
+        
         With GrhData(Grh)
             'Get number of frames
             Get handle, , .NumFrames
@@ -220,7 +196,7 @@ On Error GoTo ErrorHandler
                 Get handle, , .FileNum
                 If .FileNum <= 0 Then GoTo ErrorHandler
                 
-                Get handle, , .sX
+                Get handle, , GrhData(Grh).sX
                 If .sX < 0 Then GoTo ErrorHandler
                 
                 Get handle, , .sY
@@ -239,9 +215,7 @@ On Error GoTo ErrorHandler
                 .Frames(1) = Grh
             End If
         End With
-        
-        Get handle, , Grh
-    Loop
+    Wend
     
     Close handle
     

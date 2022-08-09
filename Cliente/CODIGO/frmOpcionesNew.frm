@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.2#0"; "MSCOMCTL.OCX"
 Begin VB.Form frmOpciones 
    BackColor       =   &H00000000&
    BorderStyle     =   0  'None
@@ -18,9 +18,9 @@ Begin VB.Form frmOpciones
       ForeColor       =   &H00FFFFFF&
       Height          =   5775
       Index           =   7
-      Left            =   6720
+      Left            =   8640
       TabIndex        =   70
-      Top             =   1440
+      Top             =   3960
       Width           =   6135
       Begin MSComctlLib.Slider slPerformance 
          Height          =   375
@@ -133,9 +133,9 @@ Begin VB.Form frmOpciones
       ForeColor       =   &H00FFFFFF&
       Height          =   5775
       Index           =   8
-      Left            =   8160
+      Left            =   -4800
       TabIndex        =   80
-      Top             =   2040
+      Top             =   5400
       Width           =   6135
       Begin VB.CommandButton Command3 
          Caption         =   "Abrir Reproductor de Radio AO"
@@ -180,7 +180,7 @@ Begin VB.Form frmOpciones
       ForeColor       =   &H00FFFFFF&
       Height          =   5775
       Index           =   6
-      Left            =   8640
+      Left            =   6480
       TabIndex        =   63
       Top             =   2640
       Width           =   6135
@@ -300,9 +300,9 @@ Begin VB.Form frmOpciones
       ForeColor       =   &H00FFFFFF&
       Height          =   5775
       Index           =   5
-      Left            =   5040
+      Left            =   2880
       TabIndex        =   56
-      Top             =   1320
+      Top             =   0
       Width           =   6135
       Begin VB.CheckBox chkNumPad 
          BackColor       =   &H00000000&
@@ -383,9 +383,9 @@ Begin VB.Form frmOpciones
       ForeColor       =   &H00FFFFFF&
       Height          =   5775
       Index           =   4
-      Left            =   6120
+      Left            =   2640
       TabIndex        =   48
-      Top             =   1440
+      Top             =   5880
       Width           =   6135
       Begin VB.CheckBox chkContactSignsOut 
          BackColor       =   &H00000000&
@@ -468,9 +468,9 @@ Begin VB.Form frmOpciones
       ForeColor       =   &H00FFFFFF&
       Height          =   5775
       Index           =   3
-      Left            =   3480
+      Left            =   2880
       TabIndex        =   43
-      Top             =   360
+      Top             =   5520
       Width           =   6135
       Begin VB.CheckBox chkNoPrivates 
          BackColor       =   &H00000000&
@@ -510,7 +510,7 @@ Begin VB.Form frmOpciones
          Height          =   375
          Left            =   240
          TabIndex        =   44
-         Top             =   360
+         Top             =   2280
          Width           =   5775
       End
    End
@@ -530,9 +530,9 @@ Begin VB.Form frmOpciones
       ForeColor       =   &H00FFFFFF&
       Height          =   5775
       Index           =   2
-      Left            =   4920
+      Left            =   3000
       TabIndex        =   35
-      Top             =   2160
+      Top             =   5520
       Width           =   6135
       Begin VB.FileListBox InterfazFiles 
          Height          =   1065
@@ -581,9 +581,9 @@ Begin VB.Form frmOpciones
          BackColor       =   &H00000000&
          ForeColor       =   &H00FFFFFF&
          Height          =   1095
-         Left            =   240
+         Left            =   0
          TabIndex        =   37
-         Top             =   360
+         Top             =   2040
          Width           =   5655
          Begin VB.CheckBox chkTransparencia 
             BackColor       =   &H00000000&
@@ -630,9 +630,9 @@ Begin VB.Form frmOpciones
       ForeColor       =   &H00FFFFFF&
       Height          =   5775
       Index           =   1
-      Left            =   3000
+      Left            =   1680
       TabIndex        =   28
-      Top             =   240
+      Top             =   5760
       Width           =   6135
       Begin VB.ComboBox Combo1 
          Height          =   315
@@ -696,10 +696,10 @@ Begin VB.Form frmOpciones
          Caption         =   "Efecto de particulas"
          ForeColor       =   &H00FFFFFF&
          Height          =   495
-         Left            =   240
+         Left            =   -2280
          MaskColor       =   &H00FFFFFF&
          TabIndex        =   91
-         Top             =   1560
+         Top             =   -120
          Value           =   1  'Checked
          Width           =   5655
       End
@@ -808,9 +808,9 @@ Begin VB.Form frmOpciones
       ForeColor       =   &H00FFFFFF&
       Height          =   5775
       Index           =   0
-      Left            =   2640
+      Left            =   -2400
       TabIndex        =   12
-      Top             =   120
+      Top             =   2160
       Width           =   6135
       Begin VB.HScrollBar scrFXVolume 
          Height          =   255
@@ -837,7 +837,8 @@ Begin VB.Form frmOpciones
          Height          =   1215
          Left            =   120
          TabIndex        =   22
-         Top             =   4080
+         Top             =   4200
+         Visible         =   0   'False
          Width           =   5895
          Begin VB.CommandButton cmdMidiStop 
             Caption         =   "Stop"
@@ -895,7 +896,8 @@ Begin VB.Form frmOpciones
          Height          =   345
          Left            =   120
          TabIndex        =   21
-         Top             =   3600
+         Top             =   3720
+         Visible         =   0   'False
          Width           =   5895
       End
       Begin VB.HScrollBar scrMP3Volume 
@@ -903,8 +905,9 @@ Begin VB.Form frmOpciones
          Left            =   120
          Max             =   2500
          TabIndex        =   19
-         Top             =   3120
+         Top             =   3240
          Value           =   2500
+         Visible         =   0   'False
          Width           =   5895
       End
       Begin VB.CommandButton cmdActivateMP3 
@@ -924,7 +927,7 @@ Begin VB.Form frmOpciones
          Height          =   255
          Left            =   1920
          TabIndex        =   15
-         Top             =   5400
+         Top             =   5520
          Visible         =   0   'False
          Width           =   2895
          Begin VB.OptionButton chkSoundSystem 
@@ -998,7 +1001,8 @@ Begin VB.Form frmOpciones
          Height          =   255
          Left            =   120
          TabIndex        =   20
-         Top             =   2880
+         Top             =   3000
+         Visible         =   0   'False
          Width           =   1695
       End
    End
@@ -1230,45 +1234,59 @@ Option Explicit
 Private ConfigChanged As Byte
 Private FpsChanged As Byte
 Private Sub Check1_Click()
-Configuracion.General_NoMoveScreen = Check1.value
+Configuracion.General_NoMoveScreen = Check1.Value
 ConfigChanged = 1
 End Sub
 
 Private Sub chkAuras_Click()
 ConfigChanged = 1
-Configuracion.Video_Toggle_Aura = chkAuras.value
+Configuracion.Video_Toggle_Aura = chkAuras.Value
 End Sub
 
 Private Sub chkContactSignsIn_Click()
-Configuracion.Chat_Contact_SignsIn = chkContactSignsIn.value
+Configuracion.Chat_Contact_SignsIn = chkContactSignsIn.Value
 ConfigChanged = 1
 End Sub
 
 Private Sub chkParticulas_Click()
 ConfigChanged = 1
-Configuracion.Video_Toggle_Particulas = chkParticulas.value
+Configuracion.Video_Toggle_Particulas = chkParticulas.Value
 End Sub
 
 Private Sub chkReflejos_Click()
 ConfigChanged = 1
-Configuracion.Video_Toggle_Reflejos = chkReflejos.value
+Configuracion.Video_Toggle_Reflejos = chkReflejos.Value
 End Sub
 
 Private Sub chkSombrasNPCs_Click()
 ConfigChanged = 1
-Configuracion.Video_Toggle_Sombras_NPC = chkSombrasNPCs.value
+Configuracion.Video_Toggle_Sombras_NPC = chkSombrasNPCs.Value
 End Sub
 
 Private Sub chkSombrasPJs_Click()
 ConfigChanged = 1
-Configuracion.Video_Toggle_Sombras = chkSombrasPJs.value
+Configuracion.Video_Toggle_Sombras = chkSombrasPJs.Value
+End Sub
+
+Private Sub cmdActivateMP3_Click()
+    If Configuracion.Sonido_Musica = 1 Then
+            cmdActivateMP3.Caption = "Activar MP3"
+            Configuracion.Sonido_MP3 = 0
+            Audio.StopMidi
+        Else
+            cmdActivateMP3.Caption = "Desactivar MP3"
+            Configuracion.Sonido_MP3 = 1
+            Audio.MP3_Play CurrentMP3
+        End If
+
+        ConfigChanged = 1
 End Sub
 
 Private Sub cmdConfigurarMacro_Click()
 frmMakro.Show , frmMain
 End Sub
 Private Sub chkContactSignsOut_Click()
-Configuracion.Chat_Contact_SignsOut = chkContactSignsOut.value
+Configuracion.Chat_Contact_SignsOut = chkContactSignsOut.Value
 ConfigChanged = 1
 End Sub
 
@@ -1278,17 +1296,17 @@ Private Sub chkCounters_Click()
 End Sub
 
 Private Sub chkDeath_Click()
-Configuracion.General_Mostrar_Cartel_Muerte = chkDeath.value
+Configuracion.General_Mostrar_Cartel_Muerte = chkDeath.Value
 ConfigChanged = 1
 End Sub
 
 Private Sub chkDerechoAsDoble_Click()
-Configuracion.MouseActions_RClick = chkDerechoAsDoble.value
+Configuracion.MouseActions_RClick = chkDerechoAsDoble.Value
 ConfigChanged = 1
 End Sub
 
 Private Sub chkDesplegarMenu_Click()
-Configuracion.MouseActions_Activate = chkDesplegarMenu.value
+Configuracion.MouseActions_Activate = chkDesplegarMenu.Value
 ConfigChanged = 1
 End Sub
 
@@ -1301,7 +1319,7 @@ ConfigChanged = 1
 End Sub
 Private Sub chkMiniMapa_Click()
 ConfigChanged = 1
-Configuracion.MiniMap_Activate = chkMiniMapa.value
+Configuracion.MiniMap_Activate = chkMiniMapa.Value
 
 If Configuracion.MiniMap_Activate = 0 Then
     frmMain.Minimap.Visible = False
@@ -1311,40 +1329,40 @@ End If
 
     Call DibujarPuntoMinimap
     Call DibujarMinimap
-If chkMiniMapa.value = 1 And Not SuficientePC And ConfigChanged = 1 Then MsgBox "Recomendable DESACTIVAR en esta Maquina", vbOKOnly, "Aviso"
+If chkMiniMapa.Value = 1 And Not SuficientePC And ConfigChanged = 1 Then MsgBox "Recomendable DESACTIVAR en esta Maquina", vbOKOnly, "Aviso"
 End Sub
 
 Private Sub chkMiniMapaPos_Click()
 ConfigChanged = 1
-Configuracion.MiniMap_Show_Position = chkMiniMapaPos.value
-If chkMiniMapaPos.value = 1 And Not SuficientePC And ConfigChanged = 1 Then MsgBox "Recomendable DESACTIVAR en esta Maquina", vbOKOnly, "Aviso"
+Configuracion.MiniMap_Show_Position = chkMiniMapaPos.Value
+If chkMiniMapaPos.Value = 1 And Not SuficientePC And ConfigChanged = 1 Then MsgBox "Recomendable DESACTIVAR en esta Maquina", vbOKOnly, "Aviso"
 End Sub
 Private Sub chkNoGlobal_Click()
-Configuracion.Consola_Globales_DeActivate = chkNoGlobal.value
+Configuracion.Consola_Globales_DeActivate = chkNoGlobal.Value
 ConfigChanged = 1
 End Sub
 Private Sub chkNoPrivates_Click()
-Configuracion.Consola_Privados_DeActivate = chkNoPrivates.value
+Configuracion.Consola_Privados_DeActivate = chkNoPrivates.Value
 ConfigChanged = 1
 End Sub
 Private Sub chkNumPad_Click()
-Configuracion.Consola_Use_Num_Pad = chkNumPad.value
+Configuracion.Consola_Use_Num_Pad = chkNumPad.Value
 ConfigChanged = 1
 End Sub
 
 Private Sub ChkShowChat_Click()
-Configuracion.Consola_Show_User_Messages = ChkShowChat.value
+Configuracion.Consola_Show_User_Messages = ChkShowChat.Value
 ConfigChanged = 1
 End Sub
 
 Private Sub chkShowNicks_Click()
-Configuracion.General_Show_Nicks = chkShowNicks.value
+Configuracion.General_Show_Nicks = chkShowNicks.Value
 Nombres = chkShowNicks
 ConfigChanged = 1
 End Sub
 
 Private Sub chkSoundSystem_Click(Index As Integer)
-If chkSoundSystem(0).value = True Then
+If chkSoundSystem(0).Value = True Then
     Configuracion.Sonido_Sistema_FXs = 0
 Else
     Configuracion.Sonido_Sistema_FXs = 1
@@ -1353,19 +1371,19 @@ ConfigChanged = 1
 End Sub
 
 Private Sub chkTransparencia_Click()
-slAlphaLevel.Enabled = chkTransparencia.value
-Configuracion.Alpha_Interfaz_Activar = chkTransparencia.value
+slAlphaLevel.Enabled = chkTransparencia.Value
+Configuracion.Alpha_Interfaz_Activar = chkTransparencia.Value
 Configuracion.Alpha_Interfaz_Transparencia = Configuracion.Alpha_Interfaz_Transparencia * Configuracion.Alpha_Interfaz_Activar
 ConfigChanged = 1
 End Sub
 
 Private Sub chkUsarDoble_Click()
-Configuracion.MouseActions_DClick = chkUsarDoble.value
+Configuracion.MouseActions_DClick = chkUsarDoble.Value
 ConfigChanged = 1
 End Sub
 
 Private Sub chkUseEmoticons_Click()
-Configuracion.General_Emoticons_Reeplace = chkUseEmoticons.value
+Configuracion.General_Emoticons_Reeplace = chkUseEmoticons.Value
 ConfigChanged = 1
 End Sub
 
@@ -1379,7 +1397,7 @@ Private Sub chkUseOldEffect_Click()
 End Sub
 
 Private Sub chkUseOldFont_Click()
-Configuracion.Consola_Not_Use_New_Font = chkUseOldFont.value
+Configuracion.Consola_Not_Use_New_Font = chkUseOldFont.Value
 ConfigChanged = 1
 End Sub
 
@@ -1389,24 +1407,24 @@ Private Sub chkUseOldNickFont_Click()
 End Sub
 
 Private Sub chkUseSoundAlert_Click()
-Configuracion.Chat_Use_Sound_Alert = chkUseSoundAlert.value
+Configuracion.Chat_Use_Sound_Alert = chkUseSoundAlert.Value
 ConfigChanged = 1
 End Sub
 
 Private Sub ckArboleTechos_Click()
 ConfigChanged = 1
-Configuracion.Alpha_Usar_Transparencias_Objetos = ckArboleTechos.value
-If ckArboleTechos.value = 1 And Not SuficientePC And ConfigChanged = 1 Then MsgBox "Recomendable DESACTIVAR en esta Maquina", vbOKOnly, "Aviso"
+Configuracion.Alpha_Usar_Transparencias_Objetos = ckArboleTechos.Value
+If ckArboleTechos.Value = 1 And Not SuficientePC And ConfigChanged = 1 Then MsgBox "Recomendable DESACTIVAR en esta Maquina", vbOKOnly, "Aviso"
 End Sub
 Private Sub ckDiayNoche_Click()
 ConfigChanged = 1
-Configuracion.Alpha_Use_Dia_Noche = ckDiayNoche.value
+Configuracion.Alpha_Use_Dia_Noche = ckDiayNoche.Value
 End Sub
 
 Private Sub ckTranspPJs_Click()
 ConfigChanged = 1
-Configuracion.Alpha_Usar_Transparencias_PJs = ckTranspPJs.value
-If ckTranspPJs.value = 1 And Not SuficientePC And ConfigChanged = 1 Then MsgBox "Recomendable DESACTIVAR en esta Maquina", vbOKOnly, "Aviso"
+Configuracion.Alpha_Usar_Transparencias_PJs = ckTranspPJs.Value
+If ckTranspPJs.Value = 1 And Not SuficientePC And ConfigChanged = 1 Then MsgBox "Recomendable DESACTIVAR en esta Maquina", vbOKOnly, "Aviso"
 End Sub
 Private Sub cmdActivateMusic_Click()
 
@@ -1416,6 +1434,7 @@ On Error Resume Next
         If Configuracion.Sonido_Musica = 1 Then
             cmdActivateMusic.Caption = "Activar MIDI"
             Configuracion.Sonido_Musica = 0
+            Sound = False
             Me.scrMIDIVolume.Enabled = False
             Audio.StopMidi
         Else
@@ -1423,6 +1442,7 @@ On Error Resume Next
             Configuracion.Sonido_Musica = 1
             Me.scrMIDIVolume.Enabled = True
             Call Audio.PlayMIDI(CStr(currentMidi) & ".mid")
+            Sound = True
         End If
 
 ConfigChanged = 1
@@ -1442,7 +1462,7 @@ Private Sub cmdActivateFX_Click()
             cmdActivateFX.Caption = "Desactivar FX"
             Configuracion.Sonido_Fx = 1
             Me.scrFXVolume.Enabled = True
-            Me.scrFXVolume.value = Audio.SoundVolume
+            Me.scrFXVolume.Value = Audio.SoundVolume
             ClientSetup.bNoSound = 1
             Sound = True
         End If
@@ -1506,7 +1526,7 @@ Unload Me
 End Sub
 
 Private Sub slAlphaLevel_Click()
-Configuracion.Alpha_Interfaz_Transparencia = slAlphaLevel.value
+Configuracion.Alpha_Interfaz_Transparencia = slAlphaLevel.Value
 ConfigChanged = 1
 End Sub
 Private Sub TipoOpcion_Click(Index As Integer)
@@ -1520,9 +1540,9 @@ TipoOpcion(Index).BackColor = &H8000000D
 End Sub
 
 Private Sub slPerformance_Change()
-If Not SuficientePC And slPerformance.value > 2 Then MsgBox "La Memoria RAM de tu PC es demasiado baja se recomiendan al menos 512 MB de RAM para una configuracion mejor a Media/Baja", vbOKOnly, "Advertencia"
+If Not SuficientePC And slPerformance.Value > 2 Then MsgBox "La Memoria RAM de tu PC es demasiado baja se recomiendan al menos 512 MB de RAM para una configuracion mejor a Media/Baja", vbOKOnly, "Advertencia"
 
-Select Case slPerformance.value
+Select Case slPerformance.Value
     Case 0
         Configuracion.Alpha_Interfaz_Transparencia = 255
         Configuracion.Alpha_Usar_Transparencias_PJs = 0
@@ -1614,22 +1634,22 @@ Select Case slPerformance.value
         Configuracion.Video_Toggle_Sombras_NPC = 1
         Level = "Maximo"
 End Select
-Configuracion.Performance_Level = slPerformance.value
+Configuracion.Performance_Level = slPerformance.Value
 End Sub
 Private Sub scrFXVolume_Change()
-Audio.SoundVolume = scrFXVolume.value
+Audio.SoundVolume = scrFXVolume.Value
 End Sub
 Private Sub scrFXVolume_Scroll()
-Audio.SoundVolume = scrFXVolume.value
+Audio.SoundVolume = scrFXVolume.Value
 End Sub
 Private Sub scrMIDIVolume_Change()
-Audio.MusicVolume = scrMIDIVolume.value
+Audio.MusicVolume = scrMIDIVolume.Value
 End Sub
 Private Sub scrMIDIVolume_Scroll()
-Audio.MusicVolume = scrMIDIVolume.value
+Audio.MusicVolume = scrMIDIVolume.Value
 End Sub
 Private Sub scrMP3Volume_Change()
-Configuracion.Sonido_MP3_Volumen = scrMP3Volume.value
+Configuracion.Sonido_MP3_Volumen = scrMP3Volume.Value
 'frmMain.mp4.Volume = Configuracion.Sonido_MP3_Volumen
 ConfigChanged = 1
 End Sub
@@ -1961,18 +1981,18 @@ ConfigChanged = 0
 Me.scrMIDIVolume = Audio.MusicVolume
 ConfigChanged = 0
 If Configuracion.Sonido_Sistema_FXs = 0 Then
-    Me.chkSoundSystem(0).value = True
-    Me.chkSoundSystem(1).value = False
+    Me.chkSoundSystem(0).Value = True
+    Me.chkSoundSystem(1).Value = False
 Else
-    Me.chkSoundSystem(0).value = False
-    Me.chkSoundSystem(1).value = True
+    Me.chkSoundSystem(0).Value = False
+    Me.chkSoundSystem(1).Value = True
 End If
 If Configuracion.General_ScreenShots_Format = 1 Then
-    Option2.value = False
-    Option1.value = True
+    Option2.Value = False
+    Option1.Value = True
 Else
-    Option2.value = True
-    Option1.value = False
+    Option2.Value = True
+    Option1.Value = False
 End If
 ' = Configuracion.Sonido_Sistema_FXs
 Me.chkTransparencia = Configuracion.Alpha_Interfaz_Activar

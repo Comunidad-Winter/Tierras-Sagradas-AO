@@ -113,7 +113,7 @@ Function CompactArray() As Boolean
  
 ' @ Corre los mensajes y deja el 1 libre.
  
-On Error GoTo ErrHandler
+On Error GoTo errHandler
  
 Dim tmpDatas(1 To MAX_MSG) As RMSGRender
 Dim loopX                  As Long
@@ -132,7 +132,7 @@ CompactArray = (RenderMSG(1).GMName = vbNullString)
  
 Exit Function
  
-ErrHandler:
+errHandler:
  
 CompactArray = False
  

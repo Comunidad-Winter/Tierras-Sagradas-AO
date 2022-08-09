@@ -47,8 +47,8 @@ Private Type dialog
     textLine()  As String
     X           As Integer
     Y           As Integer
-    startTime   As Long
-    lifeTime    As Long
+    StartTime   As Long
+    LifeTime    As Long
     charindex   As Integer
     color       As Long
     renderable  As Boolean
@@ -162,10 +162,14 @@ Public Sub CreateDialog(ByRef chat As String, _
         .color = D3DColorXRGB(255, 255, 255)
         End If
         .renderable = False
-        .startTime = GetTickCount()
+        .StartTime = GetTickCount()
         .textLine = FormatChat(chat)
-        .lifeTime = MS_ADD_EXTRA + (MS_PER_CHAR * Len(chat))
-        .Sube = 18
+        .LifeTime = MS_ADD_EXTRA + (MS_PER_CHAR * Len(chat))
+            If Configuracion.Letras_Suben = 1 Then
+                .Sube = 18
+            Else
+                .Sube = 0
+            End If
         .Desvanecimiento = 20
         .Tiempito = False
     End With
@@ -230,7 +234,7 @@ Public Sub Render()
  
     Dim j              As Long
  
-    Dim offset         As Integer
+    Dim Offset         As Integer
  
     Dim removedDialogs As Long
    
@@ -240,7 +244,7 @@ Public Sub Render()
         'Crappy VB will cache the limit of the For loop, so even if it changed, it won't matter
         With dialogs(i - removedDialogs)
  
-  If .lifeTime >= 292 Then
+  If .LifeTime >= 292 Then
     If .Sube > 0 Then _
     .Sube = .Sube - 1
     If .Sube > 0 Then
@@ -249,7 +253,7 @@ Public Sub Render()
     End If
   End If
         
-            If (GetTickCount() - .startTime) >= .lifeTime Then
+            If (GetTickCount() - .StartTime) >= .LifeTime Then
                 'Call RemoveDialog(.charindex)
                 'removedDialogs = removedDialogs + 1
                 .Tiempito = True
@@ -266,12 +270,12 @@ Public Sub Render()
             
             
             If .renderable Then
-                offset = -(usedFont.size + 2) * UBound(.textLine())
+                Offset = -(usedFont.size + 2) * UBound(.textLine())
                
                 'Render it
                 For j = 0 To UBound(.textLine())
-                    Call Texto.Engine_Text_Draw(.X + 171, .Y + offset + 2, .textLine(j), .color, .Desvanecimiento, DT_TOP Or DT_LEFT)
-                    offset = offset + usedFont.size + 5
+                    Call Texto.Engine_Text_Draw(.X + 171, .Y + Offset + 2, .textLine(j), .color, .Desvanecimiento, DT_TOP Or DT_LEFT)
+                    Offset = Offset + usedFont.size + 5
                 Next j
                
                 'Won't render it unless it's updated in next frmae
@@ -326,22 +330,22 @@ Private Function BinarySearch(ByVal charindex As Integer) As Integer
     '**************************************************************
     On Error Resume Next
  
-    Dim Min As Long
+    Dim min As Long
  
-    Dim Max As Long
+    Dim max As Long
  
     Dim mid As Long
    
-    Min = 0
-    Max = dialogCount - 1
+    min = 0
+    max = dialogCount - 1
    
-    Do While Min <= Max
-        mid = (Min + Max) \ 2
+    Do While min <= max
+        mid = (min + max) \ 2
        
         If dialogs(mid).charindex < charindex Then
-            Min = mid + 1
+            min = mid + 1
         ElseIf dialogs(mid).charindex > charindex Then
-            Max = mid - 1
+            max = mid - 1
         Else
             'We found it
             BinarySearch = mid
@@ -354,7 +358,7 @@ Private Function BinarySearch(ByVal charindex As Integer) As Integer
    
     'Not found, return the negation of the position where it should be
     '(all higher values are to the right of the list and lower values are to the left)
-    BinarySearch = Not Min
+    BinarySearch = Not min
 End Function
  
 ''

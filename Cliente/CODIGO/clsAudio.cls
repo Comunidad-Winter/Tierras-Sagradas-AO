@@ -689,8 +689,7 @@ Set DSControl = New FilgraphManager
 Call DSControl.RenderFile(App.Path & "\Data\SOUNDS\MP3\" & Filename & ".mp3")
  
 Set DSAudio = DSControl
-
-DSAudio.Volume = (-4000) + 3900
+DSAudio.Volume = (-4000) + Configuracion.MP3Volume
 DSAudio.Balance = 0
    
 Set DSEvent = DSControl
@@ -705,6 +704,7 @@ Public Function MP3_Play(ByVal Filename As String) As Boolean
 
 'If Not Musica Then Exit Function
 If Not FileExist(App.Path & "\Data\SOUNDS\MP3\" & Filename & ".mp3", vbNormal) Then Exit Function
+If Not SoundActivated Then Exit Function
 If Configuracion.Music = 0 Then Exit Function
 If frmMain.Visible = True And Musica = False Then Exit Function
 
@@ -741,5 +741,3 @@ Set DSEvent = Nothing
 Set DSControl = Nothing
 Set DSPosition = Nothing
 End Sub
-
-

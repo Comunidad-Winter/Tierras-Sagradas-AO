@@ -2,16 +2,13 @@ VERSION 5.00
 Begin VB.Form frmBanco 
    BorderStyle     =   0  'None
    Caption         =   "Form1"
-   ClientHeight    =   2940
+   ClientHeight    =   2925
    ClientLeft      =   0
    ClientTop       =   0
-   ClientWidth     =   2475
-   Icon            =   "frmBanco.frx":0000
+   ClientWidth     =   2460
    LinkTopic       =   "Form1"
-   Picture         =   "frmBanco.frx":000C
-   ScaleHeight     =   196
-   ScaleMode       =   3  'Pixel
-   ScaleWidth      =   165
+   ScaleHeight     =   2925
+   ScaleWidth      =   2460
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.Label Text1 
@@ -29,34 +26,34 @@ Begin VB.Form frmBanco
       EndProperty
       ForeColor       =   &H00FFFFFF&
       Height          =   375
-      Left            =   255
+      Left            =   240
       TabIndex        =   1
-      Top             =   720
-      Width           =   1920
+      Top             =   505
+      Width           =   1935
    End
    Begin VB.Image Image1 
-      Height          =   420
+      Height          =   540
       Index           =   2
-      Left            =   360
+      Left            =   315
       MousePointer    =   99  'Custom
-      Top             =   2280
-      Width           =   1770
+      Top             =   2205
+      Width           =   1800
    End
    Begin VB.Image Image1 
-      Height          =   420
+      Height          =   540
       Index           =   1
-      Left            =   360
+      Left            =   315
       MousePointer    =   99  'Custom
-      Top             =   1740
-      Width           =   1770
+      Top             =   1560
+      Width           =   1800
    End
    Begin VB.Image Image1 
-      Height          =   420
+      Height          =   540
       Index           =   0
-      Left            =   360
+      Left            =   315
       MousePointer    =   4  'Icon
-      Top             =   1200
-      Width           =   1770
+      Top             =   915
+      Width           =   1800
    End
    Begin VB.Label Label1 
       BackStyle       =   0  'Transparent
@@ -70,8 +67,8 @@ Begin VB.Form frmBanco
          Strikethrough   =   0   'False
       EndProperty
       ForeColor       =   &H00FFFFFF&
-      Height          =   375
-      Left            =   2085
+      Height          =   495
+      Left            =   2040
       TabIndex        =   0
       Top             =   0
       Width           =   375

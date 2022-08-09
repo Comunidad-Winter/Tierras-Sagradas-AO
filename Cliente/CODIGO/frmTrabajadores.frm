@@ -7,13 +7,12 @@ Begin VB.Form frmNobleza
    ClientLeft      =   0
    ClientTop       =   0
    ClientWidth     =   5610
-   Icon            =   "frmTrabajadores.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   492
-   ScaleMode       =   3  'Pixel
-   ScaleWidth      =   374
+   Picture         =   "frmTrabajadores.frx":0000
+   ScaleHeight     =   7380
+   ScaleWidth      =   5610
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.PictureBox Picture4 
@@ -22,8 +21,8 @@ Begin VB.Form frmNobleza
       BorderStyle     =   0  'None
       ForeColor       =   &H80000008&
       Height          =   480
-      Left            =   3915
-      Picture         =   "frmTrabajadores.frx":000C
+      Left            =   3910
+      Picture         =   "frmTrabajadores.frx":17C31
       ScaleHeight     =   480
       ScaleWidth      =   480
       TabIndex        =   7
@@ -36,12 +35,12 @@ Begin VB.Form frmNobleza
       BorderStyle     =   0  'None
       ForeColor       =   &H80000008&
       Height          =   480
-      Left            =   1185
-      Picture         =   "frmTrabajadores.frx":0850
+      Left            =   1170
+      Picture         =   "frmTrabajadores.frx":18475
       ScaleHeight     =   480
       ScaleWidth      =   480
       TabIndex        =   6
-      Top             =   4080
+      Top             =   4100
       Width           =   480
    End
    Begin VB.PictureBox Picture2 
@@ -50,54 +49,54 @@ Begin VB.Form frmNobleza
       BorderStyle     =   0  'None
       ForeColor       =   &H80000008&
       Height          =   480
-      Left            =   3930
-      Picture         =   "frmTrabajadores.frx":1094
+      Left            =   3925
+      Picture         =   "frmTrabajadores.frx":18CB9
       ScaleHeight     =   480
-      ScaleWidth      =   465
+      ScaleWidth      =   480
       TabIndex        =   5
-      Top             =   615
-      Width           =   465
+      Top             =   570
+      Width           =   480
    End
    Begin VB.ListBox lstReq 
       Appearance      =   0  'Flat
-      BackColor       =   &H00000040&
+      BackColor       =   &H00000000&
       ForeColor       =   &H00C0FFFF&
-      Height          =   2025
+      Height          =   1450
       Index           =   3
       IntegralHeight  =   0   'False
-      ItemData        =   "frmTrabajadores.frx":18D8
-      Left            =   3015
-      List            =   "frmTrabajadores.frx":1918
+      ItemData        =   "frmTrabajadores.frx":194FD
+      Left            =   3010
+      List            =   "frmTrabajadores.frx":1953D
       TabIndex        =   4
-      Top             =   4725
+      Top             =   4750
       Width           =   2340
    End
    Begin VB.ListBox lstReq 
       Appearance      =   0  'Flat
-      BackColor       =   &H00000040&
+      BackColor       =   &H00000000&
       ForeColor       =   &H00C0FFFF&
-      Height          =   2025
+      Height          =   1450
       Index           =   2
       IntegralHeight  =   0   'False
-      ItemData        =   "frmTrabajadores.frx":1963
-      Left            =   255
-      List            =   "frmTrabajadores.frx":19A3
+      ItemData        =   "frmTrabajadores.frx":19588
+      Left            =   260
+      List            =   "frmTrabajadores.frx":195C8
       TabIndex        =   3
-      Top             =   4725
+      Top             =   4750
       Width           =   2340
    End
    Begin VB.ListBox lstReq 
       Appearance      =   0  'Flat
-      BackColor       =   &H00000040&
+      BackColor       =   &H00000000&
       ForeColor       =   &H00C0FFFF&
-      Height          =   1980
+      Height          =   1450
       Index           =   1
       IntegralHeight  =   0   'False
-      ItemData        =   "frmTrabajadores.frx":19EE
-      Left            =   3015
-      List            =   "frmTrabajadores.frx":1A2E
+      ItemData        =   "frmTrabajadores.frx":19613
+      Left            =   3020
+      List            =   "frmTrabajadores.frx":19653
       TabIndex        =   2
-      Top             =   1230
+      Top             =   1200
       Width           =   2340
    End
    Begin VB.PictureBox Picture1 
@@ -107,60 +106,60 @@ Begin VB.Form frmNobleza
       ForeColor       =   &H80000008&
       Height          =   480
       Left            =   1180
-      Picture         =   "frmTrabajadores.frx":1A79
+      Picture         =   "frmTrabajadores.frx":1969E
       ScaleHeight     =   480
       ScaleWidth      =   480
       TabIndex        =   1
-      Top             =   630
+      Top             =   570
       Width           =   480
    End
    Begin VB.ListBox lstReq 
       Appearance      =   0  'Flat
-      BackColor       =   &H00000040&
+      BackColor       =   &H00000000&
       ForeColor       =   &H00C0FFFF&
-      Height          =   1980
+      Height          =   1450
       Index           =   0
       IntegralHeight  =   0   'False
-      ItemData        =   "frmTrabajadores.frx":22BD
-      Left            =   255
-      List            =   "frmTrabajadores.frx":22FD
+      ItemData        =   "frmTrabajadores.frx":19EE2
+      Left            =   260
+      List            =   "frmTrabajadores.frx":19F22
       TabIndex        =   0
-      Top             =   1230
+      Top             =   1200
       Width           =   2340
    End
    Begin VB.Image Image1 
-      Height          =   375
+      Height          =   255
       Left            =   5280
       Top             =   0
       Width           =   375
    End
    Begin VB.Image cmdConstruir 
-      Height          =   405
+      Height          =   435
       Index           =   3
-      Left            =   3030
-      Top             =   6750
-      Width           =   2295
+      Left            =   3010
+      Top             =   6300
+      Width           =   2340
    End
    Begin VB.Image cmdConstruir 
-      Height          =   405
+      Height          =   435
       Index           =   2
-      Left            =   270
-      Top             =   6750
-      Width           =   2295
+      Left            =   260
+      Top             =   6300
+      Width           =   2340
    End
    Begin VB.Image cmdConstruir 
-      Height          =   405
+      Height          =   435
       Index           =   1
-      Left            =   3030
-      Top             =   3255
-      Width           =   2295
+      Left            =   3020
+      Top             =   2760
+      Width           =   2340
    End
    Begin VB.Image cmdConstruir 
-      Height          =   405
+      Height          =   435
       Index           =   0
-      Left            =   270
-      Top             =   3255
-      Width           =   2295
+      Left            =   260
+      Top             =   2760
+      Width           =   2340
    End
 End
 Attribute VB_Name = "frmNobleza"
@@ -206,7 +205,10 @@ End Sub
 
 Private Sub cmdConstruir_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
     
-cmdConstruir(Index).Picture = ChangeButtonState(Apretado, "BConstruir")
+If Index = 0 Then cmdConstruir(0).Picture = ChangeButtonState(Apretado, "BConstruir")
+If Index = 1 Then cmdConstruir(1).Picture = ChangeButtonState(Apretado, "BConstruir2")
+If Index = 2 Then cmdConstruir(2).Picture = ChangeButtonState(Apretado, "BConstruir4")
+If Index = 3 Then cmdConstruir(3).Picture = ChangeButtonState(Apretado, "BConstruir3")
 
 End Sub
 
@@ -223,7 +225,7 @@ End If
 If Index = 1 Then
 If cmdConstruir(1).Tag = "0" Then
     Call ChangeButtonsNormal
-    cmdConstruir(1).Picture = ChangeButtonState(Iluminado, "BConstruir")
+    cmdConstruir(1).Picture = ChangeButtonState(Iluminado, "BConstruir2")
     cmdConstruir(1).Tag = "1"
 End If
 End If
@@ -231,7 +233,7 @@ End If
 If Index = 2 Then
 If cmdConstruir(2).Tag = "0" Then
     Call ChangeButtonsNormal
-    cmdConstruir(2).Picture = ChangeButtonState(Iluminado, "BConstruir")
+    cmdConstruir(2).Picture = ChangeButtonState(Iluminado, "BConstruir4")
     cmdConstruir(2).Tag = "1"
 End If
 End If
@@ -239,7 +241,7 @@ End If
 If Index = 3 Then
 If cmdConstruir(3).Tag = "0" Then
     Call ChangeButtonsNormal
-    cmdConstruir(3).Picture = ChangeButtonState(Iluminado, "BConstruir")
+    cmdConstruir(3).Picture = ChangeButtonState(Iluminado, "BConstruir3")
     cmdConstruir(3).Tag = "1"
 End If
 End If
@@ -264,9 +266,9 @@ End Function
 Private Sub ChangeButtonsNormal()
 
 cmdConstruir(0).Picture = ChangeButtonState(BNormal, "BConstruir")
-cmdConstruir(1).Picture = ChangeButtonState(BNormal, "BConstruir")
-cmdConstruir(2).Picture = ChangeButtonState(BNormal, "BConstruir")
-cmdConstruir(3).Picture = ChangeButtonState(BNormal, "BConstruir")
+cmdConstruir(1).Picture = ChangeButtonState(BNormal, "BConstruir2")
+cmdConstruir(2).Picture = ChangeButtonState(BNormal, "BConstruir4")
+cmdConstruir(3).Picture = ChangeButtonState(BNormal, "BConstruir3")
 
 Dim j
 For Each j In Me

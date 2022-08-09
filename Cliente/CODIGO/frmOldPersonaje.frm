@@ -157,8 +157,8 @@ For Each j In Image1()
     j.Tag = "0"
 Next
 
-NameTxt.text = ""
-PasswordTxt.text = ""
+NameTxt.Text = ""
+PasswordTxt.Text = ""
 'Me.Picture = LoadPicture(App.Path & "\Data\GRAFICOS\oldcaracter.jpg")
 'Image1(1).Picture = LoadPicture(App.Path & "\Data\GRAFICOS\bvolver.jpg")
 'Image1(0).Picture = LoadPicture(App.Path & "\Data\GRAFICOS\bsiguiente.jpg")
@@ -198,25 +198,46 @@ Call Audio.PlayWave(SND_CLICK)
 
 Select Case Index
     Case 0
+  #If UsarWrench = 1 Then
         If frmMain.Socket1.Connected Then frmMain.Socket1.Disconnect
+#Else
+        If frmMain.Winsock1.State <> sckClosed Then _
+            frmMain.Winsock1.Close
+#End If
+      '  If frmConnect.MousePointer = 99 Then
+      '      Exit Sub
+     '   End If
+        
         
         'update user info
-        UserName = NameTxt.text
-        Dim aux As String
-        aux = PasswordTxt.text
-        UserPassword = aux
+        UserName = NameTxt.Text
+        Dim Aux As String
+        Aux = PasswordTxt.Text
+        UserPassword = Aux
         If CheckUserData(False) = True Then
-            'SendNewChar = False
             'EstadoLogin = Normal
             EstadoLogin = LoginAccount
             Me.MousePointer = 99
+#If UsarWrench = 1 Then
             frmMain.Socket1.HostAddress = CurServerIp
             frmMain.Socket1.RemotePort = CurServerPort
             frmMain.Socket1.Connect
+#Else
+            'If frmMain.Winsock1.State <> sckClosed Then _
+               ' frmMain.Winsock1.Close
+            frmMain.Winsock1.Connect CurServerIp, CurServerPort
+#End If
         End If
     Case 1
         Me.Visible = False
         frmMain.Socket1.Disconnect
+        
+    Case 2
+        Load frmKeypad
+        frmKeypad.Show vbModal
+        Unload frmKeypad
+        Me.PasswordTxt.SetFocus
+        
 End Select
 End Sub
 

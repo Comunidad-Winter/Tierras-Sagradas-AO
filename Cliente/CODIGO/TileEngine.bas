@@ -13,6 +13,7 @@ Public indexList(0 To 5) As Integer
 Public ibQuad As DxVBLibA.Direct3DIndexBuffer8
 Public vbQuadIdx As DxVBLibA.Direct3DVertexBuffer8
 
+Public lastTime As Long 'Para controlar la velocidad
 Public fpsLastCheck As Long
 
 ''
@@ -85,11 +86,12 @@ End Type
 Public AurixPJ As Grh
 Public Octarina As Grh
 
+
 Public Type tDonation
     Nombre As String
     Head As Integer
     Body As Integer
-    GrhIndex As Long
+    GrhIndex As Integer
     Shield As Integer
     Weapon As Integer
     Casco As Integer
@@ -101,8 +103,6 @@ Public picDonation As tDonation
 
 'Apariencia del personaje
 Public Type Char
-    sumatoriaEstrella As Single
-    animTime As Byte
     NPCNumber As Integer
     NPCAura As Byte
     NPCAuraG As Grh
@@ -126,11 +126,16 @@ Public Type Char
     Aura_AngleC As Single
     Navegando As Byte
     Montando As Byte
-    montVol As Byte
+    Conquistandou As Byte
     esNW As Byte
+    SinEnlistarHorda As Byte
+    SinEnlistarAlianza As Byte
     active As Byte
     Heading As E_Heading
     Pos As Position
+    
+    TieneRanking As Boolean
+    PosRanking As Byte
     
     iHead As Integer
     iBody As Integer
@@ -193,8 +198,6 @@ Public Type Char
     priv As Byte
     TransparenciaBody As Byte
     Llegoalatransp As Boolean
-    
-    posRank As Byte
 End Type
 
 'Info de un objeto
@@ -207,8 +210,10 @@ End Type
 Public Type MapBlock
     particle_group_index As Integer
     Graphic(1 To 4) As Grh
-    charindex As Integer
+    CharIndex As Integer
     ObjGrh As Grh
+    
+    NpcDesv(1 To 50) As Byte
     
     light_value(3) As Long
     base_light(3) As Long
@@ -253,7 +258,8 @@ Public UserHead As Integer
 Public UserPos As Position 'Posicion
 Public AddtoUserPos As Position 'Si se mueve
 Public UserCharIndex As Integer
-Public movePos As Position
+
+Public EngineRun As Boolean
 
 Public FPS As Long
 Public FramesPerSecCounter As Long
@@ -274,6 +280,9 @@ Private MainViewLeft As Integer
 'volver el engine muy lento
 Public TileBufferSize As Integer
 
+Private TileBufferPixelOffsetX As Integer
+Private TileBufferPixelOffsetY As Integer
+
 'Tamaño de los tiles en pixels
 Public TilePixelHeight As Integer
 Public TilePixelWidth As Integer
@@ -281,6 +290,11 @@ Public TilePixelWidth As Integer
 'Number of pixels the engine scrolls per frame. MUST divide evenly into pixels per tile
 Public ScrollPixelsPerFrameX As Integer
 Public ScrollPixelsPerFrameY As Integer
+
+Public timerElapsedTime As Single
+Dim timerTicksPerFrame As Single
+Dim EngineBaseSpeed As Single
+
 
 Public NumBodies As Integer
 Public Numheads As Integer
@@ -351,32 +365,15 @@ Sub ConvertCPtoTP(ByVal viewPortX As Integer, ByVal viewPortY As Integer, ByRef 
 '******************************************
     tX = UserPos.X + viewPortX \ 32 - frmMain.renderer.ScaleWidth \ 64
     tY = UserPos.Y + viewPortY \ 32 - frmMain.renderer.ScaleHeight \ 64
-    Debug.Print tX; tY
 End Sub
-Sub ResetCharInfo(ByVal charindex As Integer)
-    With charlist(charindex)
-        .Nombre = ""
+Sub ResetCharInfo(ByVal CharIndex As Integer)
+    With charlist(CharIndex)
         .EsStatus = 0
         .active = 0
         .Criminal = 0
         .FxIndex(1) = 0
         .FxIndex(2) = 0
         .FxIndex(3) = 0
-        
-        .Aura_IndexA = 0
-        .Aura_IndexC = 0
-        .Aura_IndexE = 0
-        .Aura_IndexR = 0
-        .Aura_IndexW = 0
-        
-        If .particle_count > 0 Then
-            .particle_count = 0
-        End If
-        
-        .montVol = 0
-        .Montando = 0
-        .posRank = 0
-        
         .invisible = False
         .Moving = 0
         .Muerto = False
@@ -387,12 +384,12 @@ Sub ResetCharInfo(ByVal charindex As Integer)
         .UsandoArma = False
     End With
 End Sub
-Sub MakeChar(ByVal charindex As Integer, ByVal Body As Integer, ByVal Head As Integer, ByVal Heading As Byte, ByVal X As Integer, ByVal Y As Integer, ByVal Arma As Integer, ByVal Escudo As Integer, ByVal Casco As Integer)
+Sub MakeChar(ByVal CharIndex As Integer, ByVal Body As Integer, ByVal Head As Integer, ByVal Heading As Byte, ByVal X As Integer, ByVal Y As Integer, ByVal Arma As Integer, ByVal Escudo As Integer, ByVal Casco As Integer)
 On Error Resume Next
     'Apuntamos al ultimo Char
-    If charindex > LastChar Then LastChar = charindex
+    If CharIndex > LastChar Then LastChar = CharIndex
     
-    With charlist(charindex)
+    With charlist(CharIndex)
         'If the char wasn't allready active (we are rewritting it) don't increase char count
         If .active = 0 Then _
             NumChars = NumChars + 1
@@ -409,7 +406,7 @@ On Error Resume Next
         
         .Escudo = ShieldAnimData(Escudo)
         .Casco = CascoAnimData(Casco)
-
+        
         .Heading = Heading
         
         'Reset moving stats
@@ -426,9 +423,9 @@ On Error Resume Next
     End With
     
     'Plot on map
-    MapData(X, Y).charindex = charindex
+    MapData(X, Y).CharIndex = CharIndex
 End Sub
-Sub EraseChar(ByVal charindex As Integer)
+Sub EraseChar(ByVal CharIndex As Integer)
 
     On Error Resume Next
 
@@ -436,10 +433,10 @@ Sub EraseChar(ByVal charindex As Integer)
     'Erases a character from CharList and map
     '*****************************************************************
 
-    charlist(charindex).active = 0
+    charlist(CharIndex).active = 0
 
     'Update lastchar
-    If charindex = LastChar Then
+    If CharIndex = LastChar Then
 
         Do Until charlist(LastChar).active = 1
             LastChar = LastChar - 1
@@ -449,16 +446,16 @@ Sub EraseChar(ByVal charindex As Integer)
 
     End If
 
-    MapData(charlist(charindex).Pos.X, charlist(charindex).Pos.Y).charindex = 0
-
-    Call Dialogos.RemoveDialog(charindex)
-    Call ResetCharInfo(charindex)
+    MapData(charlist(CharIndex).Pos.X, charlist(CharIndex).Pos.Y).CharIndex = 0
+    'Remove char's dialog
+    Call Dialogos.RemoveDialog(CharIndex)
+    Call ResetCharInfo(CharIndex)
 
     'Update NumChars
     NumChars = NumChars - 1
 
 End Sub
-Public Sub InitGrh(ByRef Grh As Grh, ByVal GrhIndex As Long, Optional ByVal Started As Byte = 2)
+Public Sub InitGrh(ByRef Grh As Grh, ByVal GrhIndex As Integer, Optional ByVal Started As Byte = 2)
 '*****************************************************************
 'Sets up a grh. MUST be done before rendering
 '*****************************************************************
@@ -482,7 +479,7 @@ Public Sub InitGrh(ByRef Grh As Grh, ByVal GrhIndex As Long, Optional ByVal Star
     Else
         Grh.Loops = 0
     End If
-
+    
     Grh.FrameCounter = 1
     Grh.Speed = GrhData(Grh.GrhIndex).Speed
 End Sub
@@ -502,16 +499,16 @@ Public Sub DoFogataFx()
     End If
 End Sub
 
-Private Function EstaPCarea(ByVal charindex As Integer) As Boolean
-    With charlist(charindex).Pos
+Private Function EstaPCarea(ByVal CharIndex As Integer) As Boolean
+    With charlist(CharIndex).Pos
         EstaPCarea = .X > UserPos.X - MinXBorder And .X < UserPos.X + MinXBorder And .Y > UserPos.Y - MinYBorder And .Y < UserPos.Y + MinYBorder
     End With
 End Function
 
-Sub DoPasosFx(ByVal charindex As Integer)
+Sub DoPasosFx(ByVal CharIndex As Integer)
     If Not UserNavegando Then
-        With charlist(charindex)
-            If Not .Muerto And EstaPCarea(charindex) And (.priv = 0 Or .priv > 5) Then
+        With charlist(CharIndex)
+            If Not .Muerto And EstaPCarea(CharIndex) And (.priv = 0 Or .priv > 5) Then
                 .pie = Not .pie
                 
                 If .pie Then
@@ -523,7 +520,7 @@ Sub DoPasosFx(ByVal charindex As Integer)
         End With
     Else
 ' TODO : Actually we would have to check if the CharIndex char is in the water or not....
-        Call Audio.PlayWave(SND_NAVEGANDO, charlist(charindex).Pos.X, charlist(charindex).Pos.Y)
+        Call Audio.PlayWave(SND_NAVEGANDO, charlist(CharIndex).Pos.X, charlist(CharIndex).Pos.Y)
     End If
 End Sub
 
@@ -569,8 +566,8 @@ Sub MoveScreen(ByVal nHeading As E_Heading)
             UserMoving = 1
             
             bTecho = IIf(MapData(UserPos.X, UserPos.Y).Trigger = 1 Or _
-                MapData(UserPos.X, UserPos.Y).Trigger = 2 Or _
-                MapData(UserPos.X, UserPos.Y).Trigger = 4, True, False)
+                    MapData(UserPos.X, UserPos.Y).Trigger = 2 Or _
+                    MapData(UserPos.X, UserPos.Y).Trigger = 4, True, False)
         End If
     End If
 End Sub
@@ -613,21 +610,21 @@ Function LegalPos(ByVal X As Integer, ByVal Y As Integer) As Boolean
 '*****************************************************************
 'Checks to see if a tile position is legal
 '*****************************************************************
+    
     'Limites del mapa
     If X < MinXBorder Or X > MaxXBorder Or Y < MinYBorder Or Y > MaxYBorder Then
         Exit Function
     End If
     
-    'Tile Bloqueado?
-    If MapData(X, Y).Blocked = 1 And charlist(UserCharIndex).montVol = 0 Then Exit Function
-    
-    '¿Hay un personaje?
-    If MapData(X, Y).charindex > 0 Then
-        If charlist(MapData(X, Y).charindex).Muerto = False Then Exit Function
+        '¿Hay un personaje?
+    If MapData(X, Y).CharIndex > 0 Then
+        If charlist(MapData(X, Y).CharIndex).Muerto = False Then Exit Function
     End If
     
-    If Not UserNavegando And HayAgua(X, Y) And charlist(UserCharIndex).montVol = 0 Then Exit Function
-    If UserNavegando And Not HayAgua(X, Y) Then Exit Function
+    'Tile Bloqueado?
+    If MapData(X, Y).Blocked = 1 Then
+        Exit Function
+    End If
     
     LegalPos = True
 End Function
@@ -652,7 +649,7 @@ Public Function RenderSounds()
     DoFogataFx
 End Function
 
-Function HayUserAbajo(ByVal X As Integer, ByVal Y As Integer, ByVal GrhIndex As Long) As Boolean
+Function HayUserAbajo(ByVal X As Integer, ByVal Y As Integer, ByVal GrhIndex As Integer) As Boolean
     If GrhIndex > 0 Then
         HayUserAbajo = _
             charlist(UserCharIndex).Pos.X >= X - (GrhData(GrhIndex).TileWidth \ 2) _
@@ -686,14 +683,14 @@ Public Function GetElapsedTime() As Single
     'Get next end time
     Call QueryPerformanceCounter(end_time)
 End Function
-Public Sub SetCharacterFx(ByVal charindex As Integer, ByVal Fx As Integer, ByVal Loops As Integer)
+Public Sub SetCharacterFx(ByVal CharIndex As Integer, ByVal Fx As Integer, ByVal Loops As Integer)
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
 'Last Modify Date: 12/03/04
 'Sets an FX to the character.
 '***************************************************
 
-    With charlist(charindex)
+    With charlist(CharIndex)
     
         If Fx = 0 Then
             Dim i As Long
@@ -705,7 +702,7 @@ Public Sub SetCharacterFx(ByVal charindex As Integer, ByVal Fx As Integer, ByVal
             
     
         Dim slotLibre As Byte
-        slotLibre = BuscarSlotLibreFx(charindex)
+        slotLibre = BuscarSlotLibreFx(CharIndex)
         .FxIndex(slotLibre) = Fx
        
         If .FxIndex(slotLibre) > 0 Then
@@ -715,22 +712,22 @@ Public Sub SetCharacterFx(ByVal charindex As Integer, ByVal Fx As Integer, ByVal
         End If
     End With
 End Sub
-Public Function BuscarSlotLibreFx(ByVal charindex As Integer) As Byte
+Public Function BuscarSlotLibreFx(ByVal CharIndex As Integer) As Byte
     Dim i As Integer
     For i = 1 To 3
-        If charlist(charindex).FxIndex(i) = 0 Then
+        If charlist(CharIndex).FxIndex(i) = 0 Then
             BuscarSlotLibreFx = i
             Exit Function
         End If
     Next i
 End Function
-Public Sub SetCharacterEmoticon(ByVal charindex As Integer, ByVal Fx As Integer, ByVal Loops As Integer)
+Public Sub SetCharacterEmoticon(ByVal CharIndex As Integer, ByVal Fx As Integer, ByVal Loops As Integer)
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
 'Last Modify Date: 12/03/04
 'Sets an FX to the character.
 '***************************************************
-    With charlist(charindex)
+    With charlist(CharIndex)
         .EmoticonIndex = Fx
         
         If .EmoticonIndex > 0 Then

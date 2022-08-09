@@ -26,7 +26,7 @@ Begin VB.Form frmConID
       Width           =   4290
    End
    Begin VB.ListBox List1 
-      Height          =   2595
+      Height          =   2205
       Left            =   180
       TabIndex        =   1
       Top             =   150
@@ -102,9 +102,9 @@ For i = 1 To MaxUsers
 Next i
 
 If c = MaxUsers Then
-    Label1.caption = "No hay slots vacios!"
+    Label1.Caption = "No hay slots vacios!"
 Else
-    Label1.caption = "Hay " & MaxUsers - c & " slots vacios!"
+    Label1.Caption = "Hay " & MaxUsers - c & " slots vacios!"
 End If
 
 End Sub

@@ -456,11 +456,11 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Private Sub Command1_Click()
-    Dim loopc As Integer
-    For loopc = 0 To 9
-        Call WriteVar(App.Path & "\Data\INIT\Macro.tsao", "Macro", "Tecla" & loopc, Text1(loopc).text)
-    Next loopc
-    Unload Me
+Dim loopc As Integer
+For loopc = 0 To 9
+    Call WriteVar(App.Path & "\Data\INIT\Macro.tsao", "Macro", "Tecla" & loopc, Text1(loopc).text)
+Next loopc
+Unload Me
 End Sub
 
 Private Sub Command2_Click()
@@ -475,9 +475,9 @@ Next loopc
 End Sub
 
 Private Sub Option1_Click()
-    Option2.Value = False
+Option2.value = False
 End Sub
 
 Private Sub Option2_Click()
-    Option1.Value = False
+Option1.value = False
 End Sub

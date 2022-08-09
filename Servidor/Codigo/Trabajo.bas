@@ -36,55 +36,19 @@ On Error GoTo Errhandler
 Dim Suerte As Integer
 Dim res As Integer
 
-If UserList(userindex).Stats.UserSkills(eSkill.Ocultarse) <= 10 _
-   And UserList(userindex).Stats.UserSkills(eSkill.Ocultarse) >= -1 Then
-                    Suerte = 35
-ElseIf UserList(userindex).Stats.UserSkills(eSkill.Ocultarse) <= 20 _
-   And UserList(userindex).Stats.UserSkills(eSkill.Ocultarse) >= 11 Then
-                    Suerte = 30
-ElseIf UserList(userindex).Stats.UserSkills(eSkill.Ocultarse) <= 30 _
-   And UserList(userindex).Stats.UserSkills(eSkill.Ocultarse) >= 21 Then
-                    Suerte = 28
-ElseIf UserList(userindex).Stats.UserSkills(eSkill.Ocultarse) <= 40 _
-   And UserList(userindex).Stats.UserSkills(eSkill.Ocultarse) >= 31 Then
-                    Suerte = 24
-ElseIf UserList(userindex).Stats.UserSkills(eSkill.Ocultarse) <= 50 _
-   And UserList(userindex).Stats.UserSkills(eSkill.Ocultarse) >= 41 Then
-                    Suerte = 22
-ElseIf UserList(userindex).Stats.UserSkills(eSkill.Ocultarse) <= 60 _
-   And UserList(userindex).Stats.UserSkills(eSkill.Ocultarse) >= 51 Then
-                    Suerte = 20
-ElseIf UserList(userindex).Stats.UserSkills(eSkill.Ocultarse) <= 70 _
-   And UserList(userindex).Stats.UserSkills(eSkill.Ocultarse) >= 61 Then
-                    Suerte = 18
-ElseIf UserList(userindex).Stats.UserSkills(eSkill.Ocultarse) <= 80 _
-   And UserList(userindex).Stats.UserSkills(eSkill.Ocultarse) >= 71 Then
-                    Suerte = 15
-ElseIf UserList(userindex).Stats.UserSkills(eSkill.Ocultarse) <= 90 _
-   And UserList(userindex).Stats.UserSkills(eSkill.Ocultarse) >= 81 Then
-                    Suerte = 10
-ElseIf UserList(userindex).Stats.UserSkills(eSkill.Ocultarse) <= 100 _
-   And UserList(userindex).Stats.UserSkills(eSkill.Ocultarse) >= 91 Then
-                    Suerte = 10     'Lo atamos con alambre.... en la 11.6 el sistema de ocultarse debería de estar bien hecho
+If UCase$(UserList(userindex).clase) = "LADRON" Or UCase$(UserList(userindex).clase) = "CAZADOR" Then
+    Suerte = 10
+Else
+    Suerte = 60
 End If
-
-If UCase$(UserList(userindex).clase) <> "LADRON" Or UCase$(UserList(userindex).clase) <> "CAZADOR" Then Suerte = Suerte + 50
-
-'cazador con armadura de cazador oculto no se hace visible
-If UCase$(UserList(userindex).clase) = "CAZADOR" And UserList(userindex).Stats.UserSkills(eSkill.Ocultarse) > 90 Then
-    If UserList(userindex).Invent.ArmourEqpObjIndex = 648 Or UserList(userindex).Invent.ArmourEqpObjIndex = 360 Then
-        Exit Sub
-    End If
-End If
-
 
 res = RandomNumber(1, Suerte)
 
-If res > 9 Then
+If res > 7 Then
     UserList(userindex).flags.Oculto = 0
     If UserList(userindex).flags.Invisible = 0 Then
         'no hace falta encriptar este (se jode el gil que bypassea esto)
-        Call SendData(SendTarget.toMap, 0, UserList(userindex).Pos.Map, "NOVER" & UserList(userindex).Char.CharIndex & ",0")
+        Call SendData(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, "NOVER" & UserList(userindex).Char.CharIndex & ",0")
         Call SendData(SendTarget.toindex, userindex, 0, "||195")
     End If
 End If
@@ -138,18 +102,13 @@ ElseIf UserList(userindex).Stats.UserSkills(eSkill.Ocultarse) <= 100 _
 End If
 
 If UCase$(UserList(userindex).clase) <> "LADRON" And UCase$(UserList(userindex).clase) <> "CAZADOR" Then Suerte = Suerte + 50
-If MapaEspecial(userindex) Or UserList(userindex).Pos.Map = 142 Or UserList(userindex).Pos.Map = 121 Or UserList(userindex).Pos.Map = 122 Or UserList(userindex).Pos.Map = 123 Or UserList(userindex).Pos.Map = 31 Or UserList(userindex).Pos.Map = 32 Or UserList(userindex).Pos.Map = 33 Or UserList(userindex).Pos.Map = 34 Then
-        Call SendData(SendTarget.toindex, userindex, 0, "||838")
-    Exit Sub
-End If
 
 res = RandomNumber(1, Suerte)
 
 If res <= 5 Then
     UserList(userindex).flags.Oculto = 1
-        Call SendData(SendTarget.toMap, 0, UserList(userindex).Pos.Map, "NOVER" & UserList(userindex).Char.CharIndex & ",1")
+        Call SendData(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, "NOVER" & UserList(userindex).Char.CharIndex & ",1")
     Call SendData(SendTarget.toindex, userindex, 0, "||808")
-    Call SubirSkill(userindex, Ocultarse)
 Else
     '[CDT 17-02-2004]
         Call SendData(SendTarget.toindex, userindex, 0, "||809")
@@ -166,19 +125,19 @@ Errhandler:
 End Sub
 
 
-Public Sub DoNavega(ByVal userindex As Integer, ByRef Barco As ObjData, ByVal slot As Integer)
+Public Sub DoNavega(ByVal userindex As Integer, ByRef Barco As ObjData, ByVal Slot As Integer)
 
 Dim ModNave As Long
 ModNave = ModNavegacion(UserList(userindex).clase)
 
-UserList(userindex).Invent.BarcoObjIndex = UserList(userindex).Invent.Object(slot).ObjIndex
-UserList(userindex).Invent.BarcoSlot = slot
+UserList(userindex).Invent.BarcoObjIndex = UserList(userindex).Invent.Object(Slot).ObjIndex
+UserList(userindex).Invent.BarcoSlot = Slot
 
 If UserList(userindex).flags.Oculto = 1 Then
     UserList(userindex).flags.Oculto = 0
     UserList(userindex).Counters.Ocultando = 0
     'Por las dudas :s
-    Call SendData(SendTarget.toMap, 0, UserList(userindex).Pos.Map, "NOVER" & UserList(userindex).Char.CharIndex & ",0")
+    Call SendData(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, "NOVER" & UserList(userindex).Char.CharIndex & ",0")
 End If
 
 If UserList(userindex).flags.Navegando = 0 Then
@@ -186,14 +145,7 @@ If UserList(userindex).flags.Navegando = 0 Then
     UserList(userindex).Char.Head = 0
     
     If UserList(userindex).flags.Muerto = 0 Then
-        Dim tmpSkin As Byte
-        tmpSkin = tengoSkin(userindex, UserList(userindex).Invent.Object(slot).ObjIndex)
-        
-        If tmpSkin = 0 Then
-            UserList(userindex).Char.Body = Barco.Ropaje
-        Else
-            UserList(userindex).Char.Body = UserList(userindex).Skin(tmpSkin).newGraf
-        End If
+        UserList(userindex).Char.Body = Barco.Ropaje
     Else
         UserList(userindex).Char.Body = iFragataFantasmal
     End If
@@ -211,7 +163,7 @@ Else
         UserList(userindex).Char.Head = UserList(userindex).OrigChar.Head
         
         If UserList(userindex).Invent.ArmourEqpObjIndex > 0 Then
-            UserList(userindex).Char.Body = equiparRopaje(userindex)
+            UserList(userindex).Char.Body = ObjData(UserList(userindex).Invent.ArmourEqpObjIndex).Ropaje
         Else
             Call DarCuerpoDesnudo(userindex)
         End If
@@ -239,7 +191,7 @@ Else
     End If
 End If
 
-Call ChangeUserChar(SendTarget.toMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.Body, UserList(userindex).Char.Head, UserList(userindex).Char.Heading, UserList(userindex).Char.WeaponAnim, UserList(userindex).Char.ShieldAnim, UserList(userindex).Char.CascoAnim)
+Call ChangeUserChar(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.Body, UserList(userindex).Char.Head, UserList(userindex).Char.Heading, UserList(userindex).Char.WeaponAnim, UserList(userindex).Char.ShieldAnim, UserList(userindex).Char.CascoAnim)
 Call SendData(SendTarget.toindex, userindex, 0, "NAVEG")
 Call SendData(SendTarget.ToAll, 0, 0, "NVG" & UserList(userindex).Char.CharIndex & "," & UserList(userindex).flags.Navegando)
 
@@ -284,8 +236,6 @@ End Function
 
 Function QuitarObjetos(ByVal ItemIndex As Integer, ByVal Cant As Integer, ByVal userindex As Integer) As Boolean
 'Call LogTarea("Sub QuitarObjetos")
-
-If ObjData(ItemIndex).OBJType = eOBJType.otMontura And UserList(userindex).flags.Montando = 1 Then Call Desmontar(userindex)
 
 Dim i As Integer
 For i = 1 To MAX_INVENTORY_SLOTS
@@ -409,7 +359,7 @@ If PuedeConstruir(userindex, ItemIndex) And PuedeConstruirHerreria(ItemIndex) Th
     ElseIf ObjData(ItemIndex).OBJType = eOBJType.otArmadura Then
         'Call SendData(SendTarget.toindex, Userindex, 0, "||Has construido la armadura!." & FONTTYPE_INFO)
     End If
-    Dim MiObj As obj
+    Dim MiObj As Obj
     MiObj.Amount = 1
     MiObj.ObjIndex = ItemIndex
     If Not MeterItemEnInventario(userindex, MiObj) Then
@@ -449,7 +399,7 @@ If CarpinteroTieneMateriales(userindex, ItemIndex) And _
     Call CarpinteroQuitarMateriales(userindex, ItemIndex)
     'Call SendData(SendTarget.toindex, Userindex, 0, "||Has construido el objeto!" & FONTTYPE_INFO)
     
-    Dim MiObj As obj
+    Dim MiObj As Obj
     MiObj.Amount = 1
     MiObj.ObjIndex = ItemIndex
     If Not MeterItemEnInventario(userindex, MiObj) Then
@@ -481,32 +431,32 @@ End Function
 
 Public Sub DoLingotes(ByVal userindex As Integer)
 '    Call LogTarea("Sub DoLingotes")
-Dim slot As Integer
+Dim Slot As Integer
 Dim obji As Integer
 
-    slot = UserList(userindex).flags.TargetObjInvSlot
-    obji = UserList(userindex).Invent.Object(slot).ObjIndex
+    Slot = UserList(userindex).flags.TargetObjInvSlot
+    obji = UserList(userindex).Invent.Object(Slot).ObjIndex
     
-    If UserList(userindex).Invent.Object(slot).Amount < MineralesParaLingote(obji) Or _
+    If UserList(userindex).Invent.Object(Slot).Amount < MineralesParaLingote(obji) Or _
         ObjData(obji).OBJType <> eOBJType.otMinerales Then
             'Call SendData(SendTarget.toindex, Userindex, 0, "||No tienes suficientes minerales para hacer un lingote." & FONTTYPE_INFO)
             Exit Sub
     End If
     
-    UserList(userindex).Invent.Object(slot).Amount = UserList(userindex).Invent.Object(slot).Amount - MineralesParaLingote(obji)
-    If UserList(userindex).Invent.Object(slot).Amount < 1 Then
-        UserList(userindex).Invent.Object(slot).Amount = 0
-        UserList(userindex).Invent.Object(slot).ObjIndex = 0
+    UserList(userindex).Invent.Object(Slot).Amount = UserList(userindex).Invent.Object(Slot).Amount - MineralesParaLingote(obji)
+    If UserList(userindex).Invent.Object(Slot).Amount < 1 Then
+        UserList(userindex).Invent.Object(Slot).Amount = 0
+        UserList(userindex).Invent.Object(Slot).ObjIndex = 0
     End If
     'Call SendData(SendTarget.toindex, Userindex, 0, "||Has obtenido un lingote!!!" & FONTTYPE_INFO)
     Dim nPos As WorldPos
-    Dim MiObj As obj
+    Dim MiObj As Obj
     MiObj.Amount = 1
     MiObj.ObjIndex = ObjData(UserList(userindex).flags.TargetObjInvIndex).LingoteIndex
     If Not MeterItemEnInventario(userindex, MiObj) Then
         Call TirarItemAlPiso(UserList(userindex).Pos, MiObj)
     End If
-    Call UpdateUserInv(False, userindex, slot)
+    Call UpdateUserInv(False, userindex, Slot)
     'Call SendData(SendTarget.toindex, Userindex, 0, "||¡Has obtenido un lingote!" & FONTTYPE_INFO)
     
 
@@ -660,8 +610,8 @@ Sub DoAdminInvisible(ByVal userindex As Integer)
         UserList(userindex).flags.OldHead = UserList(userindex).Char.Head
         UserList(userindex).Char.Body = 0
         UserList(userindex).Char.Head = 0
-        Call ChangeUserChar(SendTarget.toMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.Body, UserList(userindex).Char.Head, UserList(userindex).Char.Heading, UserList(userindex).Char.WeaponAnim, UserList(userindex).Char.ShieldAnim, UserList(userindex).Char.CascoAnim)
-        Call SendData(SendTarget.toMap, 0, UserList(userindex).Pos.Map, "NOVER" & UserList(userindex).Char.CharIndex & ",1")
+        Call ChangeUserChar(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.Body, UserList(userindex).Char.Head, UserList(userindex).Char.Heading, UserList(userindex).Char.WeaponAnim, UserList(userindex).Char.ShieldAnim, UserList(userindex).Char.CascoAnim)
+        Call SendData(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, "NOVER" & UserList(userindex).Char.CharIndex & ",1")
         
     Else
         
@@ -670,8 +620,8 @@ Sub DoAdminInvisible(ByVal userindex As Integer)
         UserList(userindex).flags.Oculto = 0
         UserList(userindex).Char.Body = UserList(userindex).flags.OldBody
        UserList(userindex).Char.Head = UserList(userindex).flags.OldHead
-        Call ChangeUserChar(SendTarget.toMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.Body, UserList(userindex).Char.Head, UserList(userindex).Char.Heading, UserList(userindex).Char.WeaponAnim, UserList(userindex).Char.ShieldAnim, UserList(userindex).Char.CascoAnim)
-        Call SendData(SendTarget.toMap, 0, UserList(userindex).Pos.Map, "NOVER" & UserList(userindex).Char.CharIndex & ",0")
+        Call ChangeUserChar(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, userindex, UserList(userindex).Char.Body, UserList(userindex).Char.Head, UserList(userindex).Char.Heading, UserList(userindex).Char.WeaponAnim, UserList(userindex).Char.ShieldAnim, UserList(userindex).Char.CascoAnim)
+        Call SendData(SendTarget.ToMap, 0, UserList(userindex).Pos.Map, "NOVER" & UserList(userindex).Char.CharIndex & ",0")
         
     End If
     
@@ -684,7 +634,7 @@ Sub TratarDeHacerFogata(ByVal Map As Integer, ByVal X As Integer, ByVal Y As Int
 Dim Suerte As Byte
 Dim exito As Byte
 Dim raise As Byte
-Dim obj As obj
+Dim Obj As Obj
 Dim posMadera As WorldPos
 
 If Not LegalPos(Map, X, Y) Then Exit Sub
@@ -722,12 +672,12 @@ End If
 exito = RandomNumber(1, Suerte)
 
 If exito = 1 Then
-    obj.ObjIndex = FOGATA_APAG
-    obj.Amount = MapData(Map, X, Y).OBJInfo.Amount \ 3
+    Obj.ObjIndex = FOGATA_APAG
+    Obj.Amount = MapData(Map, X, Y).OBJInfo.Amount \ 3
     
     Call SendData(SendTarget.toindex, userindex, 0, "||811")
     
-    Call MakeObj(SendTarget.toMap, 0, Map, obj, Map, X, Y)
+    Call MakeObj(SendTarget.ToMap, 0, Map, Obj, Map, X, Y)
     
     'Seteamos la fogata como el nuevo TargetObj del user
     UserList(userindex).flags.TargetObj = FOGATA_APAG
@@ -793,7 +743,7 @@ res = RandomNumber(1, Suerte)
 
 If res < 6 Then
     Dim nPos As WorldPos
-    Dim MiObj As obj
+    Dim MiObj As Obj
     
     MiObj.Amount = 1
     MiObj.ObjIndex = Pescado
@@ -864,7 +814,7 @@ If Suerte > 0 Then
     
     If res < 6 Then
         Dim nPos As WorldPos
-        Dim MiObj As obj
+        Dim MiObj As Obj
         Dim PecesPosibles(1 To 4) As Integer
         
         PecesPosibles(1) = PESCADO1
@@ -963,6 +913,7 @@ If UserList(VictimaIndex).flags.Privilegios = PlayerType.User Then
                 UserList(VictimaIndex).Stats.GLD = UserList(VictimaIndex).Stats.GLD - n
                 
                 UserList(LadrOnIndex).Stats.GLD = UserList(LadrOnIndex).Stats.GLD + n
+                SendUserGLD (LadrOnIndex)
                 If UserList(LadrOnIndex).Stats.GLD > MAXORO Then _
                     UserList(LadrOnIndex).Stats.GLD = MAXORO
                 
@@ -983,17 +934,17 @@ End If
 End Sub
 
 
-Public Function ObjEsRobable(ByVal VictimaIndex As Integer, ByVal slot As Integer) As Boolean
+Public Function ObjEsRobable(ByVal VictimaIndex As Integer, ByVal Slot As Integer) As Boolean
 ' Agregué los barcos
 ' Esta funcion determina qué objetos son robables.
 
 Dim OI As Integer
 
-OI = UserList(VictimaIndex).Invent.Object(slot).ObjIndex
+OI = UserList(VictimaIndex).Invent.Object(Slot).ObjIndex
 
 ObjEsRobable = _
 ObjData(OI).OBJType <> eOBJType.otLlaves And _
-UserList(VictimaIndex).Invent.Object(slot).Equipped = 0 And _
+UserList(VictimaIndex).Invent.Object(Slot).Equipped = 0 And _
 ObjData(OI).Real = 0 And _
 ObjData(OI).Caos = 0 And _
 ObjData(OI).OBJType <> eOBJType.otBarcos
@@ -1032,7 +983,7 @@ End If
 
 
 If flag Then
-    Dim MiObj As obj
+    Dim MiObj As Obj
     Dim num As Byte
     'Cantidad al azar
     num = RandomNumber(1, 5)
@@ -1106,11 +1057,17 @@ End If
 If UCase$(UserList(userindex).clase) = "ASESINO" Then
 'BONIFICADORES - Apuñalar:
  If UserList(userindex).Bon1 = "Aumenta tu probabilidad de apuñalar." And UserList(userindex).Bon2 = "Aumenta tu probabilidad de apuñalar." Then
-    res = RandomNumber(0, 90)
- ElseIf UserList(userindex).Bon1 = "Aumenta tu probabilidad de apuñalar." Or UserList(userindex).Bon2 = "Aumenta tu probabilidad de apuñalar." Then
-    res = RandomNumber(0, 93)
+    Suerte = 92
+    res = RandomNumber(0, Suerte)
+ ElseIf UserList(userindex).Bon1 = "Aumenta tu probabilidad de apuñalar." Then
+    Suerte = 95
+    res = RandomNumber(0, Suerte)
+ ElseIf UserList(userindex).Bon2 = "Aumenta tu probabilidad de apuñalar." Then
+    Suerte = 95
+    res = RandomNumber(0, Suerte)
  Else
-    res = RandomNumber(0, 95)
+    Suerte = 99
+    res = RandomNumber(0, Suerte)
  End If
 'BONIFICADORES - Apuñalar:
 Else
@@ -1131,15 +1088,18 @@ If res < 15 Then
         Call SendData(SendTarget.toindex, VictimUserIndex, 0, "||823@" & UserList(userindex).Name & "@" & Int(Daño * 1.5))
         Call SendData(SendTarget.ToPCArea, VictimUserIndex, UserList(VictimUserIndex).Pos.Map, "CFX" & UserList(VictimUserIndex).Char.CharIndex & "," & FXAPUÑALAR & "," & 0)
     Else
+        Call CalcularDarExp(userindex, VictimNpcIndex, Int(Daño * 2))
         Npclist(VictimNpcIndex).Stats.MinHP = Npclist(VictimNpcIndex).Stats.MinHP - Int(Daño * 2)
         Call SendData(SendTarget.toindex, userindex, 0, "||822@" & Int(Daño * 2))
         Call SendData(SendTarget.ToPCArea, VictimUserIndex, UserList(VictimUserIndex).Pos.Map, "CFX" & Npclist(VictimNpcIndex).Char.CharIndex & "," & FXAPUÑALAR & "," & 0)
         Call SubirSkill(userindex, Apuñalar)
-        Call CalcularDarExp(userindex, VictimNpcIndex, Daño * 2)
+        '[Alejo]
     End If
 Else
     Call SendData(SendTarget.toindex, userindex, 0, "||824")
 End If
+
+Call SendUserHP(VictimUserIndex)
 
 End Sub
 
@@ -1149,7 +1109,9 @@ If UserList(userindex).flags.Privilegios > PlayerType.User Then Exit Sub
 
 UserList(userindex).Stats.MinSta = UserList(userindex).Stats.MinSta - Cantidad
 If UserList(userindex).Stats.MinSta < 0 Then UserList(userindex).Stats.MinSta = 0
+
 SendUserST (userindex)
+
 End Sub
 
 Public Sub DoTalar(ByVal userindex As Integer)
@@ -1200,7 +1162,7 @@ res = RandomNumber(1, Suerte)
 
 If res < 6 Then
     Dim nPos As WorldPos
-    Dim MiObj As obj
+    Dim MiObj As Obj
     
     If UCase$(UserList(userindex).clase) = "RECOLECTOR" Then
         MiObj.Amount = RandomNumber(1, 5)
@@ -1307,7 +1269,7 @@ End If
 res = RandomNumber(1, Suerte)
 
 If res <= 5 Then
-    Dim MiObj As obj
+    Dim MiObj As Obj
     Dim nPos As WorldPos
     
     If UserList(userindex).flags.TargetObj = 0 Then Exit Sub
@@ -1416,8 +1378,9 @@ If res = 1 Then
     If UserList(userindex).Stats.MinMAN > UserList(userindex).Stats.MaxMAN Then _
         UserList(userindex).Stats.MinMAN = UserList(userindex).Stats.MaxMAN
         
-    Call SendUserMP(userindex)
+    Call SendData(SendTarget.toindex, userindex, 0, "ASM" & UserList(userindex).Stats.MinMAN)
     Call SubirSkill(userindex, Meditar)
+    Call SendUserMP(userindex)
 End If
 
 End Sub

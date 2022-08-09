@@ -65,6 +65,7 @@ Public Sub CambioDeArea(ByVal X As Byte, ByVal Y As Byte)
                     If MapData(loopX, loopY).charindex <> UserCharIndex Then
                         tempint = MapData(loopX, loopY).charindex
                         Call EraseChar(MapData(loopX, loopY).charindex)
+                        charlist(tempint).Nombre = loopX & "-" & loopY
                     End If
                 End If
                 
@@ -77,7 +78,3 @@ Public Sub CambioDeArea(ByVal X As Byte, ByVal Y As Byte)
     
     Call RefreshAllChars
 End Sub
-' Calcula si la posicion se encuentra dentro del area del usuario
-Public Function EstaDentroDelArea(ByVal X As Integer, ByVal Y As Integer) As Boolean
-    EstaDentroDelArea = ((X > UserPos.X - 9) Or (X < UserPos.X + 9) And (Y > UserPos.Y + 9) Or (Y < UserPos.Y - 9))
-End Function

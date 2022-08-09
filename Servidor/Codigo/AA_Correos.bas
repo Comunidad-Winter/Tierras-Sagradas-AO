@@ -13,12 +13,11 @@ Dim Temporal As String
         With UserList(userindex)
             For comIl = 1 To 30
                 Temporal = ReadField(1, .flags.Correo(comIl), Asc("$"))
-                
                 If Temporal = "0" Then
                     comTemp = "Nada"
                 Else
                     If .flags.NueCorreos(comIl) = 1 Then
-                        comTemp = "" & Temporal & " (NUEVO)"
+                        comTemp = "" & Temporal & "(NUEVO)"
                     Else
                         comTemp = Temporal
                     End If
@@ -26,9 +25,8 @@ Dim Temporal As String
                 
                 comIte = comIte & comTemp & ","
             Next comIl
-                
-            SendData SendTarget.toindex, userindex, 0, "IFO" & comIte
-            comIte = ""
+    SendData SendTarget.toindex, userindex, 0, "IFO" & comIte
+    comIte = ""
         
             For comIl = 1 To 20
                 comTemp = "(Nada)"
@@ -45,8 +43,6 @@ Dim Temporal As String
     SendData SendTarget.toindex, userindex, 0, "IAO" & comIte
     comIte = ""
     
-    correoReset userindex
-    
 End Sub
 Public Sub correoEnviarMensaje(userindex As Integer, rData As String)
 On Error GoTo Errhandler
@@ -54,7 +50,7 @@ On Error GoTo Errhandler
     correoReset (userindex)
 
     With UserList(userindex)
-        Dim iMoC As Long, cDatPalOtro As String, itData As String, cNamePutTemp As String, cTempGrh As Integer, Destinatario As String, Mensaje As String, Asunto As String
+        Dim iMoC As Long, cDatPalOtro As String, cNamePutTemp As String, cTempGrh As Integer, Destinatario As String, Mensaje As String, Asunto As String
         
             Destinatario = ReadField(1, rData, Asc("$"))
             Asunto = ReadField(2, rData, Asc("$"))
@@ -105,8 +101,7 @@ On Error GoTo Errhandler
                             End If
                         End If
                         
-                        If TieneObjetos(.cCorreo.cObj(iMoC).ObjIndex, .cCorreo.cObj(iMoC).Amount, userindex) = False Then
-                                correoReset userindex
+                        If Not TieneObjetos(.cCorreo.cObj(iMoC).ObjIndex, .cCorreo.cObj(iMoC).Amount, userindex) Then
                                 Call SendData(SendTarget.toindex, userindex, 0, "||630")
                           Exit Sub
                           Exit For
@@ -129,12 +124,11 @@ On Error GoTo Errhandler
                     AmountTemporal = .cCorreo.cObj(iMoC).Amount
                     ObjTemporal = .cCorreo.cObj(iMoC).ObjIndex
                     
-                    
                     Call QuitarObjetos(.cCorreo.cObj(iMoC).ObjIndex, .cCorreo.cObj(iMoC).Amount, userindex)
                     Call LogCorreos("" & UserList(userindex).Name & " envio: " & .cCorreo.cObj(iMoC).Amount & " - " & ObjData(.cCorreo.cObj(iMoC).ObjIndex).Name & " (OBJ: " & .cCorreo.cObj(iMoC).ObjIndex & ") a " & Destinatario & "")
                 End If
                 
-                    itData = itData & ObjTemporal & "-" & AmountTemporal & "-" & NameTemporal & ","
+                    cDatPalOtro = cDatPalOtro & ObjTemporal & "-" & AmountTemporal & "-" & NameTemporal & ","
             Next iMoC
             
     End With
@@ -145,19 +139,16 @@ On Error GoTo Errhandler
         Dim CorreoTemporal As String
         
 
-        If UserList(userindex).flags.Privilegios > PlayerType.User And UserList(userindex).flags.Privilegios < PlayerType.Administrador Then
+        If UserList(userindex).flags.Privilegios > PlayerType.User And UserList(userindex).flags.Privilegios < PlayerType.Administrator Then
             Call LogGM(UserList(userindex).Name, "Correo: " & UserList(userindex).Name & " quiso enviar por correo " & cDatPalOtro, False)
             Exit Sub
         End If
         
-    Dim inDest As Integer
-    inDest = NameIndex(Destinatario)
     
-    If inDest <= 0 Then
+    If NameIndex(Destinatario) <= 0 Then
         NumCorreos = GetVar(CharPath & Destinatario & ".chr", "CORREO", "NUMCORREOS")
         NueCorreos = GetVar(CharPath & Destinatario & ".chr", "CORREO", "NUECORREOS")
         Call WriteVar(CharPath & Destinatario & ".chr", "CORREO", "CORREONUM" & NumCorreos + 1, cDatPalOtro)
-        Call WriteVar(CharPath & Destinatario & ".chr", "CORREO", "CORREOITEMS" & NumCorreos + 1, itData)
         Call WriteVar(CharPath & Destinatario & ".chr", "CORREO", "NUMCORREOS", NumCorreos + 1)
         
         'Escribimos que tiene un correo nuevo de una forma muy villera
@@ -165,21 +156,18 @@ On Error GoTo Errhandler
         For iMoC = 1 To 30
             CorreoTemporal = ReadField(iMoC, NueCorreos, Asc(","))
             If iMoC = NumCorreos + 1 Then
-                NTCR = NTCR & iMoC & "-1"
+                NTCR = NTCR & iMoC & "-1,"
             Else
                 NTCR = NTCR & iMoC & "-" & ReadField(2, CorreoTemporal, Asc("-")) & ","
             End If
         Next iMoC
         
         Call WriteVar(CharPath & Destinatario & ".chr", "CORREO", "NUECORREOS", NTCR)
-        correoReset userindex
     Else
-        UserList(inDest).flags.NumCorreos = UserList(inDest).flags.NumCorreos + 1
-        UserList(inDest).flags.Correo(UserList(inDest).flags.NumCorreos) = cDatPalOtro
-        UserList(inDest).flags.itemsCorreo(UserList(inDest).flags.NumCorreos) = itData
-        UserList(inDest).flags.NueCorreos(UserList(inDest).flags.NumCorreos) = 1
-        Call SendData(SendTarget.toindex, inDest, 0, "||631")
-        correoReset userindex
+        UserList(NameIndex(Destinatario)).flags.NumCorreos = UserList(NameIndex(Destinatario)).flags.NumCorreos + 1
+        UserList(NameIndex(Destinatario)).flags.Correo(UserList(NameIndex(Destinatario)).flags.NumCorreos) = cDatPalOtro
+        UserList(NameIndex(Destinatario)).flags.NueCorreos(UserList(NameIndex(Destinatario)).flags.NumCorreos) = 1
+        Call SendData(SendTarget.toindex, NameIndex(Destinatario), 0, "||631")
     End If
     
 Errhandler:
@@ -189,37 +177,38 @@ Public Sub correoLeerMensaje(userindex As Integer, rData As String)
     On Error Resume Next
 
 If rData = 0 Then Exit Sub
-
 correoReset userindex
+
 
     With UserList(userindex)
 
-        Dim iMoC As Long, cDatPalOtro As String, cNamePutTemp As String, cTempGrh As Integer, cData As String
+        Dim iMoC As Long, cDatPalOtro As String, cNamePutTemp As String, cTempGrh As Integer, cData As String, ComienzoPaLeer As Integer
         
         cData = UserList(userindex).flags.Correo(rData)
-        iData = UserList(userindex).flags.itemsCorreo(rData)
-        cDatPalOtro = ""
+        cDatPalOtro = cDatPalOtro & ReadField(1, cData, Asc("$")) & "$" & ReadField(2, cData, Asc("$")) & "$" & ReadField(3, cData, Asc("$")) & "$" & ReadField(4, cData, Asc("$")) & "$"
+        ComienzoPaLeer = Len(cDatPalOtro)
         
             For iMoC = 1 To 20
                 cNamePutTemp = "(Nada)"
                 Dim cTempItMo As String
-                cTempItMo = ReadField(iMoC, iData, Asc(","))
-                
+                cTempItMo = ReadField(iMoC, cData, Asc(","))
                     If ReadField(2, cTempItMo, Asc("-")) > 0 Then
                         .cCorreo.cObj(iMoC).Amount = ReadField(2, cTempItMo, Asc("-"))
-                        .cCorreo.cObj(iMoC).ObjIndex = ReadField(1, cTempItMo, Asc("-"))
+                        If iMoC = 1 Then
+                            .cCorreo.cObj(iMoC).ObjIndex = ReadField(1, mid(cTempItMo, ComienzoPaLeer), Asc("-"))
+                        Else
+                            .cCorreo.cObj(iMoC).ObjIndex = ReadField(1, cTempItMo, Asc("-"))
+                        End If
                     End If
-                    
                     If .cCorreo.cObj(iMoC).ObjIndex > 0 Then
                         cNamePutTemp = ObjData(.cCorreo.cObj(iMoC).ObjIndex).Name
                         cTempGrh = .cCorreo.cObj(iMoC).ObjIndex
                     End If
-                    
                 cDatPalOtro = cDatPalOtro & cTempGrh & "-" & .cCorreo.cObj(iMoC).Amount & "-" & cNamePutTemp & ","
             Next iMoC
             
-        SendData SendTarget.toindex, userindex, 0, "ILO" & cData
-        SendData SendTarget.toindex, userindex, 0, "ITO" & cDatPalOtro
+        SendData SendTarget.toindex, userindex, 0, "ILO" & cDatPalOtro
+        Debug.Print cDatPalOtro
         UserList(userindex).flags.NueCorreos(rData) = 0
         
         Call correoRecargarLista(userindex)
@@ -236,12 +225,11 @@ If rData = 0 Then Exit Sub
     
         If .flags.Correo(rData) = "0" Then Exit Sub
 
-        Dim iMoC As Long, cTemp As Integer, cCorreo As String, nCorreo As String, itCorreo
+        Dim iMoC As Long, cTemp As Integer, cCorreo As String, nCorreo As String
             cTemp = 0
             
 
                 .flags.Correo(rData) = "0"
-                .flags.itemsCorreo(rData) = "0"
                 
                 For iMoC = 1 To 30
                     cCorreo = ""
@@ -252,17 +240,14 @@ If rData = 0 Then Exit Sub
                         cTemp = cTemp + 1
                         cCorreo = .flags.Correo(iMoC)
                         nCorreo = .flags.NueCorreos(iMoC)
-                        itCorreo = .flags.itemsCorreo(iMoC)
                         
                         'Ponemos en 0
                         .flags.Correo(iMoC) = 0
                         .flags.NueCorreos(iMoC) = 0
-                        .flags.itemsCorreo(iMoC) = 0
                         
                         'Reescribimos
                         .flags.Correo(cTemp) = cCorreo
                         .flags.NueCorreos(cTemp) = nCorreo
-                        .flags.itemsCorreo(cTemp) = itCorreo
                     Else
                         'Sino le damos que ya lo leyo
                         .flags.NueCorreos(iMoC) = 0
@@ -281,6 +266,7 @@ End Sub
 Public Sub correoRetirarItems(userindex As Integer, rData As String)
 Dim CorreoObj As Obj
 Dim lopC As Long
+Dim cData As String
 
 If rData = 0 Or rData > 30 Then Exit Sub
 
@@ -299,7 +285,8 @@ For lopC = 1 To 20
     End With
 Next lopC
 
-UserList(userindex).flags.itemsCorreo(rData) = "0"
+cData = UserList(userindex).flags.Correo(rData)
+UserList(userindex).flags.Correo(rData) = "" & ReadField(1, cData, Asc("$")) & "$" & ReadField(2, cData, Asc("$")) & "$" & ReadField(3, cData, Asc("$")) & "$" & ReadField(4, cData, Asc("$")) & "$0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),0-0-(Nada),"
 Call correoLeerMensaje(userindex, rData)
     
 End Sub

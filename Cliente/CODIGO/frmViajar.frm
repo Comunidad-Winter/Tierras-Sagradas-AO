@@ -7,22 +7,19 @@ Begin VB.Form frmViajar
    ClientLeft      =   0
    ClientTop       =   0
    ClientWidth     =   6750
-   Icon            =   "frmViajar.frx":0000
    LinkTopic       =   "Form1"
-   Picture         =   "frmViajar.frx":000C
-   ScaleHeight     =   350
-   ScaleMode       =   3  'Pixel
-   ScaleWidth      =   450
+   Picture         =   "frmViajar.frx":0000
+   ScaleHeight     =   5250
+   ScaleWidth      =   6750
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.TextBox Text1 
       Alignment       =   2  'Center
       BackColor       =   &H00000000&
       BorderStyle     =   0  'None
-      Enabled         =   0   'False
       BeginProperty Font 
-         Name            =   "Palatino Linotype"
-         Size            =   9.75
+         Name            =   "Arial"
+         Size            =   12.75
          Charset         =   0
          Weight          =   700
          Underline       =   0   'False
@@ -30,76 +27,76 @@ Begin VB.Form frmViajar
          Strikethrough   =   0   'False
       EndProperty
       ForeColor       =   &H00808080&
-      Height          =   1275
-      Left            =   195
+      Height          =   2175
+      Left            =   360
       Locked          =   -1  'True
       MultiLine       =   -1  'True
       TabIndex        =   0
-      Text            =   "frmViajar.frx":1EC0B
-      Top             =   3870
-      Width           =   6345
-   End
-   Begin VB.Image Image2 
-      Height          =   300
-      Left            =   195
-      Picture         =   "frmViajar.frx":1EC91
-      Top             =   3465
-      Width           =   6345
-   End
-   Begin VB.Image Command7 
-      Height          =   300
-      Left            =   195
-      Picture         =   "frmViajar.frx":23986
-      Top             =   1845
-      Width           =   6345
-   End
-   Begin VB.Image Command6 
-      Height          =   300
-      Left            =   195
-      Picture         =   "frmViajar.frx":28783
-      Top             =   3060
-      Width           =   6345
-   End
-   Begin VB.Image Image1 
-      Height          =   375
-      Left            =   6360
-      Top             =   0
-      Width           =   375
+      Text            =   "frmViajar.frx":DF4D
+      Top             =   2640
+      Width           =   6060
    End
    Begin VB.Image Command5 
-      Height          =   300
-      Left            =   195
-      Picture         =   "frmViajar.frx":2D7D5
-      Top             =   1440
-      Width           =   6345
+      Height          =   780
+      Left            =   3400
+      Picture         =   "frmViajar.frx":DFD3
+      Top             =   720
+      Width           =   1545
    End
    Begin VB.Image Command4 
-      Height          =   300
-      Left            =   195
-      Picture         =   "frmViajar.frx":32739
-      Top             =   1035
-      Width           =   6345
+      Height          =   780
+      Left            =   1800
+      Picture         =   "frmViajar.frx":135ED
+      Top             =   720
+      Width           =   1545
+   End
+   Begin VB.Image Image2 
+      Height          =   780
+      Left            =   5040
+      Picture         =   "frmViajar.frx":187C7
+      Top             =   1680
+      Width           =   1545
+   End
+   Begin VB.Image Command7 
+      Height          =   780
+      Left            =   5040
+      Picture         =   "frmViajar.frx":1DB6E
+      Top             =   720
+      Width           =   1545
+   End
+   Begin VB.Image Command6 
+      Height          =   780
+      Left            =   3405
+      Picture         =   "frmViajar.frx":22F6E
+      Top             =   1680
+      Width           =   1545
+   End
+   Begin VB.Image Image1 
+      Height          =   495
+      Left            =   6240
+      Top             =   0
+      Width           =   495
    End
    Begin VB.Image Command3 
-      Height          =   300
-      Left            =   195
-      Picture         =   "frmViajar.frx":37316
-      Top             =   2655
-      Width           =   6345
+      Height          =   780
+      Left            =   1800
+      Picture         =   "frmViajar.frx":286CC
+      Top             =   1680
+      Width           =   1545
    End
    Begin VB.Image Command2 
-      Height          =   300
-      Left            =   195
-      Picture         =   "frmViajar.frx":3C488
-      Top             =   2250
-      Width           =   6345
+      Height          =   780
+      Left            =   180
+      Picture         =   "frmViajar.frx":2DF51
+      Top             =   1680
+      Width           =   1545
    End
    Begin VB.Image Command1 
-      Height          =   300
-      Left            =   195
-      Picture         =   "frmViajar.frx":414A0
-      Top             =   630
-      Width           =   6345
+      Height          =   780
+      Left            =   180
+      Picture         =   "frmViajar.frx":335EA
+      Top             =   720
+      Width           =   1545
    End
 End
 Attribute VB_Name = "frmViajar"
@@ -153,9 +150,18 @@ Command7.Picture = General_Load_Interface_Picture("Viajar_BInthakN.JPG")
 Image2.Picture = General_Load_Interface_Picture("Viajar_BHelkaN.JPG")
 Me.Tag = "1"
 End Sub
-
+Private Sub Command5_Click()
+    If MsgBox("Se requiere tener una barca para moverse por este mapa o podés no regresar con vida, ¿Viajar de todas formas?", vbYesNo) = vbYes Then
+        Call SendData("/VIAJAR JHUMBEL")
+    End If
+    Unload Me
+End Sub
 Private Sub Command3_Click()
 Call SendData("/VIAJAR KAHLIMDOR")
+Unload Me
+End Sub
+Private Sub Command4_Click()
+Call SendData("/VIAJAR THIR")
 Unload Me
 End Sub
 
@@ -171,12 +177,6 @@ Command7.Picture = General_Load_Interface_Picture("Viajar_BInthakN.JPG")
 Image2.Picture = General_Load_Interface_Picture("Viajar_BHelkaN.JPG")
 Me.Tag = "1"
 End Sub
-
-Private Sub Command4_Click()
-Call SendData("/VIAJAR THIR")
-Unload Me
-End Sub
-
 Private Sub Command4_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
 Text1 = "Este pequeño pueblo se encuentra en los bosques, al sur esta el bosque de los osos que es un buen lugar para conseguir pieles. Llendo al norte se encuentra el polo. Le clase de objetos que se venden aca son los mismo que Tanaris."
 Command1.Picture = General_Load_Interface_Picture("Viajar_BTanarisN.JPG")
@@ -189,16 +189,6 @@ Command7.Picture = General_Load_Interface_Picture("Viajar_BInthakN.JPG")
 Image2.Picture = General_Load_Interface_Picture("Viajar_BHelkaN.JPG")
 Me.Tag = "1"
 End Sub
-
-Private Sub Command5_Click()
-If MsgBox("Se requiere tener una barca para moverse por este mapa o podés no poder regresar, ¿viajar?", vbYesNo) = vbYes Then
-Call SendData("/VIAJAR JHUMBEL")
-Unload Me
-Else
-Unload Me
-End If
-End Sub
-
 Private Sub Command5_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
 Text1 = "Este pueblo esta en grupo de islas del mapa 69, es el mejor lugar para ir hacia la peligrosa dungeon del 70. Tiene unos pocos negocios, un cura y un banquero."
 Command1.Picture = General_Load_Interface_Picture("Viajar_BTanarisN.JPG")

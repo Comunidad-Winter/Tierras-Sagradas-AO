@@ -44,42 +44,10 @@ Public base_light As Long
 Public day_r_old As Byte
 Public day_g_old As Byte
 Public day_b_old As Byte
-Type luzxhora
-    r As Long
-    g As Long
-    b As Long
-End Type
-Public luz_dia(0 To 24) As luzxhora '¬¬ la hora 24 dura 1 minuto entre las 24 y las 0
 
 'JOJOJO
 Public engine As New clsDX8Engine
 'JOJOJO
-
-'To get free bytes in drive
-Private Declare Function GetDiskFreeSpace Lib "kernel32" Alias "GetDiskFreeSpaceExA" (ByVal lpRootPathName As String, FreeBytesToCaller As Currency, BytesTotal As Currency, FreeBytesTotal As Currency) As Long
-
-'To get free bytes in RAM
-
-Private pUdtMemStatus As MEMORYSTATUS
-
-Private Type MEMORYSTATUS
-    dwLength As Long
-    dwMemoryLoad As Long
-    dwTotalPhys As Long
-    dwAvailPhys As Long
-    dwTotalPageFile As Long
-    dwAvailPageFile As Long
-    dwTotalVirtual As Long
-    dwAvailVirtual As Long
-End Type
-
-Private Declare Sub GlobalMemoryStatus Lib "kernel32" (lpBuffer As MEMORYSTATUS)
-
-Public Function General_Bytes_To_Megabytes(Bytes As Double) As Double
-Dim dblAns As Double
-dblAns = (Bytes / 1024) / 1024
-General_Bytes_To_Megabytes = Format(dblAns, "###,###,##0.00")
-End Function
 Public Function ARGB(ByVal r As Long, ByVal g As Long, ByVal b As Long, ByVal A As Long) As Long
         
     Dim c As Long

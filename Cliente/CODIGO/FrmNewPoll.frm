@@ -7,7 +7,6 @@ Begin VB.Form FrmNewPoll
    ClientLeft      =   45
    ClientTop       =   315
    ClientWidth     =   4500
-   Icon            =   "FrmNewPoll.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False

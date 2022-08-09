@@ -4,7 +4,7 @@ Option Explicit
 Public Sub HandleData_4(ByVal userindex As Integer, rData As String, ByRef Procesado As Boolean)
 
 
-Dim loopC As Integer
+Dim LoopC As Integer
 Dim nPos As WorldPos
 Dim tStr As String
 Dim iStr As String
@@ -42,13 +42,26 @@ Select Case UCase$(Left$(rData, 3))
     Arg2 = ReadField(1, rData, 44)
     
     Dim tItems As Long
-    Dim IndexObj As obj
+    Dim IndexObj As Obj
     Dim NameObj As String
 
         If val(Arg2) > 0 And val(Arg2) <= UBound(DonationList) Then
                 NameObj = ""
                 For tItems = 1 To DonationList(val(Arg2)).NumObjs
                 
+                  If DonationList(val(Arg2)).Tuniquita <> "0" And tItems = 1 Then
+                        IndexObj.Amount = val(ReadField(2, GetVar(DatPath & "ItemsDonaciones.dat", "ITEM" & val(Arg2), "Obj" & tItems), 45))
+                        NameObj = NameObj & DonationList(val(Arg2)).Tuniquita & " -" & IndexObj.Amount & ","
+                  ElseIf DonationList(val(Arg2)).Tuniquita2 <> "0" And tItems = 2 Then
+                        IndexObj.Amount = val(ReadField(2, GetVar(DatPath & "ItemsDonaciones.dat", "ITEM" & val(Arg2), "Obj" & tItems), 45))
+                        NameObj = NameObj & DonationList(val(Arg2)).Tuniquita2 & " -" & IndexObj.Amount & ","
+                  ElseIf DonationList(val(Arg2)).Tuniquita3 <> "0" And tItems = 3 Then
+                        IndexObj.Amount = val(ReadField(2, GetVar(DatPath & "ItemsDonaciones.dat", "ITEM" & val(Arg2), "Obj" & tItems), 45))
+                        NameObj = NameObj & DonationList(val(Arg2)).Tuniquita3 & " -" & IndexObj.Amount & ","
+                  ElseIf DonationList(val(Arg2)).Tuniquita4 <> "0" And tItems = 4 Then
+                        IndexObj.Amount = val(ReadField(2, GetVar(DatPath & "ItemsDonaciones.dat", "ITEM" & val(Arg2), "Obj" & tItems), 45))
+                        NameObj = NameObj & DonationList(val(Arg2)).Tuniquita4 & " -" & IndexObj.Amount & ","
+                  Else
                         IndexObj.ObjIndex = val(ReadField(1, GetVar(DatPath & "ItemsDonaciones.dat", "ITEM" & val(Arg2), "Obj" & tItems), 45))
                         IndexObj.Amount = val(ReadField(2, GetVar(DatPath & "ItemsDonaciones.dat", "ITEM" & val(Arg2), "Obj" & tItems), 45))
                         
@@ -60,11 +73,10 @@ Select Case UCase$(Left$(rData, 3))
                             NameObj = NameObj & "Montura de Dragón Dorado -" & IndexObj.Amount & ","
                         ElseIf IndexObj.ObjIndex = 9996 Then
                             NameObj = NameObj & "Pack Premium - (" & IndexObj.Amount & " Mes),"
-                        ElseIf IndexObj.ObjIndex = 9995 Then
-                            NameObj = NameObj & "Skin de " & ObjData(IndexObj.Amount).Name & ","
                         Else
                             NameObj = NameObj & ObjData(IndexObj.ObjIndex).Name & "-" & IndexObj.Amount & ","
                         End If
+                    End If
                 Next tItems
                 
                 Dim tBody As Integer
@@ -76,13 +88,7 @@ Select Case UCase$(Left$(rData, 3))
                 
                 With DonationList(val(Arg2))
                     If .Body > 0 Then
-                    
-                        If (UCase$(UserList(userindex).Raza) = "GNOMO" Or UCase$(UserList(userindex).Raza) = "ENANO") Then
-                            tBody = .BodyB
-                        Else
-                            tBody = .Body
-                        End If
-                        
+                        tBody = .Body
                         tHead = UserList(userindex).Char.Head
                         
                             
@@ -103,14 +109,12 @@ Select Case UCase$(Left$(rData, 3))
                             Else
                                 tCasco = UserList(userindex).Char.CascoAnim
                             End If
-                            
-                            tGrhIndex = DonationList(val(Arg2)).GrhIndex
                     Else
                         tGrhIndex = DonationList(val(Arg2)).GrhIndex
                     End If
                 End With
                 
-            Call SendData(SendTarget.toindex, userindex, 0, "DNF" & tBody & "," & tHead & "," & tWeapon & "," & tShield & "," & tCasco & "," & DonationList(val(Arg2)).Aura & "," & tGrhIndex & "," & DonationList(val(Arg2)).ObjValor & "," & DonationList(val(Arg2)).Desc & "," & DonationList(val(Arg2)).NumObjs & "," & NameObj)
+            Call SendData(SendTarget.toindex, userindex, 0, "DNF" & tBody & "," & tHead & "," & tWeapon & "," & tShield & "," & tCasco & "," & DonationList(val(Arg2)).Aura & "," & tGrhIndex & "," & DonationList(val(Arg2)).ObjValor & "," & DonationList(val(Arg2)).NumObjs & "," & NameObj)
            End If
     Exit Sub
     
@@ -119,9 +123,16 @@ Select Case UCase$(Left$(rData, 3))
         Arg2 = ReadField(1, rData, 44)
              'i no tiene los puntos necesarios
              
-    Dim tPremio As obj
+    Dim tPremio As Obj
     Dim rIndex As Integer
     Dim j As Long
+    Dim Alturinha As String
+    
+            If UCase$(UserList(userindex).Raza) = "GNOMO" Or UCase$(UserList(userindex).Raza) = "ENANO" Then
+                Alturinha = "Bajos"
+            Else
+                Alturinha = "Altos"
+            End If
             
                  If UserList(userindex).Stats.PuntosDonacion < DonationList(val(Arg2)).ObjValor Then
                         Call SendData(SendTarget.toindex, userindex, 0, "||632")
@@ -129,55 +140,35 @@ Select Case UCase$(Left$(rData, 3))
                  End If
                  
             For tItems = 1 To DonationList(val(Arg2)).NumObjs
-            
-                rIndex = val(ReadField(1, GetVar(DatPath & "ItemsDonaciones.dat", "ITEM" & val(Arg2), "Obj" & tItems), 45))
-            
-                    If rIndex < 9995 Then
-                    
-                        tPremio.ObjIndex = rIndex
-                        tPremio.Amount = val(ReadField(2, GetVar(DatPath & "ItemsDonaciones.dat", "ITEM" & val(Arg2), "Obj" & tItems), 45))
+                If DonationList(val(Arg2)).Tuniquita <> "0" And tItems = 1 Then
+                    rIndex = val(ReadField(1, GetVar(DatPath & "ItemsDonaciones.dat", "ITEM" & val(Arg2), "Tunica" & Alturinha), 45))
+                ElseIf DonationList(val(Arg2)).Tuniquita2 <> "0" And tItems = 2 Then
+                    rIndex = val(ReadField(1, GetVar(DatPath & "ItemsDonaciones.dat", "ITEM" & val(Arg2), "Tunica2" & Alturinha), 45))
+                ElseIf DonationList(val(Arg2)).Tuniquita3 <> "0" And tItems = 3 Then
+                    rIndex = val(ReadField(1, GetVar(DatPath & "ItemsDonaciones.dat", "ITEM" & val(Arg2), "Tunica3" & Alturinha), 45))
+                ElseIf DonationList(val(Arg2)).Tuniquita4 <> "0" And tItems = 4 Then
+                    rIndex = val(ReadField(1, GetVar(DatPath & "ItemsDonaciones.dat", "ITEM" & val(Arg2), "Tunica4" & Alturinha), 45))
+                Else
+                    rIndex = val(ReadField(1, GetVar(DatPath & "ItemsDonaciones.dat", "ITEM" & val(Arg2), "Obj" & tItems), 45))
+                End If
+                     
+                        If rIndex < 9996 Then
+                           tPremio.ObjIndex = rIndex
+                           tPremio.Amount = val(ReadField(2, GetVar(DatPath & "ItemsDonaciones.dat", "ITEM" & val(Arg2), "Obj" & tItems), 45))
                       
-                        If Not MeterItemEnInventario(userindex, tPremio) Then
-                            Call SendData(SendTarget.toindex, userindex, 0, "||639")
-                        Exit Sub
-                        End If
-                        
-                        Call SendData(SendTarget.toindex, userindex, 0, "||232@" & tPremio.Amount & "@" & ObjData(tPremio.ObjIndex).Name)
+                           If Not MeterItemEnInventario(userindex, tPremio) Then
+                               Call TirarItemAlPiso(UserList(userindex).Pos, tPremio)
+                           End If
                            
-                        Call LogCanjeos("" & UserList(userindex).Name & " canjeo: " & tPremio.Amount & " - " & ObjData(tPremio.ObjIndex).Name)
-                     ElseIf rIndex = 9995 Then
-                        Dim tmpRObj, tmpNGraf As Integer
-                        tmpRObj = val(ReadField(2, GetVar(DatPath & "ItemsDonaciones.dat", "ITEM" & val(Arg2), "Obj" & tItems), 45))
-                        tmpNGraf = val(ReadField(3, GetVar(DatPath & "ItemsDonaciones.dat", "ITEM" & val(Arg2), "Obj" & tItems), 45))
+                           Call LogCanjeos("" & UserList(userindex).Name & " canjeo: " & tPremio.Amount & " - " & ObjData(tPremio.ObjIndex).Name)
                         
-                        With UserList(userindex)
-                            If .cantSkins > UBound(.Skin) Then
-                                Call SendData(SendTarget.toindex, userindex, 0, "||959")
-                                Exit Sub
-                            End If
-                            
-                            For i = 1 To .cantSkins
-                                If .Skin(i).numObj = tmpRObj Then
-                                    Call SendData(SendTarget.toindex, userindex, 0, "||960")
-                                Exit Sub
-                                End If
-                            Next i
-                                                            
-                            .cantSkins = .cantSkins + 1
-                            .Skin(.cantSkins).numObj = tmpRObj
-                            .Skin(.cantSkins).newGraf = tmpNGraf
-                            
-                            Call SendData(SendTarget.toindex, userindex, 0, "||961@" & ObjData(tmpRObj).Name)
-                        End With
-                                                
-                        Call LogCanjeos("" & UserList(userindex).Name & " canjeo skin " & tmpRObj & " - " & tmpNGraf)
                      ElseIf rIndex = 9996 Then
                         Dim tempDia As Byte, tempMes As Byte, tempAño As Integer
                             Dim tempFecha As String
                             
                         If UserList(userindex).flags.EsPremium = 0 Then
-                            tempDia = ReadField(2, Date, Asc("/"))
-                            tempMes = ReadField(1, Date, Asc("/"))
+                            tempDia = ReadField(1, Date, Asc("/"))
+                            tempMes = ReadField(2, Date, Asc("/"))
                             tempAño = ReadField(3, Date, Asc("/"))
                         Else
                             tempDia = ReadField(1, UserList(userindex).flags.VencePremium, Asc("/"))
@@ -231,11 +222,10 @@ Select Case UCase$(Left$(rData, 3))
                        End If
                   
                   Call SendData(SendTarget.toindex, userindex, 0, "||133")
-            
-                ElseIf rIndex = 9999 Then
-                    Call AgregarPuntos(userindex, val(ReadField(2, GetVar(DatPath & "ItemsDonaciones.dat", "ITEM" & val(Arg2), "Obj" & tItems), 45)))
-                    Call SendData(SendTarget.toindex, userindex, 0, "||57@" & val(ReadField(2, GetVar(DatPath & "ItemsDonaciones.dat", "ITEM" & val(Arg2), "Obj" & tItems), 45)))
-                End If
+                        ElseIf rIndex = 9999 Then
+                          Call AgregarPuntos(userindex, val(ReadField(2, GetVar(DatPath & "ItemsDonaciones.dat", "ITEM" & val(Arg2), "Obj" & tItems), 45)))
+                          Call SendData(SendTarget.toindex, userindex, 0, "||57@" & val(ReadField(2, GetVar(DatPath & "ItemsDonaciones.dat", "ITEM" & val(Arg2), "Obj" & tItems), 45)))
+                        End If
                        
                       Next tItems
                       
@@ -273,30 +263,28 @@ Select Case UCase$(Left$(rData, 6))
         rData = Right$(rData, Len(rData) - 6)
         Arg1 = ReadField(1, rData, 44)
         
-        'Call SendData(SendTarget.toindex, UserIndex, 0, "EROSistema deshabilitado temporalmente."): Exit Sub
-        
-        Dim Rank As Integer
-        
-        If UCase(Arg1) = "DUELOS" Then Rank = eRanking.TOPDuelos
-        If UCase(Arg1) = "PAREJAS" Then Rank = eRanking.TOPParejas
-        If UCase(Arg1) = "RONDAS" Then Rank = eRanking.TOPRondas
-        If UCase(Arg1) = "REPUTACION" Then Rank = eRanking.TOPReputacion
-        If UCase(Arg1) = "TORNEOS" Then Rank = eRanking.TOPTorneos
-        If UCase(Arg1) = "CVCS" Then Rank = eRanking.TOPCVCS
-        If UCase(Arg1) = "CASTILLOS" Then Rank = eRanking.TOPCastillos
-        If UCase(Arg1) = "REPUCLANES" Then Rank = eRanking.TOPRepuClanes
-        If UCase(Arg1) = "FRAGS" Then Rank = eRanking.TOPFrags
-        
-        tStr = ""
-            For i = 1 To 10
-                If (Ranking(Rank).Nombre(i) <> "") Then
-                    tStr = tStr & Ranking(Rank).Nombre(i) & "-" & Ranking(Rank).Value(i) & ","
-                Else
-                    tStr = tStr & "N/A-0,"
-                End If
-            Next i
-                
-                Call SendData(SendTarget.toindex, userindex, 0, "MTOP" & tStr)
+        Select Case Arg1
+            Case 0
+                Call Info_Rank(Kills, userindex)
+            Case 1
+                Call Info_Rank(Duels, userindex)
+            Case 2
+                Call Info_Rank(Rounds, userindex)
+            Case 3
+                Call Info_Rank(Couple, userindex)
+            Case 4
+                Call Info_Rank(Tournaments, userindex)
+            Case 5
+                Call Info_Rank(Events, userindex)
+            Case 6
+                Call Info_Rank(GuildVSGuild, userindex)
+            Case 7
+                Call Info_Rank(Castles, userindex)
+            Case 8
+                Call Info_Rank(GuildReputation, userindex)
+            Case 9
+                Call Info_Rank(Reputation, userindex)
+        End Select
     Exit Sub
 
 End Select
